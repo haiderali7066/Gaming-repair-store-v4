@@ -33,7 +33,7 @@ export function HeroSection() {
   const slide = heroSlides[currentSlide]
 
   return (
-    <section className="relative isolate overflow-hidden bg-slate-950 text-white">
+    <section className="relative isolate overflow-hidden bg-slate-950 text-white mt-10 ">
       <div className="absolute -left-40 top-20 -z-10 size-[28rem] rounded-full bg-violet-700/30 blur-[120px]" />
       <div className="absolute -right-40 bottom-0 -z-10 size-[30rem] rounded-full bg-indigo-600/20 blur-[140px]" />
 

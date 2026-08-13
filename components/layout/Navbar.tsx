@@ -15,13 +15,14 @@ import {
   Cpu,
   Headphones,
   ArrowUpRight,
+  Menu, // Added for mobile menu
+  X, // Added for mobile menu
 } from "lucide-react"
 
 import { auth } from "@/auth"
 import { UserMenu } from "./UserMenu"
 import { CartButton } from "./CartButton"
 import { AuthButtons } from "./AuthButtons"
-import { MobileNavMenu } from "./MobileNavMenu"
 import { getFeaturedProducts } from "@/lib/data"
 import { formatCurrency } from "@/lib/helpers"
 import type { ProductType } from "@/types/product"
@@ -205,7 +206,7 @@ export async function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop navigation - INCREASED FONT SIZES */}
+          {/* Desktop navigation */}
           <nav className="hidden h-full items-center gap-2 lg:flex">
             
             {/* 1. HOME (Dark Mega Menu) */}
@@ -397,18 +398,114 @@ export async function Navbar() {
               <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
-            {/* Mobile menu */}
-            <div className="ml-1 lg:hidden">
-              <MobileNavMenu
-                links={[
-                  { label: "Home", href: "/" },
-                  { label: "About", href: "/about" },
-                  { label: "Services", href: "/services" },
-                  { label: "Shop", href: "/shop" },
-                  ...standardLinks
-                ].map(({ label, href }) => [label, href])}
-                isAuthenticated={!!session}
-              />
+            {/* ================================================================== */}
+            {/* CSS-ONLY MOBILE NAVIGATION DRAWER                                  */}
+            {/* ================================================================== */}
+            <div className="ml-1 lg:hidden flex items-center">
+              {/* Checkbox Hack for Stateful Toggle Without Client Components */}
+              <input type="checkbox" id="mobile-menu-toggle" className="peer hidden" />
+              
+              {/* Hamburger Button */}
+              <label 
+                htmlFor="mobile-menu-toggle" 
+                className="relative z-50 p-2 flex items-center justify-center rounded-md bg-slate-50 text-slate-800 cursor-pointer transition-colors hover:bg-slate-100"
+              >
+                <Menu className="w-6 h-6" />
+              </label>
+
+              {/* Drawer Overlay */}
+              <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm opacity-0 invisible peer-checked:opacity-100 peer-checked:visible transition-all duration-300">
+                <label htmlFor="mobile-menu-toggle" className="absolute inset-0 cursor-pointer"></label>
+              </div>
+
+              {/* Sidebar Menu */}
+              <div className="fixed top-0 right-0 z-[101] w-[85vw] max-w-sm h-[100dvh] bg-white shadow-2xl translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+                
+                {/* Header (Inside Sidebar) */}
+                <div className="flex items-center justify-between p-5 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="w-6 h-6 text-violet-600" />
+                    <span className="text-lg font-black tracking-tight text-slate-900">
+                      AL DANA <span className="text-violet-600">GAMING</span>
+                    </span>
+                  </div>
+                  <label htmlFor="mobile-menu-toggle" className="p-2 -mr-2 bg-slate-50 rounded-full cursor-pointer hover:bg-slate-100 transition-colors">
+                    <X className="w-5 h-5 text-slate-600" />
+                  </label>
+                </div>
+
+                {/* Mobile Links (Scrollable area) */}
+                <nav className="flex-1 overflow-y-auto p-5 space-y-5">
+                  <Link href="/" className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">Home</Link>
+                  <Link href="/about" className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">About</Link>
+                  
+                  {/* Services Accordion */}
+                  <details className="group">
+                    <summary className="flex items-center justify-between text-lg font-bold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
+                      Services
+                      <ChevronDown className="w-5 h-5 text-slate-400 transition-transform group-open:-rotate-180" />
+                    </summary>
+                    <div className="mt-4 pl-4 space-y-5 border-l-2 border-violet-100">
+                      {serviceCategories.map((cat) => (
+                        <div key={cat.title}>
+                          <p className="font-semibold text-violet-600 text-[13px] tracking-wide uppercase mb-2 flex items-center gap-2">
+                            <cat.icon className="w-4 h-4" /> {cat.title}
+                          </p>
+                          <ul className="space-y-2.5 pl-6 text-[15px] text-slate-600 font-medium">
+                            {cat.items.map((item) => (
+                              <li key={item}>
+                                <Link href={`/services#${cat.id}`} className="block hover:text-violet-600 transition-colors">
+                                  {item}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+
+                  {/* Shop Accordion */}
+                  <details className="group">
+                    <summary className="flex items-center justify-between text-lg font-bold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
+                      Shop
+                      <ChevronDown className="w-5 h-5 text-slate-400 transition-transform group-open:-rotate-180" />
+                    </summary>
+                    <div className="mt-4 pl-4 space-y-5 border-l-2 border-violet-100">
+                      {shopMenuCategories.map((cat) => (
+                        <div key={cat.title}>
+                          <p className="font-semibold text-violet-600 text-[13px] tracking-wide uppercase mb-2 flex items-center gap-2">
+                            <cat.icon className="w-4 h-4" /> {cat.title}
+                          </p>
+                          <ul className="space-y-2.5 pl-6 text-[15px] text-slate-600 font-medium">
+                            {cat.items.map((item) => (
+                              <li key={item}>
+                                <Link href="/shop" className="block hover:text-violet-600 transition-colors">
+                                  {item}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+
+                  {standardLinks.map((link) => (
+                    <Link key={link.href} href={link.href} className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+
+                {/* Mobile Call to Action */}
+                <div className="p-5 border-t border-slate-100 bg-slate-50">
+                  <Link href="/repair" className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-violet-600 to-purple-700 px-6 py-3.5 text-base font-bold text-white shadow-md active:scale-95 transition-transform">
+                    <Wrench className="size-5" />
+                    <span>Book a Repair</span>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
