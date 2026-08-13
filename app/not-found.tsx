@@ -1,2 +1,14 @@
-import Link from "next/link";import{Button}from"@/components/ui/button"
-export default function NotFound(){return <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 text-center"><p className="eyebrow">404</p><h1 className="text-6xl font-extrabold">Off the map.</h1><p className="text-muted-foreground">The page or product you requested is not available.</p><Button render={<Link href="/"/>}>Return home</Button></main>}
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+export default function NotFound() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 text-center">
+      <p className="eyebrow">404</p>
+      <h1 className="text-6xl font-extrabold">Off the map.</h1>
+      <p className="text-muted-foreground">
+        The page or product you requested is not available.
+      </p>
+      <Button render={<Link href="/" />}>Return home</Button>
+    </main>
+  );
+}
