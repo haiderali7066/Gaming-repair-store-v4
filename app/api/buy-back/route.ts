@@ -1,0 +1,2 @@
+import{NextResponse}from"next/server";import{auth}from"@/auth";import{connectToDatabase}from"@/lib/mongodb";import{serialize}from"@/lib/helpers";import{BuyBackRequest}from"@/models/BuyBackRequest"
+export async function GET(){const s=await auth();if(!s?.user)return NextResponse.json({error:"Unauthorized"},{status:401});await connectToDatabase();return NextResponse.json(serialize(await BuyBackRequest.find(s.user.role==="admin"?{}:{userId:s.user.id}).lean()))}

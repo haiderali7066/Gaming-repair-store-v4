@@ -1,0 +1,7 @@
+"use server"
+import { auth } from "@/auth"
+import { connectToDatabase } from "@/lib/mongodb"
+import { checkoutSchema } from "@/lib/validators"
+import { Order } from "@/models/Order"
+import { Product } from "@/models/Product"
+export async function createOrder(payload: unknown) { const session = await auth(); if (!session?.user?.id) return { ok: false, error: "Please sign in first" }; const parsed = checkoutSchema.safeParse(payload); if (!parsed.success) return { ok: false, error: "Please check your shipping details" }; await connectToDatabase(); const ids = parsed.data.items.map((x) => x.productId); const products = await Product.find({ _id: { $in: ids }, published: true }); const items = parsed.data.items.map((item) => { const p = products.find((x) => x.id === item.productId); if (!p || p.stock < item.quantity) throw new Error("One or more products are unavailable"); return { productId: p._id, name: p.name, slug: p.slug, image: p.image, price: p.price, quantity: item.quantity } }); const subtotal = items.reduce((sum, x) => sum + x.price * x.quantity, 0); const order = await Order.create({ userId: session.user.id, items, subtotal, shipping: { fullName: parsed.data.fullName, phone: parsed.data.phone, address: parsed.data.address, city: parsed.data.city, notes: parsed.data.notes } }); await Promise.all(items.map((x) => Product.updateOne({ _id: x.productId, stock: { $gte: x.quantity } }, { $inc: { stock: -x.quantity } }))); return { ok: true, orderNumber: order.orderNumber as string } }

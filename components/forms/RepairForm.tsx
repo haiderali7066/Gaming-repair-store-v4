@@ -1,0 +1,7 @@
+import { submitRepair } from "@/actions/requests"
+import { Button } from "@/components/ui/button"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { DEVICE_TYPES } from "@/lib/constants"
+export function RepairForm({ defaultType }: { defaultType?: string }) { return <form action={submitRepair} className="border border-border bg-card p-6 md:p-8"><FieldGroup><Field><FieldLabel htmlFor="deviceType">Device type</FieldLabel><select id="deviceType" name="deviceType" defaultValue={defaultType} className="h-10 border border-input bg-background px-3 text-sm">{DEVICE_TYPES.map((x) => <option key={x}>{x}</option>)}</select></Field><div className="grid gap-5 md:grid-cols-2"><Field><FieldLabel htmlFor="brand">Brand</FieldLabel><Input id="brand" name="brand" required /></Field><Field><FieldLabel htmlFor="model">Model</FieldLabel><Input id="model" name="model" required /></Field></div><Field><FieldLabel htmlFor="problem">Problem description</FieldLabel><Textarea id="problem" name="problem" rows={5} required /></Field><Field><FieldLabel htmlFor="image">Device image URL (optional)</FieldLabel><Input id="image" name="image" type="url" /></Field><Field><FieldLabel htmlFor="contact">Preferred contact</FieldLabel><Input id="contact" name="contact" placeholder="Phone or WhatsApp" required /></Field><Button type="submit" size="lg">Submit repair request</Button></FieldGroup></form> }

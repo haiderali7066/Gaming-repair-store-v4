@@ -1,0 +1,2 @@
+import { RepairForm } from "@/components/forms/RepairForm"
+export default function PcRepair() { return <main className="section-shell grid gap-12 py-16 lg:grid-cols-2"><div><p className="eyebrow">Gaming PC repair</p><h1 className="mt-3 text-6xl font-extrabold">Desktop diagnostics without shortcuts.</h1><p className="mt-5 leading-relaxed text-muted-foreground">Boot issues, thermals, instability, upgrades, component testing, and performance tuning.</p></div><RepairForm defaultType="Gaming PC" /></main> }

@@ -1,0 +1,2 @@
+import{NextResponse}from"next/server";import{auth}from"@/auth";import{connectToDatabase}from"@/lib/mongodb";import{serialize}from"@/lib/helpers";import{RepairRequest}from"@/models/RepairRequest"
+export async function GET(){const s=await auth();if(!s?.user)return NextResponse.json({error:"Unauthorized"},{status:401});await connectToDatabase();return NextResponse.json(serialize(await RepairRequest.find(s.user.role==="admin"?{}:{userId:s.user.id}).lean()))}

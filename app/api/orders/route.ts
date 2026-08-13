@@ -1,0 +1,2 @@
+import{NextResponse}from"next/server";import{auth}from"@/auth";import{connectToDatabase}from"@/lib/mongodb";import{serialize}from"@/lib/helpers";import{Order}from"@/models/Order"
+export async function GET(){const session=await auth();if(!session?.user)return NextResponse.json({error:"Unauthorized"},{status:401});await connectToDatabase();const filter=session.user.role==="admin"?{}:{userId:session.user.id};return NextResponse.json(serialize(await Order.find(filter).sort({createdAt:-1}).lean()))}

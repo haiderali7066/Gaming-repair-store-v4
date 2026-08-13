@@ -1,0 +1,2 @@
+import { RepairForm } from "@/components/forms/RepairForm"
+export default function PhoneRepair() { return <main className="section-shell grid gap-12 py-16 lg:grid-cols-2"><div><p className="eyebrow">iPad repair</p><h1 className="mt-3 text-6xl font-extrabold">Your everyday device, handled with care.</h1><p className="mt-5 leading-relaxed text-muted-foreground">Screen, battery, camera, charging, software, and performance diagnostics.</p></div><RepairForm defaultType="iPad" /></main> }

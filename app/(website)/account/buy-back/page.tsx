@@ -1,0 +1,6 @@
+import { auth } from "@/auth"
+import { Badge } from "@/components/ui/badge"
+import { connectToDatabase } from "@/lib/mongodb"
+import { formatCurrency, formatDate, serialize } from "@/lib/helpers"
+import { BuyBackRequest } from "@/models/BuyBackRequest"
+export default async function BuyBackHistory({ searchParams }: { searchParams: Promise<{ success?: string }> }) { const session = await auth(); const { success } = await searchParams; await connectToDatabase(); const rows = serialize(await BuyBackRequest.find({ userId: session!.user.id }).sort({ createdAt: -1 }).lean()); return <><p className="eyebrow">Valuation activity</p><h1 className="mt-3 text-5xl font-extrabold">Trade-in</h1>{success && <p className="mt-4 border border-primary p-3 text-sm text-primary">{success}</p>}<div className="mt-8 flex flex-col gap-4">{rows.map((x: any) => <article key={x._id} className="border border-border bg-card p-6"><div className="flex justify-between gap-4"><div><h2 className="text-xl font-bold">{x.brand} {x.model}</h2><p className="mt-1 text-sm text-muted-foreground">{x.deviceType} · {formatDate(x.createdAt)}</p><p className="mt-3 text-sm">Expected: {formatCurrency(x.expectedPrice)}</p></div><Badge className="h-fit">{x.status}</Badge></div></article>)}{rows.length === 0 && <p className="text-muted-foreground">No trade-in requests yet.</p>}</div></> }

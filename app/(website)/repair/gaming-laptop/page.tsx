@@ -1,0 +1,2 @@
+import { RepairForm } from "@/components/forms/RepairForm"
+export default function LaptopRepair() { return <main className="section-shell grid gap-12 py-16 lg:grid-cols-2"><div><p className="eyebrow">Gaming laptop repair</p><h1 className="mt-3 text-6xl font-extrabold">Portable power, professionally restored.</h1><p className="mt-5 leading-relaxed text-muted-foreground">Cooling, display, battery, keyboard, board-level issues, upgrades, and full diagnostics.</p></div><RepairForm defaultType="Gaming Laptop" /></main> }
