@@ -731,49 +731,59 @@ export default async function DashboardPage() {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      {/* KPI cards                                                         */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <DashboardMetric
-          label="Active Products"
-          value={productCount}
-          description="Published products"
-          icon={Package}
-          iconClass="bg-blue-500/10 text-blue-600 dark:text-blue-400"
-        />
+{/* KPI cards                                                        */}
+{/* ---------------------------------------------------------------- */}
+<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+  <Link href="/admin/products" className="block">
+    <DashboardMetric
+      label="Active Products"
+      value={productCount}
+      description="Published products"
+      icon={Package}
+      iconClass="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+    />
+  </Link>
 
-        <DashboardMetric
-          label="Total Orders"
-          value={orderCount}
-          description="All-time orders"
-          icon={ShoppingCart}
-          iconClass="bg-violet-500/10 text-violet-600 dark:text-violet-400"
-        />
+  <Link href="/admin/orders" className="block">
+    <DashboardMetric
+      label="Total Orders"
+      value={orderCount}
+      description="All-time orders"
+      icon={ShoppingCart}
+      iconClass="bg-violet-500/10 text-violet-600 dark:text-violet-400"
+    />
+  </Link>
 
-        <DashboardMetric
-          label="Customers"
-          value={customerCount}
-          description="Registered customers"
-          icon={Users}
-          iconClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-        />
+  <Link href="/admin/customers" className="block">
+    <DashboardMetric
+      label="Customers"
+      value={customerCount}
+      description="Registered customers"
+      icon={Users}
+      iconClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+    />
+  </Link>
 
-        <DashboardMetric
-          label="Repair Requests"
-          value={repairCount}
-          description="Service requests"
-          icon={Wrench}
-          iconClass="bg-amber-500/10 text-amber-600 dark:text-amber-400"
-        />
+  <Link href="/admin/repairs" className="block">
+    <DashboardMetric
+      label="Repair Requests"
+      value={repairCount}
+      description="Service requests"
+      icon={Wrench}
+      iconClass="bg-amber-500/10 text-amber-600 dark:text-amber-400"
+    />
+  </Link>
 
-        <DashboardMetric
-          label="Trade-ins"
-          value={buybackCount}
-          description="Buy-back requests"
-          icon={RefreshCw}
-          iconClass="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-        />
-      </section>
+  <Link href="/admin/buy-back" className="block">
+    <DashboardMetric
+      label="Trade-ins"
+      value={buybackCount}
+      description="Buy-back requests"
+      icon={RefreshCw}
+      iconClass="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+    />
+  </Link>
+</section>
 
       {/* ---------------------------------------------------------------- */}
       {/* Revenue + summary                                                 */}

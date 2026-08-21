@@ -12,7 +12,8 @@ import {
   Repeat, 
   Boxes, 
   BarChart3, 
-  LogOut 
+  LogOut, 
+  FileText
 } from "lucide-react";
 
 // 1. Enhanced links array with relevant Lucide icons
@@ -25,6 +26,11 @@ const links = [
   { label: "Trade-in", href: "/admin/buy-back", icon: Repeat },
   { label: "Inventory", href: "/admin/inventory", icon: Boxes },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
+  {
+  label: "Blogs",
+  href: "/admin/blogs",
+  icon: FileText,
+}
 ];
 
 export function AdminSidebar() {
