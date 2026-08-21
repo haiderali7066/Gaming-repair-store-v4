@@ -85,13 +85,59 @@ export const repairSchema = z.object({
 });
 export const buyBackSchema = z.object({
   deviceType: z.enum(BUY_BACK_TYPES),
-  brand: z.string().min(2),
-  model: z.string().min(1),
-  specifications: z.string().min(5),
-  condition: z.string().min(2),
-  description: z.string().min(10),
-  expectedPrice: z.coerce.number().positive(),
-  image: z.url().optional().or(z.literal("")),
+
+  brand: z
+    .string()
+    .trim()
+    .min(2, "Brand is required"),
+
+  model: z
+    .string()
+    .trim()
+    .min(1, "Model is required"),
+
+  specifications: z
+    .string()
+    .trim()
+    .min(5, "Please provide device specifications"),
+
+  condition: z
+    .string()
+    .trim()
+    .min(2, "Condition is required"),
+
+  description: z
+    .string()
+    .trim()
+    .min(10, "Please provide a detailed description"),
+
+  /* Customer details */
+  name: z
+    .string()
+    .trim()
+    .min(2, "Full name is required"),
+
+  idNumber: z
+    .string()
+    .trim()
+    .min(1, "ID number is required"),
+
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Phone number is required"),
+
+  /* Pricing */
+  expectedPrice: z.coerce
+    .number()
+    .positive("Expected price must be greater than 0"),
+
+  /* Service */
+  servicePreference: z.enum([
+    "Drop Off at Our Store",
+    "Pickup & Delivery",
+    "Courier Service",
+  ]),
 });
 export const checkoutSchema = z.object({
   fullName: z.string().min(2),
