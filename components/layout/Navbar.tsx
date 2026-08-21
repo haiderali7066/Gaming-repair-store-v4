@@ -15,9 +15,8 @@ import {
   Cpu,
   Headphones,
   ArrowUpRight,
-  Menu,
-  X,
-  BookOpen,
+  Menu, // Added for mobile menu
+  X, // Added for mobile menu
 } from "lucide-react"
 
 import { auth } from "@/auth"
@@ -43,7 +42,7 @@ const homeMenu = {
     "How It Works",
     "Brands We Service",
     "Customer Reviews",
-  ],
+  ]
 }
 
 const aboutMenu = {
@@ -55,7 +54,7 @@ const aboutMenu = {
     "Our Values",
     "Meet Our Team",
     "Our Achievements",
-  ],
+  ]
 }
 
 const serviceCategories = [
@@ -106,67 +105,68 @@ const shopMenuCategories = [
   {
     title: "Gaming PCs",
     icon: Cpu,
-    items: ["Pre-built Systems", "Custom Workstations", "Entry Level PCs"],
+    items: ["Pre-built Systems", "Custom Workstations", "Entry Level PCs"]
   },
   {
     title: "Laptops",
     icon: Laptop,
-    items: ["Gaming Laptops", "Business Laptops", "Creator Laptops"],
+    items: ["Gaming Laptops", "Business Laptops", "Creator Laptops"]
   },
   {
     title: "Accessories",
     icon: Headphones,
-    items: ["Mechanical Keyboards", "Gaming Mice", "Headsets & Audio"],
-  },
+    items: ["Mechanical Keyboards", "Gaming Mice", "Headsets & Audio"]
+  }
 ]
 
 const standardLinks = [
   { label: "Trade In", href: "/buy-back" },
-  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
+  { label: "Blog", href: "/blog" },
 ]
 
 export async function Navbar() {
   const session = await auth()
-
+  
   // Fetch products from database
   const featuredProducts: ProductType[] = await getFeaturedProducts()
   const top6Products = featuredProducts?.slice(0, 6) || []
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300">
+    // Fixed wrapper for the entire header (Top utility bar + Main Navbar)
+    <header className="fixed top-0 left-0 right-0 z-50 w-full flex flex-col shadow-sm">
       
       {/* ================================================================== */}
-      {/* TOP UTILITY BAR                                                    */}
+      {/* TOP UTILITY BAR (Dark Theme)                                       */}
       {/* ================================================================== */}
-      <div className="border-b border-purple-900/30 bg-[#08030f] text-purple-200/90">
-        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-4 px-4 text-[11px] sm:px-6 sm:text-xs lg:px-8">
+      <div className="border-b border-purple-900/40 bg-[#0a0412] text-purple-100 relative z-[60]">
+        <div className="mx-auto flex min-h-9 max-w-7xl items-center justify-between gap-4 px-4 text-[11px] sm:px-6 sm:text-xs lg:px-8">
           <div className="flex min-w-0 items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <MapPin className="size-3.5 shrink-0 text-violet-400" />
+              <MapPin className="size-3.5 shrink-0 text-violet-500" />
               <span className="hidden sm:inline">Abu Dhabi & Dubai, UAE</span>
               <span className="sm:hidden">UAE</span>
             </div>
             <a href="tel:+971501234567" className="flex items-center gap-1.5 whitespace-nowrap transition-colors hover:text-white">
-              <Phone className="size-3.5 shrink-0 text-violet-400" />
+              <Phone className="size-3.5 shrink-0 text-violet-500" />
               <span className="hidden md:inline">+971 50 123 4567</span>
               <span className="md:hidden">Call us</span>
             </a>
             <a href="mailto:info@aldanagaming.ae" className="hidden items-center gap-1.5 whitespace-nowrap transition-colors hover:text-white lg:flex">
-              <Mail className="size-3.5 shrink-0 text-violet-400" />
+              <Mail className="size-3.5 shrink-0 text-violet-500" />
               info@aldanagaming.ae
             </a>
           </div>
           <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <Link href="/account/orders" className="flex items-center gap-1.5 font-medium transition-colors hover:text-white">
-              <Wrench className="size-3.5 text-violet-400" />
+              <Wrench className="size-3.5 text-violet-500" />
               <span className="hidden xs:inline">Track Repair</span>
               <span className="xs:hidden">Track</span>
             </Link>
             <span className="hidden text-purple-800 sm:inline">/</span>
             <Link href="/contact" className="hidden font-medium transition-colors hover:text-white sm:inline">Support</Link>
-            <div className="hidden items-center gap-1.5 border-l border-purple-800/60 pl-3 font-medium text-purple-300/80 lg:flex">
-              <ShieldCheck className="size-3.5 text-violet-400" />
+            <div className="hidden items-center gap-1.5 border-l border-purple-800/60 pl-3 font-medium text-purple-300 lg:flex">
+              <ShieldCheck className="size-3.5 text-violet-500" />
               Secure Shopping
             </div>
           </div>
@@ -174,55 +174,57 @@ export async function Navbar() {
       </div>
 
       {/* ================================================================== */}
-      {/* FLOATING MAIN NAVIGATION BAR                                      */}
+      {/* MAIN NAVIGATION (Strict Light Theme)                               */}
       {/* ================================================================== */}
-      <div className="mx-auto max-w-7xl px-3 py-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between rounded-2xl border border-slate-200/80 bg-white/90 px-3 shadow-lg shadow-purple-950/5 backdrop-blur-xl sm:px-6">
+      <div className="bg-white/95 backdrop-blur-xl relative">
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           
           {/* Brand / Logo */}
-          <Link href="/" className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
-            <div className="relative flex size-9 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 text-white shadow-md shadow-violet-600/20 sm:size-11">
-              <Gamepad2 className="size-5 sm:size-6" />
+          <Link href="/" className="group flex shrink-0 items-center gap-3">
+            <div className="relative flex items-center justify-center size-12 overflow-hidden rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-800 text-white flex items-center justify-center transition-transform duration-300 group-hover:scale-105 z-0">
+                <Gamepad2 className="size-6" />
+              </div>
               <Image 
                 src="/logo.jpeg" 
                 alt="Al Dana Gaming Logo" 
                 fill 
-                className="object-cover transition-transform duration-300 group-hover:scale-105" 
+                className="object-cover z-10 transition-transform duration-300 group-hover:scale-105" 
               />
             </div>
-            <div className="hidden min-[360px]:block">
+            <div className="hidden min-[430px]:block">
               <div className="flex items-center leading-none">
-                <span className="text-base font-black tracking-tight text-slate-900 sm:text-xl">
+                <span className="text-xl font-black tracking-tight text-slate-900">
                   AL DANA
                 </span>
-                <span className="ml-1 text-base font-black tracking-tight text-violet-600 sm:ml-1.5 sm:text-xl">
+                <span className="ml-1.5 text-xl font-black tracking-tight text-violet-600">
                   GAMING
                 </span>
               </div>
-              <div className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-[9px] sm:tracking-[0.2em]">
+              <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
                 Repairs & Gaming Hub
               </div>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden h-full items-center gap-1 lg:flex">
+          {/* Desktop navigation */}
+          <nav className="hidden h-full items-center gap-2 lg:flex">
             
-            {/* 1. HOME Mega Menu */}
-            <div className="group static flex h-full items-center">
-              <Link href="/" className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-violet-50 hover:text-violet-700">
-                Home <ChevronDown className="h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+            {/* 1. HOME (Dark Mega Menu) */}
+            <div className="group flex h-full items-center position-static">
+              <Link href="/" className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-bold text-slate-800 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700">
+                Home <ChevronDown className="w-4 h-4 opacity-60 group-hover:rotate-180 transition-transform" />
               </Link>
-              <div className="absolute inset-x-0 top-[68px] z-50 h-[440px] overflow-hidden rounded-2xl border border-violet-900/20 bg-[#0a0412]/98 shadow-2xl backdrop-blur-2xl transition-all duration-300 opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                <div className="mx-auto flex h-full max-w-7xl items-center gap-10 px-8 py-8">
-                  <div className="group/img relative h-[320px] w-1/3 overflow-hidden rounded-2xl border border-violet-900/40">
+              <div className="absolute left-0 top-[72px] w-full h-[480px] bg-[#0a0412]/98 backdrop-blur-2xl border-t-2 border-violet-600/50 shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden">
+                <div className="mx-auto max-w-7xl px-8 py-10 h-full flex gap-12 items-center">
+                  <div className="w-1/3 relative rounded-2xl overflow-hidden h-[360px] border border-violet-900/30 group/img">
+                    <div className="absolute inset-0 bg-violet-900/20 z-10 mix-blend-overlay transition-opacity group-hover/img:opacity-0" />
                     <Image src={homeMenu.featuredImage} alt="Home" fill className="object-cover transition-transform duration-700 group-hover/img:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0412] via-transparent to-transparent" />
                   </div>
-                  <div className="grid w-2/3 grid-cols-2 gap-6">
+                  <div className="w-2/3 grid grid-cols-2 gap-x-8 gap-y-8 content-center">
                     {homeMenu.sections.map((item) => (
-                      <Link key={item} href={`/#${toId(item)}`} className="group/link flex items-center gap-3 text-sm font-semibold text-purple-200/70 transition-colors hover:text-white">
-                        <span className="h-1.5 w-1.5 rounded-full bg-violet-600/0 transition-colors group-hover/link:bg-violet-400" />
+                      <Link key={item} href={`/#${toId(item)}`} className="text-base font-medium text-purple-200/70 hover:text-white transition-colors flex items-center gap-3 group/link">
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-600/0 group-hover/link:bg-violet-500 transition-colors" />
                         {item}
                       </Link>
                     ))}
@@ -231,54 +233,54 @@ export async function Navbar() {
               </div>
             </div>
 
-            {/* 2. ABOUT Mega Menu */}
-            <div className="group static flex h-full items-center">
-              <Link href="/about" className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-violet-50 hover:text-violet-700">
-                About <ChevronDown className="h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+            {/* 2. ABOUT (Dark Mega Menu) */}
+            <div className="group flex h-full items-center position-static">
+              <Link href="/about" className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-bold text-slate-800 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700">
+                About <ChevronDown className="w-4 h-4 opacity-60 group-hover:rotate-180 transition-transform" />
               </Link>
-              <div className="absolute inset-x-0 top-[68px] z-50 h-[440px] overflow-hidden rounded-2xl border border-violet-900/20 bg-[#0a0412]/98 shadow-2xl backdrop-blur-2xl transition-all duration-300 opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                <div className="mx-auto flex h-full max-w-7xl items-center gap-10 px-8 py-8">
-                  <div className="grid w-2/3 grid-cols-2 gap-6 pl-4">
+              <div className="absolute left-0 top-[72px] w-full h-[480px] bg-[#0a0412]/98 backdrop-blur-2xl border-t-2 border-violet-600/50 shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden">
+                <div className="mx-auto max-w-7xl px-8 py-10 h-full flex gap-12 items-center">
+                  <div className="w-2/3 grid grid-cols-2 gap-x-8 gap-y-8 content-center pl-4">
                     {aboutMenu.sections.map((item) => (
-                      <Link key={item} href={`/about#${toId(item)}`} className="group/link flex items-center gap-3 text-sm font-semibold text-purple-200/70 transition-colors hover:text-white">
-                        <span className="h-1.5 w-1.5 rounded-full bg-violet-600/0 transition-colors group-hover/link:bg-violet-400" />
+                      <Link key={item} href={`/about#${toId(item)}`} className="text-base font-medium text-purple-200/70 hover:text-white transition-colors flex items-center gap-3 group/link">
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-600/0 group-hover/link:bg-violet-500 transition-colors" />
                         {item}
                       </Link>
                     ))}
                   </div>
-                  <div className="group/img relative h-[320px] w-1/3 overflow-hidden rounded-2xl border border-violet-900/40">
+                  <div className="w-1/3 relative rounded-2xl overflow-hidden h-[360px] border border-violet-900/30 group/img">
+                    <div className="absolute inset-0 bg-violet-900/20 z-10 mix-blend-overlay transition-opacity group-hover/img:opacity-0" />
                     <Image src={aboutMenu.featuredImage} alt="About Us" fill className="object-cover transition-transform duration-700 group-hover/img:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0412] via-transparent to-transparent" />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* 3. SERVICES Mega Menu */}
-            <div className="group static flex h-full items-center">
-              <Link href="/services" className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-violet-50 hover:text-violet-700">
-                Services <ChevronDown className="h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+            {/* 3. SERVICES (Dark Mega Menu) */}
+            <div className="group flex h-full items-center position-static">
+              <Link href="/services" className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-bold text-slate-800 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700">
+                Services <ChevronDown className="w-4 h-4 opacity-60 group-hover:rotate-180 transition-transform" />
               </Link>
-              <div className="absolute inset-x-0 top-[68px] z-50 h-[460px] overflow-hidden rounded-2xl border border-violet-900/20 bg-[#0a0412]/98 shadow-2xl backdrop-blur-2xl transition-all duration-300 opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                <div className="mx-auto flex h-full max-w-7xl items-center px-8 py-8">
-                  <div className="grid w-full grid-cols-3 gap-8">
+              <div className="absolute left-0 top-[72px] w-full h-[480px] bg-[#0a0412]/98 backdrop-blur-2xl border-t-2 border-violet-600/50 shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden">
+                <div className="mx-auto max-w-7xl px-8 py-10 h-full flex items-center">
+                  <div className="grid grid-cols-3 gap-12 w-full">
                     {serviceCategories.map((category) => (
-                      <div key={category.title} className="group/cat flex flex-col">
-                        <div className="relative mb-4 h-36 w-full overflow-hidden rounded-2xl border border-violet-900/40">
+                      <div key={category.title} className="flex flex-col group/cat">
+                        <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-6 border border-violet-900/40">
                           <Image src={category.image} alt={category.title} fill className="object-cover transition-transform duration-500 group-hover/cat:scale-110" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0412] via-[#0a0412]/60 to-transparent" />
-                          <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                            <category.icon className="h-5 w-5 text-violet-400" />
-                            <h3 className="text-sm font-bold tracking-wider text-white uppercase">
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0412] via-[#0a0412]/50 to-transparent opacity-90" />
+                          <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                            <category.icon className="w-6 h-6 text-violet-400" />
+                            <h3 className="text-base font-bold tracking-widest text-white uppercase shadow-sm">
                               {category.title}
                             </h3>
                           </div>
                         </div>
-                        <ul className="space-y-2.5 px-1">
+                        <ul className="space-y-3.5 px-2">
                           {category.items.map((item) => (
                             <li key={item}>
-                              <Link href={`/services#${category.id}`} className="group/link flex items-center gap-2 text-xs font-medium text-purple-200/70 transition-colors hover:text-violet-300">
-                                <span className="h-1 w-1 rounded-full bg-violet-600/50 transition-colors group-hover/link:bg-violet-400" />
+                              <Link href={`/services#${category.id}`} className="text-[14px] font-medium text-purple-200/70 hover:text-violet-300 transition-colors flex items-center gap-3 group/link">
+                                <span className="w-1.5 h-1.5 rounded-full bg-violet-700/50 group-hover/link:bg-violet-400 transition-colors" />
                                 {item}
                               </Link>
                             </li>
@@ -291,40 +293,42 @@ export async function Navbar() {
               </div>
             </div>
 
-            {/* 4. SHOP Mega Menu */}
-            <div className="group static flex h-full items-center">
-              <Link href="/shop" className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-violet-50 hover:text-violet-700">
-                Shop <ChevronDown className="h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+            {/* 4. SHOP (Dynamic Data Mega Menu) */}
+            <div className="group flex h-full items-center position-static">
+              <Link href="/shop" className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-bold text-slate-800 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700">
+                Shop <ChevronDown className="w-4 h-4 opacity-60 group-hover:rotate-180 transition-transform" />
               </Link>
-              <div className="absolute inset-x-0 top-[68px] z-50 h-[460px] overflow-hidden rounded-2xl border border-violet-900/20 bg-[#0a0412]/98 shadow-2xl backdrop-blur-2xl transition-all duration-300 opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                <div className="mx-auto flex h-full max-w-7xl items-center gap-10 px-8 py-8">
-                  <div className="flex h-full w-3/5 flex-col justify-center">
-                    <div className="mb-4 flex items-center justify-between pr-4">
-                      <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-400">Featured Hardware</span>
-                      <Link href="/shop" className="flex items-center gap-1 text-xs font-bold text-purple-300 transition-colors hover:text-white">
-                        View Store <ArrowUpRight className="h-3 w-3" />
+              <div className="absolute left-0 top-[72px] w-full h-[480px] bg-[#0a0412]/98 backdrop-blur-2xl border-t-2 border-violet-600/50 shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden">
+                <div className="mx-auto max-w-7xl px-8 py-10 h-full flex items-center gap-12">
+                  
+                  {/* Left: 6 Circular Featured Products from Database */}
+                  <div className="w-3/5 flex flex-col h-full justify-center">
+                    <div className="flex items-center justify-between mb-6 pr-4">
+                      <span className="text-xs font-bold tracking-[0.2em] uppercase text-violet-500">Premium Selection</span>
+                      <Link href="/shop" className="text-xs font-bold text-purple-300 hover:text-white flex items-center gap-1 transition-colors">
+                        View All <ArrowUpRight className="w-3 h-3" />
                       </Link>
                     </div>
                     
                     {top6Products.length > 0 ? (
-                      <div className="grid grid-cols-3 gap-x-4 gap-y-6">
+                      <div className="grid grid-cols-3 gap-x-6 gap-y-8">
                         {top6Products.map((product) => {
                           const imgSource = product.images?.length ? product.images[0] : product.image || "/placeholder.svg"
                           
                           return (
-                            <Link key={product._id} href={`/shop/${product.slug}`} className="group/prod flex flex-col items-center text-center">
-                              <div className="relative mb-2 h-24 w-24 overflow-hidden rounded-full border-2 border-violet-900/30 shadow-md transition-all duration-300 group-hover/prod:border-violet-500 group-hover/prod:shadow-violet-500/20">
+                            <Link key={product._id} href={`/shop/${product.slug}`} className="flex flex-col items-center group/prod text-center">
+                              <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-violet-900/30 shadow-lg mb-3 transition-all duration-500 group-hover/prod:border-violet-500 group-hover/prod:shadow-[0_0_25px_rgba(139,92,246,0.3)]">
                                 <Image 
                                   src={imgSource} 
                                   alt={product.name} 
                                   fill 
-                                  className="object-cover transition-transform duration-500 group-hover/prod:scale-110" 
+                                  className="object-cover transition-transform duration-700 group-hover/prod:scale-110" 
                                 />
                               </div>
-                              <h4 className="w-full line-clamp-1 px-1 text-xs font-bold text-white transition-colors group-hover/prod:text-violet-300">
+                              <h4 className="text-sm font-bold text-white line-clamp-1 group-hover/prod:text-violet-300 transition-colors w-full px-2">
                                 {product.name}
                               </h4>
-                              <span className="mt-0.5 text-[11px] font-semibold text-purple-400">
+                              <span className="text-xs font-semibold text-purple-400 mt-1">
                                 {formatCurrency(product.price)}
                               </span>
                             </Link>
@@ -332,25 +336,26 @@ export async function Navbar() {
                         })}
                       </div>
                     ) : (
-                      <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-purple-900/40 text-xs font-medium text-purple-300/50">
+                      <div className="h-full flex items-center justify-center text-purple-300/50 text-sm font-medium border border-dashed border-purple-900/40 rounded-2xl">
                         No featured products currently available.
                       </div>
                     )}
                   </div>
                   
-                  <div className="flex h-full w-2/5 flex-col justify-center gap-6 border-l border-violet-900/30 pl-8">
+                  {/* Right: Text Categories */}
+                  <div className="w-2/5 border-l border-violet-900/30 pl-12 h-full flex flex-col justify-center gap-8">
                     {shopMenuCategories.map((cat) => (
                       <div key={cat.title}>
-                        <Link href="/shop" className="group/cathead mb-2 flex items-center gap-2">
-                          <cat.icon className="h-4 w-4 text-violet-400 transition-colors group-hover/cathead:text-violet-300" />
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-white transition-colors group-hover/cathead:text-violet-300">
+                        <Link href="/shop" className="flex items-center gap-2.5 mb-3 group/cathead">
+                          <cat.icon className="w-5 h-5 text-violet-500 group-hover/cathead:text-violet-400 transition-colors" />
+                          <h4 className="text-base font-bold tracking-wider text-white uppercase group-hover/cathead:text-violet-300 transition-colors">
                             {cat.title}
                           </h4>
                         </Link>
-                        <ul className="space-y-1.5 pl-6">
+                        <ul className="space-y-2.5 pl-7">
                           {cat.items.map((item) => (
                             <li key={item}>
-                              <Link href="/shop" className="text-xs font-medium text-purple-200/60 transition-colors hover:text-white">
+                              <Link href="/shop" className="text-[14px] font-medium text-purple-200/60 hover:text-white transition-colors block">
                                 {item}
                               </Link>
                             </li>
@@ -364,21 +369,17 @@ export async function Navbar() {
               </div>
             </div>
 
-            {/* Standard Navigation Links */}
+            {/* 5. OTHER STANDARD LINKS */}
             {standardLinks.map((link) => (
-              <Link 
-                key={link.href} 
-                href={link.href} 
-                className="rounded-xl px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-violet-50 hover:text-violet-700"
-              >
+              <Link key={link.href} href={link.href} className="relative rounded-lg px-3 py-2 text-base font-bold text-slate-800 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700">
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right Actions & Visible Mobile/Desktop Book Button */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
-            <div className="rounded-full p-0.5 transition-colors hover:bg-slate-100 sm:p-1">
+          {/* Right actions */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="rounded-full transition-colors hover:bg-slate-100 p-1">
               <CartButton />
             </div>
 
@@ -388,144 +389,133 @@ export async function Navbar() {
               <AuthButtons />
             )}
 
-            {/* MAIN CTA BUTTON: Prominently aligned in header for BOTH Mobile & Desktop */}
+            {/* Desktop CTA */}
             <Link
               href="/repair"
-              className="group flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-700 px-3 py-2 text-xs font-bold text-white shadow-md shadow-violet-600/20 transition-all hover:shadow-lg hover:shadow-violet-600/30 active:scale-95 sm:px-4 sm:py-2.5"
+              className="group ml-2 hidden items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-700 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-violet-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-violet-600/30 active:translate-y-0 sm:inline-flex"
             >
-              <Wrench className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="whitespace-nowrap">Book Repair</span>
-              <ArrowRight className="hidden h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 sm:inline" />
+              <Wrench className="size-4" />
+              <span>Book Repair</span>
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
-            {/* MOBILE MENU TOGGLE */}
-            <div className="flex items-center lg:hidden">
+            {/* ================================================================== */}
+            {/* CSS-ONLY MOBILE NAVIGATION DRAWER                                  */}
+            {/* ================================================================== */}
+            <div className="ml-1 lg:hidden flex items-center">
+              {/* Checkbox Hack for Stateful Toggle Without Client Components */}
               <input type="checkbox" id="mobile-menu-toggle" className="peer hidden" />
               
+              {/* Hamburger Button */}
               <label 
                 htmlFor="mobile-menu-toggle" 
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl bg-slate-100 text-slate-800 transition-colors hover:bg-violet-100 hover:text-violet-700"
-                aria-label="Toggle navigation menu"
+                className="relative z-50 p-2 flex items-center justify-center rounded-md bg-slate-50 text-slate-800 cursor-pointer transition-colors hover:bg-slate-100"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="w-6 h-6" />
               </label>
 
-              <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm opacity-0 invisible transition-all duration-300 peer-checked:opacity-100 peer-checked:visible">
+              {/* Drawer Overlay */}
+              <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm opacity-0 invisible peer-checked:opacity-100 peer-checked:visible transition-all duration-300">
                 <label htmlFor="mobile-menu-toggle" className="absolute inset-0 cursor-pointer"></label>
               </div>
 
-              {/* Sliding Mobile Sidebar */}
-              <div className="fixed top-0 right-0 z-[101] flex h-[100dvh] w-[88vw] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out peer-checked:translate-x-0">
+              {/* Sidebar Menu */}
+              <div className="fixed top-0 right-0 z-[101] w-[85vw] max-w-sm h-[100dvh] bg-white shadow-2xl translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
                 
-                {/* Mobile Drawer Header */}
-                <div className="flex items-center justify-between border-b border-slate-100 p-4 bg-slate-50/50">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600 text-white shadow-md shadow-violet-600/20">
-                      <Gamepad2 className="h-4 w-4" />
-                    </div>
-                    <span className="text-sm font-black tracking-tight text-slate-900">
+                {/* Header (Inside Sidebar) */}
+                <div className="flex items-center justify-between p-5 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="w-6 h-6 text-violet-600" />
+                    <span className="text-lg font-black tracking-tight text-slate-900">
                       AL DANA <span className="text-violet-600">GAMING</span>
                     </span>
                   </div>
-                  <label htmlFor="mobile-menu-toggle" className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-slate-200/60 text-slate-600 transition-colors hover:bg-slate-200">
-                    <X className="h-4 w-4" />
+                  <label htmlFor="mobile-menu-toggle" className="p-2 -mr-2 bg-slate-50 rounded-full cursor-pointer hover:bg-slate-100 transition-colors">
+                    <X className="w-5 h-5 text-slate-600" />
                   </label>
                 </div>
 
-                {/* Mobile Drawer Content & Links */}
-                <nav className="flex-1 overflow-y-auto p-5 space-y-4">
+                {/* Mobile Links (Scrollable area) */}
+                <nav className="flex-1 overflow-y-auto p-5 space-y-5">
+                  <Link href="/" className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">Home</Link>
+                  <Link href="/about" className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">About</Link>
                   
-                  {/* Top Mobile Quick CTA inside Drawer */}
-                  <Link 
-                    href="/repair" 
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-700 py-3 text-sm font-bold text-white shadow-md shadow-violet-600/20 active:scale-95 transition-transform"
-                  >
-                    <Wrench className="h-4 w-4" />
-                    <span>Book a Repair</span>
-                  </Link>
+                  {/* Services Accordion */}
+                  <details className="group">
+                    <summary className="flex items-center justify-between text-lg font-bold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
+                      Repair Services
+                      <ChevronDown className="w-5 h-5 text-slate-400 transition-transform group-open:-rotate-180" />
+                    </summary>
+                    <div className="mt-4 pl-4 space-y-5 border-l-2 border-violet-100">
+                      {serviceCategories.map((cat) => (
+                        <div key={cat.title}>
+                          <p className="font-semibold text-violet-600 text-[13px] tracking-wide uppercase mb-2 flex items-center gap-2">
+                            <cat.icon className="w-4 h-4" /> {cat.title}
+                          </p>
+                          <ul className="space-y-2.5 pl-6 text-[15px] text-slate-600 font-medium">
+                            {cat.items.map((item) => (
+                              <li key={item}>
+                                <Link href={`/services#${cat.id}`} className="block hover:text-violet-600 transition-colors">
+                                  {item}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
 
-                  <div className="pt-2 border-t border-slate-100 space-y-3.5">
-                    <Link href="/" className="block text-base font-bold text-slate-800 hover:text-violet-600 transition-colors">
-                      Home
+                  {/* Shop Accordion */}
+                  <details className="group">
+                    <summary className="flex items-center justify-between text-lg font-bold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
+                      Shop
+                      <ChevronDown className="w-5 h-5 text-slate-400 transition-transform group-open:-rotate-180" />
+                    </summary>
+                    <div className="mt-4 pl-4 space-y-5 border-l-2 border-violet-100">
+                      {shopMenuCategories.map((cat) => (
+                        <div key={cat.title}>
+                          <p className="font-semibold text-violet-600 text-[13px] tracking-wide uppercase mb-2 flex items-center gap-2">
+                            <cat.icon className="w-4 h-4" /> {cat.title}
+                          </p>
+                          <ul className="space-y-2.5 pl-6 text-[15px] text-slate-600 font-medium">
+                            {cat.items.map((item) => (
+                              <li key={item}>
+                                <Link href="/shop" className="block hover:text-violet-600 transition-colors">
+                                  {item}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+
+                  {standardLinks.map((link) => (
+                    <Link key={link.href} href={link.href} className="block text-lg font-bold text-slate-800 hover:text-violet-600 transition-colors">
+                      {link.label}
                     </Link>
-
-                    <Link href="/about" className="block text-base font-bold text-slate-800 hover:text-violet-600 transition-colors">
-                      About
-                    </Link>
-                    
-                    {/* Services Accordion */}
-                    <details className="group">
-                      <summary className="flex cursor-pointer items-center justify-between text-base font-bold text-slate-800 list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
-                        Services
-                        <ChevronDown className="h-4 w-4 text-slate-400 transition-transform group-open:-rotate-180" />
-                      </summary>
-                      <div className="mt-3 pl-3 space-y-4 border-l-2 border-violet-100">
-                        {serviceCategories.map((cat) => (
-                          <div key={cat.title}>
-                            <p className="mb-1.5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-violet-600">
-                              <cat.icon className="h-3.5 w-3.5" /> {cat.title}
-                            </p>
-                            <ul className="space-y-2 pl-5 text-sm font-medium text-slate-600">
-                              {cat.items.map((item) => (
-                                <li key={item}>
-                                  <Link href={`/services#${cat.id}`} className="block hover:text-violet-600 transition-colors">
-                                    {item}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-
-                    {/* Shop Accordion */}
-                    <details className="group">
-                      <summary className="flex cursor-pointer items-center justify-between text-base font-bold text-slate-800 list-none [&::-webkit-details-marker]:hidden hover:text-violet-600 transition-colors">
-                        Shop
-                        <ChevronDown className="h-4 w-4 text-slate-400 transition-transform group-open:-rotate-180" />
-                      </summary>
-                      <div className="mt-3 pl-3 space-y-4 border-l-2 border-violet-100">
-                        {shopMenuCategories.map((cat) => (
-                          <div key={cat.title}>
-                            <p className="mb-1.5 flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-violet-600">
-                              <cat.icon className="h-3.5 w-3.5" /> {cat.title}
-                            </p>
-                            <ul className="space-y-2 pl-5 text-sm font-medium text-slate-600">
-                              {cat.items.map((item) => (
-                                <li key={item}>
-                                  <Link href="/shop" className="block hover:text-violet-600 transition-colors">
-                                    {item}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-
-                    <Link href="/buy-back" className="block text-base font-bold text-slate-800 hover:text-violet-600 transition-colors">
-                      Trade In
-                    </Link>
-
-                    <Link href="/blog" className="flex items-center justify-between text-base font-bold text-slate-800 hover:text-violet-600 transition-colors">
-                      <span className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4 text-violet-600" /> Blog
-                      </span>
-                      <span className="rounded-md bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold uppercase text-violet-700">New</span>
-                    </Link>
-
-                    <Link href="/contact" className="block text-base font-bold text-slate-800 hover:text-violet-600 transition-colors">
-                      Contact
-                    </Link>
-                  </div>
-
+                  ))}
                 </nav>
 
+                {/* Mobile Call to Action */}
+                {/* <div className="p-5 border-t border-slate-100 bg-slate-50">
+                  <Link href="/repair" className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-violet-600 to-purple-700 px-6 py-3.5 text-base font-bold text-white shadow-md active:scale-95 transition-transform">
+                    <Wrench className="size-5" />
+                    <span>Book a Repair</span>
+                  </Link>
+                </div> */}
               </div>
             </div>
+          </div>
+        </div>
 
+        {/* Mobile brand strip */}
+        <div className="border-t border-slate-100 bg-slate-50/80 px-4 py-2 min-[430px]:hidden">
+          <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+            <Gamepad2 className="size-3.5 text-violet-600" />
+            Al Dana Gaming · UAE
           </div>
         </div>
       </div>
