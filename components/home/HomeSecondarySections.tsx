@@ -241,54 +241,9 @@ export function HomeSecondarySections() {
         </div>
       </section>
 
-      {/* 3. WHY CHOOSE US */}
-      <section id="why-choose-us" className="mt-10 container mx-auto px-6 lg:px-12 bg-slate-50">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          className="text-center mb-16 md:mb-20"
-        >
-          <span className="text-black font-extrabold tracking-widest text-sm uppercase bg-black/5 px-4 py-1.5 rounded-full border border-black/10">
-            WHY CHOOSE US
-          </span>
-          <h2 className="text-4xl lg:text-5xl font-black text-black mt-6 mb-6">
-            The Al Dana Advantage
-          </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto text-lg font-medium">
-            Discover why gamers across the region trust us with their high-performance equipment.
-          </p>
-        </motion.div>
+      <TradeInBanner />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={staggerContainer}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
-        >
-          {whyChooseUsItems.map((item, idx) => (
-            <motion.div
-              key={idx}
-              variants={fadeUp}
-              className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200/80 hover:shadow-xl hover:border-violet-600/30 transition-all duration-300 flex flex-col items-start group"
-            >
-              <div className="w-14 h-14 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-violet-600 group-hover:text-white transition-colors duration-300">
-                {React.cloneElement(item.icon, {
-                  className: "w-7 h-7 text-violet-600 group-hover:text-white transition-colors",
-                })}
-              </div>
-              <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">
-                {item.title}
-              </h3>
-              <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-                {item.desc}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+      
 
       {/* 4. OUR REPAIR SERVICES */}
       <section id="popular-repairs" className="py-24 md:py-32 container mx-auto px-6 lg:px-12 bg-slate-50">
@@ -358,6 +313,57 @@ export function HomeSecondarySections() {
           </Link>
         </div>
       </section>
+
+      {/*  WHY CHOOSE US */}
+      <section id="why-choose-us" className="mt-10 container mx-auto px-6 lg:px-12 bg-slate-50">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="text-center mb-16 md:mb-20"
+        >
+          <span className="text-black font-extrabold tracking-widest text-sm uppercase bg-black/5 px-4 py-1.5 rounded-full border border-black/10">
+            WHY CHOOSE US
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-black text-black mt-6 mb-6">
+            The Al Dana Advantage
+          </h2>
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg font-medium">
+            Discover why gamers across the region trust us with their high-performance equipment.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+        >
+          {whyChooseUsItems.map((item, idx) => (
+            <motion.div
+              key={idx}
+              variants={fadeUp}
+              className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200/80 hover:shadow-xl hover:border-violet-600/30 transition-all duration-300 flex flex-col items-start group"
+            >
+              <div className="w-14 h-14 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-violet-600 group-hover:text-white transition-colors duration-300">
+                {React.cloneElement(item.icon, {
+                  className: "w-7 h-7 text-violet-600 group-hover:text-white transition-colors",
+                })}
+              </div>
+              <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">
+                {item.title}
+              </h3>
+              <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
+                {item.desc}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      <RepairBanner />
 
       {/* 5. HOW OUR REPAIR PROCESS WORKS (Ultra Modern & Premium) */}
       <section id="how-it-works" className="py-24 md:py-32 bg-slate-950 text-white relative overflow-hidden">
@@ -439,7 +445,7 @@ export function HomeSecondarySections() {
         </div>
       </section>
 
-      <TradeInBanner />
+      
 
       {/*  GAMING SPECIALIST SECTION */}
       <section className="bg-white py-24 md:py-32">
@@ -509,7 +515,7 @@ export function HomeSecondarySections() {
         </div>
       </section>
 
-      <RepairBanner />
+      
 
       <section className="relative w-full py-24 md:py-32 bg-slate-950 overflow-hidden border-y border-slate-900">
         {/* Full-width ambient glowing backgrounds */}

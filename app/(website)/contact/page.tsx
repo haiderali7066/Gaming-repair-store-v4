@@ -76,58 +76,70 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-                      <input 
-                        type="text" 
-                        id="name" 
-                        required
-                        placeholder="John Doe" 
-                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-                      <input 
-                        type="email" 
-                        id="email" 
-                        required
-                        placeholder="john@example.com" 
-                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
-                      />
-                    </div>
-                  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-2">
+      <label htmlFor="name" className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        required
+        placeholder="John Doe" 
+        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
+      />
+    </div>
+    <div className="space-y-2">
+      <label htmlFor="email" className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+      <input 
+        type="email" 
+        id="email" 
+        required
+        placeholder="john@example.com" 
+        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
+      />
+    </div>
+  </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="device" className="text-sm font-bold text-slate-700 ml-1">Device & Issue / Subject</label>
-                    <input 
-                      type="text" 
-                      id="device" 
-                      required
-                      placeholder="e.g., Alienware m15 R6 - Overheating and random shutdowns" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
-                    />
-                  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-2">
+      <label htmlFor="phone" className="text-sm font-bold text-slate-700 ml-1">Phone Number</label>
+      <input 
+        type="tel" 
+        id="phone" 
+        required
+        placeholder="+1 (555) 000-0000" 
+        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
+      />
+    </div>
+    <div className="space-y-2">
+      <label htmlFor="device" className="text-sm font-bold text-slate-700 ml-1">Device & Issue / Subject</label>
+      <input 
+        type="text" 
+        id="device" 
+        required
+        placeholder="e.g., Alienware m15 R6 - Overheating and random shutdowns" 
+        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium"
+      />
+    </div>
+  </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-bold text-slate-700 ml-1">Detailed Description</label>
-                    <textarea 
-                      id="message" 
-                      required
-                      rows={5}
-                      placeholder="Please describe the issue, any physical damage, or prior repairs..." 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium resize-none"
-                    ></textarea>
-                  </div>
+  <div className="space-y-2">
+    <label htmlFor="message" className="text-sm font-bold text-slate-700 ml-1">Detailed Description</label>
+    <textarea 
+      id="message" 
+      required
+      rows={5}
+      placeholder="Please describe the issue, any physical damage, or prior repairs..." 
+      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-600/50 focus:border-violet-600 transition-all font-medium resize-none"
+    ></textarea>
+  </div>
 
-                  <button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-2xl py-5 font-black text-lg hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
-                  >
-                    Send Request <Send className="size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </button>
-                </form>
+  <button 
+    type="submit" 
+    className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-2xl py-5 font-black text-lg hover:shadow-xl hover:shadow-violet-500/30 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
+  >
+    Send Request <Send className="size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+  </button>
+</form>
               )}
             </div>
           </div>

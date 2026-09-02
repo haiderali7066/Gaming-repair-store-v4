@@ -42,10 +42,28 @@ const DEVICE_TYPES = [
     icon: Laptop,
   },
   {
+    value: "MacBook",
+    label: "MacBook",
+    description: "Apple MacBook notebooks",
+    icon: Laptop,
+  },
+  {
     value: "iPad",
     label: "iPad",
     description: "Apple iPad devices",
     icon: Smartphone,
+  },
+  {
+    value: "Mobile Phone",
+    label: "Mobile Phone / iPhone",
+    description: "Smartphones & iPhones",
+    icon: Smartphone,
+  },
+  {
+    value: "Other",
+    label: "Other Device",
+    description: "Other gaming or tech gear",
+    icon: Package,
   },
 ];
 
@@ -108,65 +126,17 @@ export default function BuyBackPage() {
 
   return (
     <main className="min-h-screen bg-background">
+     {/* ============================================================ */}
+      {/* HERO BANNER                                                  */}
       {/* ============================================================ */}
-      {/* HERO                                                         */}
-      {/* ============================================================ */}
 
-      <section className="border-b border-border">
-        <div className="section-shell py-12 md:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">
-                Trade-In & Buy Back
-              </p>
-
-              <h1 className="mt-4 max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">
-                Trade in your gear.
-                <br />
-                <span className="text-violet-600">
-                  Get a fair value.
-                </span>
-              </h1>
-
-              <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-                Tell us about your gaming PC, gaming laptop or iPad.
-                Our team will review your device and get back to you
-                with a competitive valuation.
-              </p>
-
-              <div className="mt-7 flex flex-wrap gap-3">
-                <div className="rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
-                  Gaming PCs
-                </div>
-
-                <div className="rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
-                  Gaming Laptops
-                </div>
-
-                <div className="rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
-                  iPads
-                </div>
-              </div>
-            </div>
-
-            {/* Security Card */}
-            <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm sm:w-[300px]">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
-                <ShieldCheck className="h-6 w-6" />
-              </div>
-
-              <div>
-                <p className="font-semibold">
-                  Your information is safe
-                </p>
-
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  We respect your privacy and keep your information
-                  secure.
-                </p>
-              </div>
-            </div>
-          </div>
+      <section className="w-full">
+        <div className="relative h-48 sm:h-64 md:h-[65vh] w-full overflow-hidden bg-muted">
+          <img
+            src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788373883/ChatGPT_Image_Sep_2_2026_11_28_49_PM_l8pzkw.png"
+            alt="Trade-In & Buy Back"
+            className="h-full w-full object-cover"
+          />
         </div>
       </section>
 
@@ -177,7 +147,7 @@ export default function BuyBackPage() {
       <section className="section-shell py-10 md:py-14">
         <form action={formAction} className="mx-auto max-w-5xl space-y-5">
           {/* ======================================================== */}
-          {/* SUCCESS MESSAGE                                           */}
+          {/* SUCCESS MESSAGE                                          */}
           {/* ======================================================== */}
 
           {state?.success && (
@@ -201,7 +171,7 @@ export default function BuyBackPage() {
           )}
 
           {/* ======================================================== */}
-          {/* ERROR MESSAGE                                             */}
+          {/* ERROR MESSAGE                                            */}
           {/* ======================================================== */}
 
           {!state?.success && state?.message && (
@@ -214,7 +184,7 @@ export default function BuyBackPage() {
           )}
 
           {/* ======================================================== */}
-          {/* 01 SELECT YOUR DEVICE                                     */}
+          {/* 01 SELECT YOUR DEVICE                                    */}
           {/* ======================================================== */}
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
@@ -226,7 +196,7 @@ export default function BuyBackPage() {
               value={deviceType}
             />
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {DEVICE_TYPES.map((device) => {
                 const Icon = device.icon;
                 const active = deviceType === device.value;
@@ -274,7 +244,7 @@ export default function BuyBackPage() {
           </div>
 
           {/* ======================================================== */}
-          {/* 02 DEVICE DETAILS                                         */}
+          {/* 02 DEVICE DETAILS                                        */}
           {/* ======================================================== */}
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
@@ -290,7 +260,7 @@ export default function BuyBackPage() {
                 <Input
                   name="brand"
                   required
-                  placeholder="e.g. ASUS, HP, Apple"
+                  placeholder="e.g. ASUS, Apple, Samsung, HP"
                   className="h-11 rounded-xl"
                 />
               </FormField>
@@ -304,7 +274,7 @@ export default function BuyBackPage() {
                 <Input
                   name="model"
                   required
-                  placeholder="e.g. ROG Strix G16"
+                  placeholder="e.g. ROG Strix G16, MacBook Pro M3, iPhone 15 Pro"
                   className="h-11 rounded-xl"
                 />
               </FormField>
@@ -350,7 +320,7 @@ export default function BuyBackPage() {
                   name="specifications"
                   required
                   rows={4}
-                  placeholder="Processor, GPU, RAM, storage, screen size, etc."
+                  placeholder="Processor, GPU, RAM, storage, screen size, battery health, etc."
                   className="rounded-xl"
                 />
               </FormField>
@@ -460,7 +430,7 @@ export default function BuyBackPage() {
           </div>
 
           {/* ======================================================== */}
-          {/* 04 YOUR DETAILS                                           */}
+          {/* 04 YOUR DETAILS                                          */}
           {/* ======================================================== */}
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
@@ -537,7 +507,7 @@ export default function BuyBackPage() {
           </div>
 
           {/* ======================================================== */}
-          {/* 05 SERVICE PREFERENCE                                     */}
+          {/* 05 SERVICE PREFERENCE                                    */}
           {/* ======================================================== */}
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
@@ -593,7 +563,7 @@ export default function BuyBackPage() {
           </div>
 
           {/* ======================================================== */}
-          {/* SUBMIT                                                     */}
+          {/* SUBMIT                                                   */}
           {/* ======================================================== */}
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
@@ -633,7 +603,7 @@ export default function BuyBackPage() {
 }
 
 /* ================================================================== */
-/* COMPONENTS                                                        */
+/* COMPONENTS                                                         */
 /* ================================================================== */
 
 function SectionHeading({

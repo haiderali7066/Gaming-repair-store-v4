@@ -89,10 +89,10 @@ export function Footer() {
             <h3 className="text-lg font-bold text-white uppercase tracking-wider">Expertise</h3>
             <ul className="space-y-4 font-medium">
               {[
-                { name: "Gaming PC Repair", path: "/services#gaming-pc" },
-                { name: "Laptop Diagnostics", path: "/services#laptop" },
-                { name: "iPad & Tablet Repair", path: "/services#tablet" },
-                { name: "Deep Cleaning & Thermal", path: "/services#deep-cleaning" }
+                { name: "Gaming PC Repair", path: "/gaming-pc-repair" },
+  { name: "Gaming Laptop Repair", path: "/gaming-laptop-repair" },
+  { name: "iPad & Tablet Repair", path: "/ipad-repair" },
+  { name: "Deep Cleaning & Thermal", path: "/deep-cleaning" }
               ].map((link, idx) => (
                 <li key={idx}>
                   <Link 

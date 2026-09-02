@@ -100,48 +100,46 @@ export default function BlogPage() {
   const featuredBlog = blogs[0];
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-purple-100 bg-white">
-        {/* Decorative shapes */}
-        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-purple-100/60 blur-3xl" />
-        <div className="pointer-events-none absolute -left-40 bottom-0 h-72 w-72 rounded-full bg-purple-50 blur-3xl" />
+    <main className="min-h-screen bg-slate-50/50">
+      {/* HERO - Rich Colored Background to Eliminate the "Too White" Look */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 text-white">
+        {/* Decorative ambient lighting glow */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 bottom-0 h-80 w-80 rounded-full bg-purple-600/20 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="max-w-4xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700">
-              <Sparkles size={15} />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
+          <div className="max-w-3xl">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold tracking-wide text-violet-300 backdrop-blur-md">
+              <Sparkles size={14} />
               Insights & Resources
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-7xl lg:leading-[1.05]">
-              Ideas that help you
-              <span className="block text-purple-600">
+            {/* Smaller, balanced heading size */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
+              Ideas that help you{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-300">
                 build what&apos;s next.
               </span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-gray-600 lg:text-xl">
-              Explore practical insights, technology trends,
-              business strategies, and expert guides designed
-              to help you make better digital decisions.
+            <p className="mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300">
+              Explore practical insights, technology trends, business strategies, and expert guides designed to help you make better digital decisions.
             </p>
           </div>
 
-          {/* Search */}
-          <div className="mt-10 max-w-2xl">
+          {/* Search Bar */}
+          <div className="mt-8 max-w-xl">
             <div className="relative">
               <Search
-                size={20}
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-purple-500"
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400"
               />
-
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search articles, topics, or keywords..."
-                className="w-full rounded-2xl border border-gray-200 bg-white py-4 pl-13 pr-5 text-sm text-gray-900 shadow-lg shadow-purple-100/40 outline-none transition placeholder:text-gray-400 focus:border-purple-400 focus:ring-4 focus:ring-purple-100"
+                className="w-full rounded-2xl border border-white/10 bg-white/10 py-3.5 pl-12 pr-4 text-sm text-white shadow-inner backdrop-blur-xl outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-400/30"
               />
             </div>
           </div>
@@ -150,32 +148,23 @@ export default function BlogPage() {
 
       {/* FEATURED ARTICLE */}
       {!loading && featuredBlog && !search && activeCategory === "All" && (
-        <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
-          <div className="mb-8 flex items-center justify-between">
+        <section className="mx-auto max-w-7xl px-6 pt-12 pb-4 lg:px-8">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-sm font-bold uppercase tracking-widest text-purple-600">
-                Featured
+              <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+                Featured Article
               </p>
-
-              <h2 className="mt-2 text-2xl font-bold text-gray-950 sm:text-3xl">
-                Latest from our blog
+              <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-900">
+                Latest highlight
               </h2>
             </div>
-
-            <Link
-              href="/blog"
-              className="hidden items-center gap-2 text-sm font-semibold text-purple-600 transition hover:text-purple-700 sm:flex"
-            >
-              Explore all
-              <ArrowRight size={16} />
-            </Link>
           </div>
 
           <Link
             href={`/blog/${featuredBlog.slug}`}
-            className="group grid overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-xl shadow-purple-100/40 transition duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-2xl hover:shadow-purple-100 lg:grid-cols-2"
+            className="group grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-100 transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/5 lg:grid-cols-2"
           >
-            <div className="relative aspect-[16/10] overflow-hidden bg-purple-50 lg:aspect-auto">
+            <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 lg:aspect-auto">
               {featuredBlog.coverImage ? (
                 <img
                   src={featuredBlog.coverImage}
@@ -183,73 +172,68 @@ export default function BlogPage() {
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               ) : (
-                <div className="flex h-full min-h-[320px] items-center justify-center bg-purple-50">
-                  <Sparkles className="text-purple-300" size={45} />
+                <div className="flex h-full min-h-[280px] items-center justify-center bg-violet-50">
+                  <Sparkles className="text-violet-300" size={40} />
                 </div>
               )}
-
-              <div className="absolute left-5 top-5">
-                <span className="rounded-full bg-white px-4 py-2 text-xs font-bold text-purple-700 shadow-md">
+              <div className="absolute left-4 top-4">
+                <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-violet-700 shadow-sm backdrop-blur-sm">
                   {featuredBlog.category}
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-col justify-center p-8 lg:p-12">
-              <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
-                <span className="flex items-center gap-1.5">
-                  <CalendarDays size={14} />
-                  {formatDate(
-                    featuredBlog.publishedAt ||
-                      featuredBlog.createdAt
-                  )}
+            <div className="flex flex-col justify-center p-6 lg:p-8">
+              <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                <span className="flex items-center gap-1">
+                  <CalendarDays size={13} />
+                  {formatDate(featuredBlog.publishedAt || featuredBlog.createdAt)}
                 </span>
-
+                <span>•</span>
                 <span>{featuredBlog.author}</span>
               </div>
 
-              <h2 className="mt-5 text-3xl font-bold leading-tight text-gray-950 transition group-hover:text-purple-600 sm:text-4xl">
+              <h3 className="mt-3 text-xl sm:text-2xl font-bold leading-snug text-slate-900 transition group-hover:text-violet-600">
                 {featuredBlog.title}
-              </h2>
+              </h3>
 
               {featuredBlog.excerpt && (
-                <p className="mt-5 line-clamp-3 text-base leading-7 text-gray-600">
+                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate-600">
                   {featuredBlog.excerpt}
                 </p>
               )}
 
-              <div className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-purple-600 transition group-hover:gap-3">
+              <div className="mt-6 inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 transition group-hover:gap-2.5">
                 Read featured article
-                <ArrowRight size={17} />
+                <ArrowRight size={15} />
               </div>
             </div>
           </Link>
         </section>
       )}
 
-      {/* BLOG LIST */}
-      <section className="border-t border-gray-100 bg-gray-50/50">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
-          {/* HEADER */}
-          <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      {/* BLOG LIST SECTION */}
+      <section className="py-12">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          {/* HEADER & CATEGORIES FILTER */}
+          <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm font-bold uppercase tracking-widest text-purple-600">
-                Explore
+              <p className="text-xs font-bold uppercase tracking-widest text-violet-600">
+                Explore All
               </p>
-
-              <h2 className="mt-2 text-3xl font-bold text-gray-950">
-                All articles
+              <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-900">
+                Articles & Guides
               </h2>
             </div>
 
-            {/* Categories */}
-            <div className="flex flex-wrap gap-2">
+            {/* Categories filter pills */}
+            <div className="flex flex-wrap gap-1.5">
               <button
                 onClick={() => setActiveCategory("All")}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
                   activeCategory === "All"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-200"
-                    : "border border-gray-200 bg-white text-gray-600 hover:border-purple-200 hover:text-purple-600"
+                    ? "bg-violet-600 text-white shadow-sm shadow-violet-500/25"
+                    : "border border-slate-200 bg-white text-slate-600 hover:border-violet-200 hover:text-violet-600"
                 }`}
               >
                 All
@@ -258,13 +242,11 @@ export default function BlogPage() {
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() =>
-                    setActiveCategory(category)
-                  }
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  onClick={() => setActiveCategory(category)}
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
                     activeCategory === category
-                      ? "bg-purple-600 text-white shadow-md shadow-purple-200"
-                      : "border border-gray-200 bg-white text-gray-600 hover:border-purple-200 hover:text-purple-600"
+                      ? "bg-violet-600 text-white shadow-sm shadow-violet-500/25"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-violet-200 hover:text-violet-600"
                   }`}
                 >
                   {category}
@@ -273,113 +255,102 @@ export default function BlogPage() {
             </div>
           </div>
 
-          {/* LOADING */}
+          {/* LOADING SKELETON */}
           {loading && (
-            <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((item) => (
                 <div
                   key={item}
-                  className="overflow-hidden rounded-2xl border border-gray-200 bg-white"
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
                 >
-                  <div className="aspect-[16/10] animate-pulse bg-gray-100" />
-
-                  <div className="space-y-4 p-6">
-                    <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
-                    <div className="h-6 w-full animate-pulse rounded bg-gray-100" />
-                    <div className="h-4 w-4/5 animate-pulse rounded bg-gray-100" />
-                    <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+                  <div className="aspect-[16/10] animate-pulse bg-slate-100" />
+                  <div className="space-y-3 p-5">
+                    <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
+                    <div className="h-5 w-full animate-pulse rounded bg-slate-100" />
+                    <div className="h-3 w-4/5 animate-pulse rounded bg-slate-100" />
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* CARDS */}
+          {/* CARDS GRID */}
           {!loading && filteredBlogs.length > 0 && (
-            <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredBlogs.map((blog) => (
                 <article
                   key={blog._id}
-                  className="group overflow-hidden rounded-2xl border border-gray-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/50"
+                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/5"
                 >
-                  {/* Image */}
-                  <Link
-                    href={`/blog/${blog.slug}`}
-                    className="block overflow-hidden"
-                  >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-purple-50">
-                      {blog.coverImage ? (
-                        <img
-                          src={blog.coverImage}
-                          alt={blog.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center">
-                          <Sparkles
-                            size={35}
-                            className="text-purple-300"
+                  <div>
+                    {/* Image */}
+                    <Link href={`/blog/${blog.slug}`} className="block overflow-hidden">
+                      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                        {blog.coverImage ? (
+                          <img
+                            src={blog.coverImage}
+                            alt={blog.title}
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                           />
-                        </div>
-                      )}
-
-                      <div className="absolute left-4 top-4">
-                        <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-purple-700 shadow-sm">
-                          {blog.category}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="flex items-center gap-1.5">
-                        <CalendarDays size={13} />
-                        {formatDate(
-                          blog.publishedAt ||
-                            blog.createdAt
+                        ) : (
+                          <div className="flex h-full items-center justify-center bg-violet-50">
+                            <Sparkles size={30} className="text-violet-300" />
+                          </div>
                         )}
-                      </span>
-
-                      <span>{blog.author}</span>
-                    </div>
-
-                    <Link
-                      href={`/blog/${blog.slug}`}
-                      className="block"
-                    >
-                      <h3 className="mt-4 line-clamp-2 text-xl font-bold leading-7 text-gray-950 transition group-hover:text-purple-600">
-                        {blog.title}
-                      </h3>
+                        <div className="absolute left-3.5 top-3.5">
+                          <span className="rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-violet-700 shadow-sm backdrop-blur-sm">
+                            {blog.category}
+                          </span>
+                        </div>
+                      </div>
                     </Link>
 
-                    {blog.excerpt && (
-                      <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
-                        {blog.excerpt}
-                      </p>
-                    )}
-
-                    {blog.tags?.length > 0 && (
-                      <div className="mt-5 flex flex-wrap gap-2">
-                        {blog.tags.slice(0, 2).map((tag) => (
-                          <span
-                            key={tag}
-                            className="inline-flex items-center gap-1 rounded-md bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-600"
-                          >
-                            <Tag size={11} />
-                            {tag}
-                          </span>
-                        ))}
+                    {/* Content */}
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 text-xs text-slate-400 font-medium">
+                        <span className="flex items-center gap-1">
+                          <CalendarDays size={12} />
+                          {formatDate(blog.publishedAt || blog.createdAt)}
+                        </span>
+                        <span>•</span>
+                        <span>{blog.author}</span>
                       </div>
-                    )}
 
+                      <Link href={`/blog/${blog.slug}`} className="block">
+                        <h3 className="mt-2.5 line-clamp-2 text-lg font-bold leading-snug text-slate-900 transition group-hover:text-violet-600">
+                          {blog.title}
+                        </h3>
+                      </Link>
+
+                      {blog.excerpt && (
+                        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                          {blog.excerpt}
+                        </p>
+                      )}
+
+                      {blog.tags?.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-1.5">
+                          {blog.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center gap-1 rounded-lg bg-violet-50 px-2 py-0.5 text-[11px] font-semibold text-violet-600"
+                            >
+                              <Tag size={10} />
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="px-5 pb-5 pt-0">
                     <Link
                       href={`/blog/${blog.slug}`}
-                      className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-purple-600 transition group-hover:gap-3"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 transition group-hover:gap-2"
                     >
                       Read article
-                      <ArrowRight size={16} />
+                      <ArrowRight size={14} />
                     </Link>
                   </div>
                 </article>
@@ -387,31 +358,24 @@ export default function BlogPage() {
             </div>
           )}
 
-          {/* EMPTY */}
+          {/* EMPTY STATE */}
           {!loading && filteredBlogs.length === 0 && (
-            <div className="rounded-3xl border border-dashed border-purple-200 bg-white px-6 py-20 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50">
-                <Search
-                  size={24}
-                  className="text-purple-500"
-                />
+            <div className="rounded-2xl border border-dashed border-violet-200 bg-white p-12 text-center shadow-sm">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-500 mb-3">
+                <Search size={22} />
               </div>
-
-              <h3 className="mt-5 text-xl font-bold text-gray-950">
+              <h3 className="text-base font-bold text-slate-900">
                 No articles found
               </h3>
-
-              <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
-                Try another keyword or choose a different
-                category.
+              <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500">
+                Try searching for a different keyword or choose another category filter.
               </p>
-
               <button
                 onClick={() => {
                   setSearch("");
                   setActiveCategory("All");
                 }}
-                className="mt-6 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700"
+                className="mt-5 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-violet-500/20 transition hover:bg-violet-700"
               >
                 Clear filters
               </button>
@@ -420,35 +384,31 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative overflow-hidden bg-purple-600">
-        <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-purple-500/50 blur-3xl" />
-        <div className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-purple-700/40 blur-3xl" />
+      {/* CTA SECTION */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-violet-900 via-purple-900 to-indigo-950 text-white">
+        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-violet-500/20 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
-          <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
-            <div className="max-w-2xl">
-              <p className="text-sm font-bold uppercase tracking-widest text-purple-200">
+        <div className="relative mx-auto max-w-7xl px-6 py-14 lg:px-8">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+            <div className="max-w-xl">
+              <p className="text-xs font-bold uppercase tracking-widest text-violet-300">
                 Let&apos;s work together
               </p>
-
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight text-white">
                 Have an idea worth building?
               </h2>
-
-              <p className="mt-4 text-base leading-7 text-purple-100">
-                Tell us what you&apos;re working on and let&apos;s
-                explore how technology can help move your
-                business forward.
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                Tell us what you&apos;re working on and let&apos;s explore how technology can help move your business forward.
               </p>
             </div>
 
             <Link
               href="/contact"
-              className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-purple-700 shadow-xl transition hover:bg-purple-50"
+              className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-xs font-bold text-violet-900 shadow-lg shadow-black/10 transition hover:bg-violet-50"
             >
               Start a conversation
-              <ArrowRight size={17} />
+              <ArrowRight size={15} />
             </Link>
           </div>
         </div>
