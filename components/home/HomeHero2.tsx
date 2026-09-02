@@ -65,7 +65,7 @@ export function HomeHero() {
   return (
     <div className="w-full ">
       {/* 1. HERO CAROUSEL SECTION */}
-      <section className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:h-[75vh] min-h-[260px] max-h-[640px] overflow-hidden group">
+      <section className="relative h-48 sm:h-64 md:h-[65vh] w-full overflow-hidden bg-muted group">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -133,7 +133,7 @@ export function HomeHero() {
       </section>
 
       {/* 2. SERVICE HIGHLIGHTS SECTION (SEPARATE CONTAINER) */}
-      <section className="relative z-30 bg-slate-50 border-t border-violet-500/20 pb-12 pt-0">
+ <section className="relative z-30 bg-slate-50 border-t border-violet-500/20 pb-12 pt-0 hidden md:block">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"

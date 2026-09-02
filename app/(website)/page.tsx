@@ -1,4 +1,4 @@
-import { HomeHero } from "@/components/home/HomeHero2"
+import { HomeHero } from "@/components/home/HomeHero"
 import { FeaturedProductsSection } from "@/components/home/FeaturedProductsSection"
 import { HomeSecondarySections } from "@/components/home/HomeSecondarySections"
 
