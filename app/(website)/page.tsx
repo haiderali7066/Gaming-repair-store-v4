@@ -1,6 +1,7 @@
 import { HomeHero } from "@/components/home/HomeHero2"
 import { FeaturedProductsSection } from "@/components/home/FeaturedProductsSection"
 import { HomeSecondarySections } from "@/components/home/HomeSecondarySections"
+import {FeaturedProductsMarquee} from "@/components/home/FeaturedProductsMarqueeSection"
 
 // This page is a Server Component so FeaturedProductsSection can query
 // MongoDB directly for products marked "featured" in the admin panel. The
@@ -10,6 +11,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white font-sans">
       <HomeHero />
+      <FeaturedProductsMarquee />
       <FeaturedProductsSection />
       <HomeSecondarySections />
     </main>

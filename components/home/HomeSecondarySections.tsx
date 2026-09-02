@@ -314,6 +314,9 @@ export function HomeSecondarySections() {
         </div>
       </section>
 
+      
+      <RepairBanner />
+
       {/*  WHY CHOOSE US */}
       <section id="why-choose-us" className="mt-10 container mx-auto px-6 lg:px-12 bg-slate-50">
         <motion.div
@@ -363,7 +366,6 @@ export function HomeSecondarySections() {
         </motion.div>
       </section>
 
-      <RepairBanner />
 
       {/* 5. HOW OUR REPAIR PROCESS WORKS (Ultra Modern & Premium) */}
       <section id="how-it-works" className="py-24 md:py-32 bg-slate-950 text-white relative overflow-hidden">
