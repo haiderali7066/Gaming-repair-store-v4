@@ -28,7 +28,7 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788766250/Gemini_Generated_Image_b2pl12b2pl12b2pl_ushuia.jpg",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788772921/ChatGPT_Image_Sep_7_2026_02_20_48_PM_cbh8mt.png",
     href: "/repair",
     alt: "Custom PC Building and Tuning",
   },
