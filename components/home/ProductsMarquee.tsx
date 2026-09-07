@@ -31,7 +31,7 @@ export function ProductsMarquee({
   ]
 
   return (
-    <section className="w-full overflow-hidden bg-violet-400 py-6 md:py-10">
+    <section className="w-full overflow-hidden bg-violet-400 py-3 md:py-10">
 
       <div className="relative w-full overflow-hidden">
 

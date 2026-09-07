@@ -26,21 +26,16 @@ export default async function ShopPage({
     <main className="mx-auto w-full max-w-[96rem] px-4 py-5 sm:px-6 sm:py-8 lg:px-10">
 
       {/* Hero Banner Section: Full width/container width, half height with background image & overlay */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl ">
-        <div className="absolute inset-0 z-0">
-          <Image
+      
+      <section className="w-full">
+        <div className="relative h-48 sm:h-64 md:h-[40vh] w-full overflow-hidden bg-muted">
+          <img
             src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788356744/2_rjhkea.png"
-            alt="Gaming Hardware Banner"
-            fill
-            priority
-            className="object-cover  mix-blend-overlay"
+            alt="Trade-In & Buy Back"
+            className="h-full w-full object-cover"
           />
         </div>
-
-        <div className="relative z-10 flex flex-col justify-center px-8 py-16 sm:px-12 lg:px-16 lg:py-24 h-[350px] sm:h-[420px] max-w-2xl">
-          
-        </div>
-      </div>
+      </section>
 
       {/* =========================
           FILTER HEADER

@@ -107,7 +107,7 @@ export default function GamingPCRepairPage() {
     <main className="min-h-screen bg-white font-sans">
       
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-slate-50 pt-20 pb-20 lg:pt-32 lg:pb-28 border-b border-slate-200">
+      <section className="relative overflow-hidden bg-slate-50 pt-10 pb-20 lg:pt-32 lg:pb-28 border-b border-slate-200">
         {/* Abstract Background Elements */}
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-violet-200/50 rounded-full blur-[120px] opacity-60 translate-x-1/2 -translate-y-1/4" />
