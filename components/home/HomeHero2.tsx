@@ -66,7 +66,7 @@ export function HomeHero() {
     <div className="w-full">
       {/* 1. HERO CAROUSEL SECTION */}
       {/* Decreased desktop height from md:h-[65vh] to md:h-[55vh] */}
-      <section className="relative h-48 sm:h-64 md:h-[55vh] w-full overflow-hidden bg-muted group">
+      <section className="relative h-35 sm:h-20 md:h-[50vh] w-full overflow-hidden bg-muted group">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
