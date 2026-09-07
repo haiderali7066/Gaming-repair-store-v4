@@ -38,7 +38,15 @@ const BuyBackSchema = new Schema(
     deviceType: {
       type: String,
       required: true,
-      enum: ["Gaming PC", "Gaming Laptop", "iPad"],
+      enum: [
+  "Gaming PC",
+  "Gaming Laptop",
+  "MacBook",
+  "iPad",
+  "Mobile Phone",
+  "Desktop PC",
+  "Other",
+],
     },
 
     brand: {
