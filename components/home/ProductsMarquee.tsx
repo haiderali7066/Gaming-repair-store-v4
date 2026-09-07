@@ -1,4 +1,3 @@
-
 "use client"
 
 import Image from "next/image"
@@ -19,15 +18,8 @@ export function ProductsMarquee({
   }
 
   /*
-   * Create MANY copies.
-   *
-   * Example:
-   *
-   * 1 2 3 4 5 | 1 2 3 4 5 | 1 2 3 4 5 | 1 2 3 4 5
-   *
-   * We only move one complete product set.
-   * When it finishes, the next identical set is already
-   * in exactly the same position.
+   * Create MANY copies to ensure seamless looping.
+   * Moving 1/6th of the total width perfectly resets the track.
    */
   const items = [
     ...products,
@@ -38,61 +30,15 @@ export function ProductsMarquee({
     ...products,
   ]
 
-  /*
-   * One set of products.
-   *
-   * The actual animation moves the first set away and
-   * immediately continues with the identical next set.
-   */
-  const singleSetWidth = products.length
-
   return (
-    <section className="w-full overflow-hidden bg-white py-14 md:py-20">
+    <section className="w-full overflow-hidden bg-violet-400 py-6 md:py-10">
 
       <div className="relative w-full overflow-hidden">
 
-        {/* Left Fade */}
-        <div
-          className="
-            pointer-events-none
-            absolute
-            left-0
-            top-0
-            bottom-0
-            z-20
-            w-16
-            sm:w-24
-            md:w-40
-            bg-gradient-to-r
-            from-white
-            to-transparent
-          "
-        />
 
-        {/* Right Fade */}
-        <div
-          className="
-            pointer-events-none
-            absolute
-            right-0
-            top-0
-            bottom-0
-            z-20
-            w-16
-            sm:w-24
-            md:w-40
-            bg-gradient-to-l
-            from-white
-            to-transparent
-          "
-        />
-
-        {/* 
-          IMPORTANT:
-          The track itself is much wider than the screen.
-        */}
+        {/* Track */}
         <motion.div
-          className="flex w-max items-start gap-8 sm:gap-10 md:gap-14"
+          className="flex w-max items-start gap-4 sm:gap-6 md:gap-10"
           animate={{
             x: [
               "0%",
@@ -112,20 +58,20 @@ export function ProductsMarquee({
               href={`/shop/${product.slug}`}
               className="
                 group
-                w-[160px]
+                w-[90px]
                 shrink-0
-                sm:w-[180px]
-                md:w-[200px]
+                sm:w-[120px]
+                md:w-[140px]
               "
             >
               <div className="flex flex-col items-center">
 
-                {/* Product Circle */}
+                {/* Product Circle - Scaled down for mobile-first sizing */}
                 <div
                   className="
                     relative
-                    h-[145px]
-                    w-[145px]
+                    h-[90px]
+                    w-[90px]
                     overflow-hidden
                     rounded-full
                     border
@@ -136,13 +82,13 @@ export function ProductsMarquee({
 
                     group-hover:scale-105
                     group-hover:border-gray-400
-                    group-hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+                    group-hover:shadow-[0_10px_25px_rgba(0,0,0,0.1)]
 
-                    sm:h-[165px]
-                    sm:w-[165px]
+                    sm:h-[120px]
+                    sm:w-[120px]
 
-                    md:h-[185px]
-                    md:w-[185px]
+                    md:h-[140px]
+                    md:w-[140px]
                   "
                 >
                   <Image
@@ -153,7 +99,7 @@ export function ProductsMarquee({
                     }
                     alt={product.name}
                     fill
-                    sizes="185px"
+                    sizes="(max-width: 640px) 90px, (max-width: 768px) 120px, 140px"
                     className="
                       object-cover
                       transition-transform
@@ -171,25 +117,27 @@ export function ProductsMarquee({
                       bg-black/0
                       transition-colors
                       duration-500
-                      group-hover:bg-black/10
+                      group-hover:bg-black/5
                     "
                   />
                 </div>
 
-                {/* Product Name */}
+                {/* Product Name - Smaller text and adjusted margins */}
                 <h3
                   className="
-                    mt-4
+                    mt-2
                     w-full
                     truncate
                     text-center
-                    text-sm
-                    font-semibold
+                    text-xs
+                    font-medium
                     text-gray-900
                     transition-colors
                     duration-300
-                    group-hover:text-gray-500
-                    sm:text-base
+                    group-hover:text-gray-600
+                    sm:mt-3
+                    sm:text-sm
+                    sm:font-semibold
                   "
                 >
                   {product.name}
@@ -205,4 +153,3 @@ export function ProductsMarquee({
     </section>
   )
 }
-

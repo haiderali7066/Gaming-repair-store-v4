@@ -172,7 +172,7 @@ export default function GamingPCRepairPage() {
             <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
               <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-300/50 border border-slate-200/60 z-10 bg-white group">
                 <Image
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl2xsJjUtvbnYxC8V-eQ7m2BHtO7Gd8s9_wcryLD_y6oUa2gSmk3TdK10&s=10"
+                  src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1786215933/setup2_ylsx6s.png"
                   alt="Technician repairing a custom gaming PC"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
