@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+
 import {
   ArrowDown,
   Loader2,
@@ -8,6 +9,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { ProductCard } from "@/components/shop/ProductCard"
+
 import { getProducts } from "@/lib/data"
 
 import type { ProductType } from "@/types/product"
@@ -26,20 +28,22 @@ export function ProductLoadMore({
   pageSize = 8,
 }: ProductLoadMoreProps) {
   const [products, setProducts] =
-    useState<ProductType[]>(initialProducts)
+    useState<ProductType[]>(
+      initialProducts,
+    )
 
-  const [loading, setLoading] =
+  const [isLoading, setIsLoading] =
     useState(false)
 
   const hasMore =
     products.length < initialTotal
 
   async function handleLoadMore() {
-    if (loading || !hasMore) {
+    if (isLoading || !hasMore) {
       return
     }
 
-    setLoading(true)
+    setIsLoading(true)
 
     try {
       const nextProducts =
@@ -60,7 +64,7 @@ export function ProductLoadMore({
         error,
       )
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -81,10 +85,10 @@ export function ProductLoadMore({
             type="button"
             variant="outline"
             onClick={handleLoadMore}
-            disabled={loading}
+            disabled={isLoading}
             className="h-11 min-w-40 rounded-xl border-slate-200 bg-white px-6 text-xs font-bold text-slate-700 shadow-sm transition-all hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
           >
-            {loading ? (
+            {isLoading ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
                 Loading...

@@ -119,13 +119,17 @@ export default async function ShopPage({
       {/* TOP HERO                                                         */}
       {/* ================================================================ */}
 
-      <section className="w-full">
-        <div className="relative h-48 sm:h-64 md:h-[40vh] w-full overflow-hidden bg-muted">
-          <img
-            src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788356744/2_rjhkea.png"
+      <section className="mx-auto w-full max-w-[96rem] px-4 pt-5 sm:px-6 sm:pt-8 lg:px-10">
+        <div className="relative h-40 w-full overflow-hidden rounded-2xl bg-slate-100 sm:h-56 sm:rounded-3xl md:h-[36vh] lg:h-[420px]">
+          <Image
+            src={HERO_BANNER}
             alt="Trade-In & Buy Back"
-            className="h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
+
         </div>
       </section>
 
@@ -257,13 +261,16 @@ export default async function ShopPage({
       {/* SECOND HERO                                                       */}
       {/* ================================================================ */}
 
-      <section className="w-full">
-        <div className="relative h-48 sm:h-64 md:h-[40vh] w-full overflow-hidden bg-muted">
-          <img
-            src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773595/ChatGPT_Image_Sep_7_2026_02_32_53_PM_polvfd.png"
+      <section className="mx-auto w-full max-w-[96rem] px-4 py-7 sm:px-6 sm:py-10 lg:px-10">
+        <div className="relative h-40 w-full overflow-hidden rounded-2xl bg-slate-100 sm:h-56 sm:rounded-3xl md:h-[34vh] lg:h-[550px]">
+          <Image
+            src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788788929/ChatGPT_Image_Sep_7_2026_06_48_31_PM_lnxxbf.png"
             alt="Trade-In & Buy Back"
-            className="h-full w-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
           />
+
         </div>
       </section>
 
