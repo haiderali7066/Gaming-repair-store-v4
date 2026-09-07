@@ -56,14 +56,14 @@ export default async function AccountPage() {
         </h2>
         <div className="space-y-2">
           <Button
-            render={<Link href="/repair-booking" />}
+            render={<Link href="/repair" />}
             className="w-full justify-start gap-2"
           >
             <Wrench className="h-4 w-4" />
             Request a Repair
           </Button>
           <Button
-            render={<Link href="/trade-in" />}
+            render={<Link href="/buy-back" />}
             variant="outline"
             className="w-full justify-start gap-2"
           >
