@@ -31,7 +31,7 @@ export function ProductsMarquee({
   ]
 
   return (
-    <section className="w-full overflow-hidden bg-violet-400 py-3 md:py-10">
+    <section className="w-full overflow-hidden bg-violet-900 py-3 md:py-10">
 
       <div className="relative w-full overflow-hidden">
 
@@ -131,7 +131,7 @@ export function ProductsMarquee({
                     text-center
                     text-xs
                     font-medium
-                    text-gray-900
+                    text-white/80
                     transition-colors
                     duration-300
                     group-hover:text-gray-600
