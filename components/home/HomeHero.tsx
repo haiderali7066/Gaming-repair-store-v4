@@ -195,7 +195,7 @@ export  function HomeHero({
 
       
 
-      {/* 3. SERVICE HIGHLIGHTS */}
+      {/*  SERVICE HIGHLIGHTS */}
       <section className="container mx-auto px-6 -mt-8 relative z-30">
         <motion.div
           initial="hidden"
