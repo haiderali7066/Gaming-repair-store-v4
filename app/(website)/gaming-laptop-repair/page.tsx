@@ -23,7 +23,7 @@ import {
 const FORM = "/repair#repair-form"
 
 /* Generated hero background — place the file in public/gaming-laptop/hero-bg.jpg */
-const HERO_IMG = "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1792818556/hero-bg_1_afywsw.jpg"
+const HERO_IMG = "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1792823872/Neon_Gaming_Laptop_Workspace_g3n3gi.png"
 
 /* Same brand logos + colours as the services / gaming PC pages */
 const brands = [
