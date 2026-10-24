@@ -45,7 +45,7 @@ export function AuthForm({
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
-          Al Dana Gaming
+          Al Dana 
         </h1>
 
         <p className="mt-1 text-sm text-zinc-500">
@@ -67,7 +67,7 @@ export function AuthForm({
           <p className="mt-2 text-sm leading-6 text-zinc-500">
             {register
               ? "Create an account to manage your orders, repairs and trade-ins."
-              : "Sign in to continue to your Al Dana Gaming account."}
+              : "Sign in to continue to your Al Dana  account."}
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export function AuthForm({
 
       {/* Footer */}
       <p className="mt-6 text-center text-xs text-zinc-400">
-        © {new Date().getFullYear()} Al Dana Gaming. All rights reserved.
+        © {new Date().getFullYear()} Al Dana . All rights reserved.
       </p>
     </div>
   )

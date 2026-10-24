@@ -1,379 +1,456 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import React from "react"
+import Link from "next/link"
+import Image from "next/image"
 import {
-  Wrench,
   Flame,
+  Cpu,
   Wind,
   Fan,
-  Cpu,
-  ArrowRight,
-  CheckCircle2,
+  Thermometer,
   Clock,
-  ShieldCheck,
+  ArrowRight,
   Settings,
-} from "lucide-react";
+  CheckCircle2,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react"
 
-const services = [
+/* Every call-to-action on this page goes to the repair form */
+const FORM = "/repair#repair-form"
+
+/* Hero background — swap for a generated image (e.g. public/thermal/hero-bg.jpg) */
+const HERO_IMG =
+  "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=2000&auto=format&fit=crop"
+
+/* Same brand logos + colours as the iPad / services / gaming PC pages */
+const brands = [
+  { name: "Apple", slug: "apple" },
+  { name: "Dell", slug: "dell" },
+  { name: "HP", slug: "hp" },
+  { name: "Lenovo", slug: "lenovo" },
+  { name: "ASUS", slug: "asus" },
+  { name: "Acer", slug: "acer" },
+  { name: "MSI", slug: "msi" },
+  { name: "Razer", slug: "razer" },
+  { name: "Corsair", slug: "corsair" },
+  { name: "NVIDIA", slug: "nvidia" },
+  { name: "AMD", slug: "amd" },
+]
+
+const heroFeatures = [
+  { label: "Thermal Paste Repaste", icon: Flame },
+  { label: "Liquid Metal Service", icon: Cpu },
+  { label: "Dust & Debris Removal", icon: Wind },
+  { label: "Fan Replacement", icon: Fan },
+  { label: "Temperature Testing", icon: Thermometer },
+  { label: "Same-Day Available", icon: Clock },
+]
+
+type Tone = "light" | "dark" | "violet"
+
+type Feature = {
+  id: string
+  icon: LucideIcon
+  eyebrow: string
+  title: string
+  accent: string
+  text: string
+  items: string[]
+  cta: string
+  image: string
+  imageAlt: string
+  chip: string
+  tone: Tone
+  reverse?: boolean
+}
+
+/* Section ids match the navbar mega-menu anchors */
+const features: Feature[] = [
   {
     id: "thermal-paste-repaste",
-    title: "Thermal Paste Repaste",
-    subtitle: "Lower your temperatures and eliminate thermal throttling.",
-    description:
-      "Over time, factory thermal paste dries out, leading to high CPU and GPU temperatures, sudden frame drops, and loud fan noise. We remove degraded paste and apply high-performance thermal compound to restore optimal heat transfer.",
     icon: Flame,
-    image:
-      "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "High-performance thermal compound application",
-      "Heatsink contact surface polishing & cleanup",
+    eyebrow: "Thermal paste",
+    title: "Thermal Paste",
+    accent: "Repaste",
+    text: "Over time, factory thermal paste dries out, leading to high CPU and GPU temperatures, sudden frame drops and loud fan noise. We remove the degraded paste and apply high-performance compound to restore optimal heat transfer.",
+    items: [
+      "High-performance thermal compound",
+      "Heatsink surface polishing & cleanup",
       "CPU & GPU temperature stress testing",
-      "Significant reduction in thermal throttling",
+      "Reduced thermal throttling",
     ],
-    ctaText: "Book Thermal Service",
+    cta: "Book Thermal Service",
+    image:
+      "https://gamemaxpc.com/static/upload/image/20250825/1756108686232681.png",
+    imageAlt: "Thermal paste application on a CPU",
+    chip: "Lower temperatures",
+    tone: "light",
   },
   {
     id: "liquid-metal-service",
-    title: "Liquid Metal Service",
-    subtitle: "Ultimate thermal conductivity for extreme performance.",
-    description:
-      "For high-end gaming rigs and enthusiast laptops, traditional paste isn't enough. We professionally apply liquid metal Gallium alloy for superior heat dissipation and carefully protect surrounding components.",
     icon: Cpu,
-    image:
-      "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=1000&auto=format&fit=crop",
-    features: [
+    eyebrow: "Liquid metal",
+    title: "Liquid Metal",
+    accent: "Service",
+    text: "For high-end gaming rigs and enthusiast laptops, traditional paste isn't enough. We professionally apply a liquid metal gallium alloy for superior heat dissipation and carefully protect the surrounding components.",
+    items: [
       "Pro-grade gallium alloy application",
       "Custom non-conductive barrier protection",
-      "Maximum heat dissipation for high-TDP CPUs",
-      "Rigorous short-circuit prevention barriers",
+      "Maximum cooling for high-TDP CPUs",
+      "Short-circuit prevention barriers",
     ],
-    ctaText: "Book Liquid Metal Service",
+    cta: "Book Liquid Metal Service",
+    image:
+      "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=1000&auto=format&fit=crop",
+    imageAlt: "Liquid metal service on a processor",
+    chip: "Extreme cooling performance",
+    tone: "violet",
+    reverse: true,
   },
   {
     id: "dust-debris-removal",
-    title: "Dust & Debris Removal",
-    subtitle: "Clear internal blockages and restore airflow.",
-    description:
-      "Dust, pet hair, and lint clog heatsink fins and trap heat inside your device. Our deep cleaning service strips down the chassis to clear hidden buildup from vents, fans, and internal components.",
     icon: Wind,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROm6LZaznsb2T37fZhPrXCO4tt3D_bX4pqJ_MjPdz85RpkEeXeGqgxQGmW&s=10",
-    features: [
-      "Complete internal chassis disassembly & blowout",
+    eyebrow: "Deep cleaning",
+    title: "Dust & Debris",
+    accent: "Removal",
+    text: "Dust, pet hair and lint clog heatsink fins and trap heat inside your device. Our deep cleaning strips down the chassis to clear hidden buildup from vents, fans and internal components.",
+    items: [
+      "Full internal disassembly & blowout",
       "Heatsink fin blockage clearing",
       "Port and motherboard dust scrubbing",
-      "Improved passive and active cooling efficiency",
+      "Better passive and active cooling",
     ],
-    ctaText: "Book Deep Cleaning",
+    cta: "Book Deep Cleaning",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROm6LZaznsb2T37fZhPrXCO4tt3D_bX4pqJ_MjPdz85RpkEeXeGqgxQGmW&s=10",
+    imageAlt: "Deep cleaning dust from a laptop heatsink",
+    chip: "Airflow restored",
+    tone: "light",
   },
   {
     id: "fan-replacement",
-    title: "Fan Replacement",
-    subtitle: "Silence grinding noises and restore powerful airflow.",
-    description:
-      "Is your laptop fan making a buzzing, rattling, or jet-engine noise? A failing bearing or broken blade means your system isn't getting cooled properly. We replace worn-out cooling fans with exact OEM-spec replacements.",
     icon: Fan,
-    image:
-      "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "OEM-grade dual/single fan assembly replacement",
-      "Bearing lubrication and alignment checks",
+    eyebrow: "Cooling fans",
+    title: "Fan",
+    accent: "Replacement",
+    text: "Is your fan buzzing, rattling or sounding like a jet engine? A failing bearing or broken blade means your system isn't being cooled properly. We replace worn-out fans with exact OEM-spec parts.",
+    items: [
+      "OEM-grade single/dual fan assemblies",
+      "Bearing lubrication & alignment checks",
       "Rattle and high-pitch noise elimination",
       "Fan RPM curve optimization & testing",
     ],
-    ctaText: "Book Fan Replacement",
+    cta: "Book Fan Replacement",
+    image:
+      "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1000&auto=format&fit=crop",
+    imageAlt: "Cooling fan replacement",
+    chip: "Quiet, powerful airflow",
+    tone: "dark",
+    reverse: true,
   },
-];
+]
 
-const brands = [
-  "THERMAL GRIZZLY",
-  "ARCTIC",
-  "NOCTUA",
-  "GPU COOLING",
-  "COPPER HEATSINKS",
-  "LIQUID METAL",
-  "HIGH-TDP PERFORMANCE",
-  "THERMAL PADS",
-  "THERMAL GRIZZLY",
-  "ARCTIC",
-  "NOCTUA",
-  "GPU COOLING",
-  "COPPER HEATSINKS",
-];
+/* Shared layout tokens (identical to the iPad / gaming PC pages) */
+const wrap = "mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-10"
+const sectionY = "py-5 sm:py-6 lg:py-8"
+const card = "rounded-3xl"
+/* offsets anchor jumps from the sticky navbar mega menu links */
+const anchor = "scroll-mt-32"
 
-const trustItems = [
+const toneCls: Record<
+  Tone,
   {
-    icon: ShieldCheck,
-    title: "Quality Assured",
+    box: string
+    title: string
+    body: string
+    eyebrow: string
+    icon: string
+    check: string
+    item: string
+    cta: string
+  }
+> = {
+  light: {
+    box: "border border-slate-200 bg-white",
+    title: "text-slate-900",
+    body: "text-slate-500",
+    eyebrow: "bg-violet-100 text-violet-700",
+    icon: "bg-violet-50 text-violet-600",
+    check: "text-violet-500",
+    item: "text-slate-700",
+    cta: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/30",
   },
-  {
-    icon: Clock,
-    title: "Same-Day Available",
+  dark: {
+    box: "bg-slate-900",
+    title: "text-white",
+    body: "text-slate-300",
+    eyebrow: "bg-violet-500/15 text-violet-300",
+    icon: "bg-white/10 text-white",
+    check: "text-violet-400",
+    item: "text-slate-100",
+    cta: "bg-white text-slate-900 shadow-lg",
   },
-  {
-    icon: Settings,
-    title: "Pro Compounds",
+  violet: {
+    box: "bg-gradient-to-br from-violet-600 to-indigo-700",
+    title: "text-white",
+    body: "text-violet-100",
+    eyebrow: "bg-white/15 text-white",
+    icon: "bg-white/20 text-white",
+    check: "text-violet-200",
+    item: "text-white",
+    cta: "bg-white text-violet-700 shadow-lg",
   },
-];
+}
 
-export default function DeepCleaningThermalPage() {
+/* One reusable "text + image + CTA" section */
+function FeatureSection({ f }: { f: Feature }) {
+  const t = toneCls[f.tone]
+  const dark = f.tone !== "light"
+
   return (
-    <main className="min-h-screen overflow-hidden bg-white text-slate-900">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50">
-        {/* Background glow */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-32 -top-32 h-72 w-72 rounded-full bg-violet-200/50 blur-[90px] sm:h-[30rem] sm:w-[30rem]" />
-          <div className="absolute -bottom-32 -left-32 h-72 w-72 rounded-full bg-indigo-100/70 blur-[90px] sm:h-[26rem] sm:w-[26rem]" />
-        </div>
-
-        <div className="relative z-10 mx-auto w-full max-w-[96rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
-            {/* Hero content */}
-            <div className="max-w-2xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-100 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-violet-700 shadow-sm sm:mb-5 sm:px-4 sm:py-2 sm:text-xs">
-                <Flame className="size-3.5 sm:size-4" />
-                Thermal & Maintenance Services
-              </div>
-
-              <h1 className="text-3xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl xl:text-7xl">
-                Expert{" "}
-                <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                  Deep Cleaning & Thermal
-                </span>{" "}
-                Service.
-              </h1>
-
-              <p className="mt-4 max-w-xl text-sm font-medium leading-6 text-slate-600 sm:mt-5 sm:text-base sm:leading-7 lg:text-lg">
-                Is your device running hot, loud, or shutting down randomly
-                during heavy workflows? Our thermal and deep cleaning care
-                restores cooling performance and safeguards your hardware.
+    <section id={f.id} className={`${sectionY} ${anchor}`}>
+      <div className={wrap}>
+        <div className={`overflow-hidden ${card} ${t.box}`}>
+          <div className="grid lg:grid-cols-2">
+            {/* text */}
+            <div
+              className={`flex flex-col justify-center p-7 sm:p-10 lg:p-14 ${
+                f.reverse ? "lg:order-2" : ""
+              }`}
+            >
+              <span
+                className={`mb-4 inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider ${t.eyebrow}`}
+              >
+                <f.icon className="size-3.5" /> {f.eyebrow}
+              </span>
+              <h2
+                className={`mb-4 text-3xl font-black leading-tight sm:text-4xl lg:text-5xl ${t.title}`}
+              >
+                {f.title}{" "}
+                <span className={dark ? "text-fuchsia-300" : "text-violet-600"}>
+                  {f.accent}
+                </span>
+              </h2>
+              <p
+                className={`mb-6 max-w-xl text-base font-medium leading-relaxed sm:text-lg ${t.body}`}
+              >
+                {f.text}
               </p>
 
-              {/* Buttons */}
-              <div className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:gap-3">
-                <Link
-                  href="/repair"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:bg-violet-700 hover:shadow-violet-600/30 active:scale-[0.98] sm:h-12 sm:rounded-full sm:px-8"
-                >
-                  Book a Service
-                  <ArrowRight className="size-4" />
-                </Link>
-
-                <a
-                  href="#services-breakdown"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-slate-800 transition-all hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] sm:h-12 sm:rounded-full sm:px-8"
-                >
-                  View Services
-                </a>
-              </div>
-
-              {/* Trust indicators */}
-              <div className="mt-7 grid grid-cols-3 gap-2 border-t border-slate-200/80 pt-5 sm:mt-8 sm:gap-5 sm:pt-6">
-                {trustItems.map((item) => (
-                  <div
-                    key={item.title}
-                    className="flex flex-col items-center gap-1.5 text-center sm:flex-row sm:text-left"
+              <ul className="mb-8 grid max-w-xl gap-3 sm:grid-cols-2">
+                {f.items.map((item) => (
+                  <li
+                    key={item}
+                    className={`flex items-start gap-2.5 text-base font-semibold ${t.item}`}
                   >
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-                      <item.icon className="size-4 text-violet-600" />
-                    </div>
-
-                    <span className="text-[9px] font-bold leading-3 text-slate-600 sm:text-xs sm:leading-4">
-                      {item.title}
-                    </span>
-                  </div>
+                    <CheckCircle2
+                      className={`mt-0.5 size-5 shrink-0 ${t.check}`}
+                    />
+                    {item}
+                  </li>
                 ))}
+              </ul>
+
+              <div>
+                <Link
+                  href={FORM}
+                  className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold transition-transform hover:-translate-y-0.5 ${t.cta}`}
+                >
+                  {f.cta} <ArrowRight className="size-4" />
+                </Link>
               </div>
             </div>
 
-            {/* Hero image */}
-            <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-              <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-300/30 sm:rounded-3xl">
-                <Image
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr-75mIBLeQBrmMhh-7NefIYeuZgWVwXc8LgC7yFEiHn8GGNzdGWUCpYE&s=10"
-                  alt="Technician servicing cooling fans and thermal paste"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
+            {/* image */}
+            <div
+              className={`relative min-h-[300px] sm:min-h-[400px] lg:min-h-[480px] ${
+                f.reverse ? "lg:order-1" : ""
+              }`}
+            >
+              <Image
+                src={f.image}
+                alt={f.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+              />
+              <div
+                className={`absolute inset-0 ${
+                  f.reverse
+                    ? "bg-gradient-to-t from-slate-950/60 via-transparent to-transparent lg:bg-gradient-to-l lg:from-transparent lg:via-transparent lg:to-slate-950/20"
+                    : "bg-gradient-to-t from-slate-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-slate-950/20"
+                }`}
+              />
+              <div className="absolute bottom-5 left-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/50 px-4 py-2 text-sm font-bold text-white backdrop-blur">
+                <f.icon className="size-4 text-violet-300" /> {f.chip}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
-              {/* Decorative pattern */}
-              <div className="absolute -inset-3 -z-10 rounded-3xl bg-[radial-gradient(#cbd5e1_1.5px,transparent_1.5px)] [background-size:16px_16px] opacity-60 sm:-inset-5" />
+export default function DeepCleaningThermalPage() {
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      {/* ================= HERO (image = full background) ================= */}
+      <section className="relative isolate flex min-h-[680px] flex-col overflow-hidden bg-[#050816] text-white lg:min-h-[760px] xl:min-h-[820px]">
+        <Image
+          src={HERO_IMG}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover object-[70%_50%] lg:object-right"
+        />
+        {/* dark on the text side, clear on the image side */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050816] via-[#050816]/85 to-[#050816]/20 lg:via-[#050816]/70 lg:to-transparent" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#050816]/80 via-transparent to-[#050816]/30" />
+
+        <div
+          className={`${wrap} flex flex-1 flex-col justify-center py-10 sm:py-14 lg:py-16`}
+        >
+          <div className="max-w-4xl">
+            <p className="flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.4em] text-slate-200 sm:text-base">
+              Expert
+              <span className="h-px w-24 bg-gradient-to-r from-sky-400 to-transparent sm:w-40" />
+            </p>
+
+            <h1 className="mt-3 text-5xl font-black leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
+              <span className="block text-white">DEEP CLEANING &amp;</span>
+              <span className="block bg-gradient-to-r from-fuchsia-500 via-violet-500 to-sky-400 bg-clip-text text-transparent">
+                THERMAL SERVICE
+              </span>
+            </h1>
+
+            <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-lg font-medium text-slate-300 sm:text-xl lg:text-2xl">
+              <span>Clean</span>
+              <span className="h-5 w-px bg-slate-500" />
+              <span>Cool</span>
+              <span className="h-5 w-px bg-slate-500" />
+              <span>Perform Longer</span>
+            </p>
+
+            <ul className="mt-8 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+              {heroFeatures.map((f) => (
+                <li
+                  key={f.label}
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-4 text-center backdrop-blur"
+                >
+                  <f.icon className="size-7 text-violet-400" />
+                  <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-slate-100">
+                    {f.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={FORM}
+                className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-xl shadow-violet-900/50 transition-transform hover:-translate-y-0.5 sm:text-base"
+              >
+                Cool down your device today <ArrowRight className="size-5" />
+              </Link>
+              <Link
+                href={FORM}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-8 py-4 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15 sm:text-base"
+              >
+                <Settings className="size-4" /> Book a Diagnostic
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* BRAND MARQUEE */}
-      <section className="overflow-hidden border-b border-slate-800 bg-slate-950 py-5 sm:py-7">
-        <p className="mb-4 px-4 text-center text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500 sm:mb-5 sm:text-xs">
-          Using Industry-Standard Thermal Compounds & Hardware Care
-        </p>
+      {/* ================= BRANDS MARQUEE (coloured logos) ================= */}
+      <div className="relative overflow-hidden border-b border-slate-200 bg-white py-5">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-40" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-40" />
 
-        <div className="relative w-full overflow-hidden">
-          {/* Fades */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-slate-950 to-transparent sm:w-24" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-slate-950 to-transparent sm:w-24" />
-
-          <motion.div
-            className="flex w-max items-center gap-8 px-4 sm:gap-12 sm:px-8 lg:gap-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 30,
-            }}
-          >
-            {brands.map((brand, index) => (
-              <div
-                key={`${brand}-${index}`}
-                className="shrink-0 text-lg font-black tracking-tight text-slate-700 transition-colors hover:text-white sm:text-2xl lg:text-3xl"
-              >
-                {brand}
-              </div>
-            ))}
-          </motion.div>
+        <div className="animate-marquee flex items-center gap-14 px-8 sm:gap-24">
+          {[...brands, ...brands, ...brands, ...brands].map((brand, i) => (
+            <div
+              key={i}
+              className="flex shrink-0 cursor-default items-center justify-center transition-transform duration-300 hover:scale-110"
+              title={brand.name}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://cdn.simpleicons.org/${brand.slug}`}
+                alt={brand.name}
+                loading="lazy"
+                className="h-8 w-auto object-contain sm:h-10"
+              />
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* SERVICES */}
-      <section
-        id="services-breakdown"
-        className="scroll-mt-16 bg-white py-12 sm:py-16 lg:py-20"
-      >
-        <div className="mx-auto w-full max-w-[96rem] px-4 sm:px-6 lg:px-10">
-          {/* Section heading */}
-          <div className="mx-auto mb-9 max-w-2xl text-center sm:mb-12 lg:mb-14">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
-              Thermal Care & Maintenance
-            </p>
-
-            <h2 className="mt-1.5 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
-              Thermal & Maintenance Solutions
+      {/* ================= INTRO + QUICK LINKS ================= */}
+      <section id="services" className="pb-1 pt-6 sm:pt-8 lg:pt-10">
+        <div className={wrap}>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
+              <Sparkles className="size-3.5" /> Thermal &amp; Maintenance
+              Services
+            </span>
+            <h2 className="mb-3 text-3xl font-black text-slate-900 sm:text-4xl lg:text-5xl">
+              Thermal &amp; Maintenance Solutions
             </h2>
-
-            <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
+            <p className="text-base text-slate-500 sm:text-lg">
               From deep dust extraction to extreme liquid metal cooling
               upgrades, we protect your hardware investment from heat damage.
             </p>
           </div>
 
-          {/* Service list */}
-          <div className="space-y-12 sm:space-y-16 lg:space-y-20">
-            {services.map((service, index) => {
-              const reversed = index % 2 !== 0;
-
-              return (
-                <article
-                  key={service.id}
-                  id={service.id}
-                  className={`grid scroll-mt-20 items-center gap-7 lg:grid-cols-2 lg:gap-12 ${
-                    reversed ? "lg:[&>*:first-child]:order-2" : ""
-                  }`}
+          <ul className="mt-5 flex flex-wrap justify-center gap-2">
+            {features.map((f) => (
+              <li key={f.id}>
+                <a
+                  href={`#${f.id}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-violet-300 hover:text-violet-600"
                 >
-                  {/* Text */}
-                  <div className="max-w-xl">
-                    <div className="mb-4 flex size-10 items-center justify-center rounded-xl border border-violet-100 bg-violet-50 text-violet-600 sm:size-12 sm:rounded-2xl">
-                      <service.icon className="size-5 sm:size-6" />
-                    </div>
-
-                    <h3 className="text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
-                      {service.title}
-                    </h3>
-
-                    <p className="mt-2 text-sm font-bold text-violet-600 sm:text-base">
-                      {service.subtitle}
-                    </p>
-
-                    <p className="mt-3 text-sm leading-6 text-slate-500 sm:mt-4 sm:text-base sm:leading-7">
-                      {service.description}
-                    </p>
-
-                    {/* Features */}
-                    <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-3">
-                      {service.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-start gap-2 text-xs font-semibold leading-5 text-slate-700 sm:text-sm"
-                        >
-                          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-violet-500" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* CTA */}
-                    <div className="mt-6 border-t border-slate-100 pt-5">
-                      <Link
-                        href="/repair"
-                        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white transition-all hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/20 active:scale-[0.98] sm:w-auto sm:rounded-full"
-                      >
-                        {service.ctaText}
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Image */}
-                  <div className="w-full">
-                    <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-lg shadow-slate-200/30 sm:rounded-3xl">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-slate-950/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                  <f.icon className="size-4 text-violet-500" /> {f.eyebrow}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative overflow-hidden bg-slate-950 py-12 sm:py-16 lg:py-20">
-        <div className="pointer-events-none absolute inset-0 bg-violet-900/20" />
+      {/* ================= TEXT + IMAGE + CTA SECTIONS ================= */}
+      {features.map((f) => (
+        <FeatureSection key={f.id} f={f} />
+      ))}
 
-        <div className="pointer-events-none absolute -right-20 -top-32 size-72 rounded-full bg-violet-600/25 blur-[100px] sm:size-96" />
-
-        <div className="pointer-events-none absolute -bottom-32 -left-20 size-72 rounded-full bg-indigo-600/20 blur-[100px] sm:size-96" />
-
-        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-4 text-center sm:px-6">
-          <div className="flex size-11 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/15 sm:size-14 sm:rounded-2xl">
-            <Wrench className="size-5 text-violet-300 sm:size-6" />
-          </div>
-
-          <h2 className="mt-5 text-2xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Ready to cool down your system?
-          </h2>
-
-          <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-violet-200/80 sm:text-base sm:leading-7">
-            Bring your device in for a thorough thermal overhaul and deep
-            clean. Experience lower temperatures, quieter operation, and
-            extended hardware lifespan.
-          </p>
-
-          <Link
-            href="/repair"
-            className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-6 text-sm font-bold text-white shadow-lg shadow-violet-500/20 transition-all hover:bg-violet-400 hover:shadow-violet-500/30 active:scale-[0.98] sm:mt-7 sm:h-12 sm:w-auto sm:rounded-full sm:px-8"
-          >
-            Book Your Service Now
-            <ArrowRight className="size-4" />
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
+      {/* Global marquee animation */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 35s linear infinite;
+          width: max-content;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee {
+            animation: none;
+          }
+        }
+      `}</style>
+    </div>
+  )
 }
