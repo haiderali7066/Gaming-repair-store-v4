@@ -94,7 +94,7 @@ const services = [
 
 // nav link: bottom border indicator, highlights while its mega menu is open
 const linkCls =
-  "flex h-full items-center gap-1 border-b-2 border-transparent px-3.5 text-sm font-semibold text-slate-800 transition-colors hover:border-violet-600 hover:text-violet-600 group-hover:border-violet-600 group-hover:text-violet-600";
+  "flex h-full items-center gap-1 border-b-2 border-transparent px-3.5 text-sm font-semibold text-slate-800 transition-colors hover:border-violet-600 hover:text-violet-600 group-hover:border-violet-600 group-hover:text-violet-600 focus-visible:outline-none focus-visible:border-violet-600 focus-visible:text-violet-600";
 // every mega menu: full width, same fixed height
 const dropCls =
   "drop absolute inset-x-0 top-full h-[360px] overflow-hidden invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 bg-white border-t-2 border-violet-600 border-b border-b-slate-200 shadow-2xl shadow-slate-900/10 z-50";
@@ -130,35 +130,88 @@ export async function Navbar() {
         .nav-dot { animation: nav-dot 12s linear infinite; }
         .rot:hover .nav-rotate, .rot:hover .nav-dot { animation-play-state: paused; }
         .nav-solo { opacity:1; visibility:visible; animation:none; }
-        .mm[data-closed] .drop { visibility:hidden !important; opacity:0 !important; }
+
+        /* Force-close a mega menu after a click, even if the link still has focus */
+        .mm[data-closed] .drop { visibility:hidden !important; opacity:0 !important; pointer-events:none !important; transition:none !important; }
+        .mm[data-closed] .chev { transform:none !important; }
+        .mm[data-closed] > a { border-color:transparent !important; color:#1e293b !important; }
+
+        /* Lock page scroll while the mobile drawer is open */
+        body:has(#nav-toggle:checked) { overflow:hidden; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .nav-rotate, .nav-dot { animation:none; }
+          .nav-rotate:first-child { opacity:1; visibility:visible; }
+          .drop { transition:none !important; }
+        }
       `}</style>
 
-      {/* Auto-close dropdowns / drawer / user menu when a link is clicked */}
+      {/*
+        Menu behaviour (runs once):
+        - click on any link  -> close its mega menu, drop focus, close mobile drawer / user menu
+        - pointer moves away -> re-arm the menu so hover opens it again
+        - Escape             -> close everything
+        - Tab                -> re-arm so keyboard focus can open menus
+      */}
       <Script id="nav-autoclose" strategy="afterInteractive">{`
-        document.addEventListener("click", function (e) {
-          var a = e.target.closest("a");
-          var hit = e.target.closest("a, button");
-          if (a) {
-            var g = a.closest(".mm");
-            if (g) g.setAttribute("data-closed", "");
-            var t = document.getElementById("nav-toggle");
-            if (t && a.closest("aside")) t.checked = false;
+        (function () {
+          if (window.__navBound) return;
+          window.__navBound = true;
+
+          function closeMenus() {
+            document.querySelectorAll(".mm").forEach(function (m) { m.setAttribute("data-closed", ""); });
           }
-          document.querySelectorAll("details.um[open]").forEach(function (d) {
-            if (!d.contains(e.target) || hit) d.removeAttribute("open");
-          });
-        });
-        document.addEventListener("mouseout", function (e) {
-          var g = e.target.closest && e.target.closest(".mm[data-closed]");
-          if (g && !g.contains(e.relatedTarget)) g.removeAttribute("data-closed");
-        });
-        document.addEventListener("keydown", function (e) {
-          if (e.key === "Escape") {
+          function rearm(except) {
+            document.querySelectorAll(".mm[data-closed]").forEach(function (m) {
+              if (!except || !m.contains(except)) m.removeAttribute("data-closed");
+            });
+          }
+          function closeDrawer() {
             var t = document.getElementById("nav-toggle");
             if (t) t.checked = false;
-            if (document.activeElement) document.activeElement.blur();
           }
-        });
+          function closeUserMenus(target, force) {
+            document.querySelectorAll("details.um[open]").forEach(function (d) {
+              if (force || !d.contains(target)) d.removeAttribute("open");
+            });
+          }
+
+          document.addEventListener("click", function (e) {
+            var target = e.target;
+            if (!target || !target.closest) return;
+            var a = target.closest("a");
+            var btn = target.closest("button");
+
+            if (a) {
+              var group = a.closest(".mm");
+              if (group) {
+                group.setAttribute("data-closed", "");
+                // focus-within would keep the menu open otherwise
+                if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+              }
+              if (a.closest("aside")) closeDrawer();
+            }
+
+            // user dropdown: close on outside click or when an item inside is used
+            closeUserMenus(target, !!(a || btn));
+          });
+
+          // pointer left the closed menu -> allow hover to open it again
+          document.addEventListener("mouseover", function (e) { rearm(e.target); });
+          document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) rearm(null); });
+          document.addEventListener("touchstart", function (e) { rearm(e.target); }, { passive: true });
+
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+              closeMenus();
+              closeDrawer();
+              closeUserMenus(null, true);
+              if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+            } else if (e.key === "Tab") {
+              rearm(null);
+            }
+          });
+        })();
       `}</Script>
 
       {/* Top bar */}
@@ -175,10 +228,10 @@ export async function Navbar() {
       <div className="relative">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2.5">
+          <Link href="/" aria-label="Al Dana home" className="flex shrink-0 items-center gap-2.5">
             <span className="relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-violet-600 text-white">
               <Gamepad2 className="size-5" />
-              <Image src="/logo.jpeg" alt="Al Dana" fill className="object-cover" />
+              <Image src="/logo.jpeg" alt="Al Dana" fill sizes="36px" className="object-cover" />
             </span>
             <span className="text-xl font-black leading-none tracking-tight text-slate-900">
               AL <span className="text-violet-600">DANA</span>
@@ -186,11 +239,11 @@ export async function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="ml-4 hidden h-full items-center lg:flex">
+          <nav aria-label="Main" className="ml-4 hidden h-full items-center lg:flex">
             {/* HOME */}
             <div className="mm group flex h-full items-center">
               <Link href="/" className={linkCls}>
-                Home <ChevronDown className="size-4 text-slate-400 transition-transform group-hover:rotate-180" />
+                Home <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
               </Link>
               <div className={dropCls}>
                 <div className={`${innerCls} grid grid-cols-12 gap-10`}>
@@ -220,7 +273,7 @@ export async function Navbar() {
                       ))}
                     </div>
                     <div className="mt-6 flex items-center justify-between rounded-md border border-violet-100 bg-violet-50 p-4">
-                      <span className="text-sm font-semibold text-violet-900">Something broken? We'll fix it.</span>
+                      <span className="text-sm font-semibold text-violet-900">Something broken? We&apos;ll fix it.</span>
                       <Link href="/repair" className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-bold text-white hover:bg-violet-700">
                         <Wrench className="size-4" /> Book Repair
                       </Link>
@@ -233,7 +286,7 @@ export async function Navbar() {
             {/* SERVICES */}
             <div className="mm group flex h-full items-center">
               <Link href="/services" className={linkCls}>
-                Services <ChevronDown className="size-4 text-slate-400 transition-transform group-hover:rotate-180" />
+                Services <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
               </Link>
               <div className={dropCls}>
                 <div className={innerCls}>
@@ -268,7 +321,7 @@ export async function Navbar() {
             {/* SHOP */}
             <div className="mm group flex h-full items-center">
               <Link href="/shop" className={linkCls}>
-                Shop <ChevronDown className="size-4 text-slate-400 transition-transform group-hover:rotate-180" />
+                Shop <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
               </Link>
               <div className={dropCls}>
                 <div className={`${innerCls} grid grid-cols-12 gap-10`}>
@@ -302,7 +355,7 @@ export async function Navbar() {
                     <div className="mb-3 flex items-center justify-between">
                       <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">New Arrivals</p>
                       {slots.length > 1 && recent.length >= 4 && (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1" aria-hidden="true">
                           {slots.map((_, i) => (
                             <span key={i} className="nav-dot h-1.5 w-1.5 rounded-full bg-slate-300" style={{ animationDelay: `${i * 3}s` }} />
                           ))}
@@ -344,12 +397,13 @@ export async function Navbar() {
           </nav>
 
           {/* Search */}
-          <form action="/shop" className="ml-auto hidden max-w-xs flex-1 xl:flex">
+          <form action="/shop" role="search" className="ml-auto hidden max-w-xs flex-1 xl:flex">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
                 name="q"
                 type="search"
+                aria-label="Search products"
                 placeholder="Search products..."
                 className="h-9 w-full rounded-md border border-slate-300 pl-9 pr-3 text-sm outline-none focus:border-violet-500"
               />
@@ -364,7 +418,10 @@ export async function Navbar() {
 
             {session ? (
               <details className="um relative">
-                <summary className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md bg-violet-600 text-xs font-bold text-white [&::-webkit-details-marker]:hidden">
+                <summary
+                  aria-label="Account menu"
+                  className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md bg-violet-600 text-xs font-bold text-white [&::-webkit-details-marker]:hidden"
+                >
                   {initials}
                 </summary>
                 <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-md border border-slate-200 bg-white py-1 shadow-xl">
@@ -419,19 +476,20 @@ export async function Navbar() {
                   </label>
                 </div>
 
-                <form action="/shop" className="border-b border-slate-200 p-4">
+                <form action="/shop" role="search" className="border-b border-slate-200 p-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     <input
                       name="q"
                       type="search"
+                      aria-label="Search products"
                       placeholder="Search products..."
                       className="h-10 w-full rounded-md border border-slate-300 pl-9 pr-3 text-sm outline-none focus:border-violet-500"
                     />
                   </div>
                 </form>
 
-                <nav className="flex-1 overflow-y-auto p-4 text-sm font-semibold text-slate-800">
+                <nav aria-label="Mobile" className="flex-1 overflow-y-auto overscroll-contain p-4 text-sm font-semibold text-slate-800">
                   <details>
                     <summary className="flex cursor-pointer list-none items-center justify-between py-2.5 [&::-webkit-details-marker]:hidden">
                       Home <ChevronDown className="size-4 text-slate-400" />

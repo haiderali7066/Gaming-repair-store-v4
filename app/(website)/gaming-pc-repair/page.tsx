@@ -1,426 +1,426 @@
+"use client"
 
-"use client";
-
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import React from "react"
+import Link from "next/link"
+import Image from "next/image"
 import {
   Wrench,
-  Search,
   Cpu,
-  Zap,
-  ShieldAlert,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
+  Monitor,
   ShieldCheck,
+  ArrowRight,
   Settings,
-} from "lucide-react";
+  CreditCard,
+  CheckCircle2,
+  Sparkles,
+  HardDrive,
+  MemoryStick,
+  Fan,
+  CircuitBoard,
+  Bug,
+  PlugZap,
+  Search,
+  type LucideIcon,
+} from "lucide-react"
 
-const services = [
+/* Every call-to-action on this page goes to the repair form */
+const FORM = "/repair#repair-form"
+
+/* Same brand logos + colours as the services page marquee */
+const brands = [
+  { name: "Apple", slug: "apple" },
+  { name: "Dell", slug: "dell" },
+  { name: "HP", slug: "hp" },
+  { name: "Lenovo", slug: "lenovo" },
+  { name: "ASUS", slug: "asus" },
+  { name: "Acer", slug: "acer" },
+  { name: "MSI", slug: "msi" },
+  { name: "Razer", slug: "razer" },
+  { name: "Corsair", slug: "corsair" },
+  { name: "NVIDIA", slug: "nvidia" },
+  { name: "AMD", slug: "amd" },
+]
+
+const heroFeatures = [
+  { label: "Hardware Diagnostics", icon: Wrench },
+  { label: "CPU & GPU Repair", icon: Cpu },
+  { label: "Graphics Card Servicing", icon: Monitor },
+  { label: "Cooling & Thermal Solutions", icon: Fan },
+  { label: "RAM & SSD Upgrades", icon: MemoryStick },
+  { label: "Quality Parts", icon: ShieldCheck },
+]
+
+type Tone = "light" | "dark" | "violet"
+
+type Feature = {
+  id: string
+  icon: LucideIcon
+  eyebrow: string
+  title: string
+  accent: string
+  text: string
+  items: string[]
+  cta: string
+  image: string
+  imageAlt: string
+  chip: string
+  tone: Tone
+  reverse?: boolean
+}
+
+/* Section ids match the navbar mega-menu anchors */
+const features: Feature[] = [
   {
     id: "diagnostics",
-    title: "Custom PC Diagnostics & Upgrades",
-    subtitle: "Identify bottlenecks and boost your frames.",
-    description:
-      "Whether your PC is underperforming, crashing, or needs an upgrade, our diagnostic process tests every component under real-world and synthetic gaming loads to pinpoint the exact issue.",
     icon: Search,
-    image:
-      "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "CPU, GPU & RAM stress testing",
-      "Thermal performance evaluation",
-      "Hardware compatibility checks",
-      "Bottleneck identification",
-    ],
-    ctaText: "Book Diagnostics",
+    eyebrow: "Diagnostics",
+    title: "Expert PC",
+    accent: "Diagnostics",
+    text: "We test the CPU, GPU, memory, storage, power and cooling to find the real cause of the problem before recommending any repair or replacement. You get a clear explanation and your options upfront.",
+    items: ["Full component testing", "Temperature & stress tests", "Clear written findings", "Options explained upfront"],
+    cta: "Book a Diagnostic",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1792817525/board_fpxydb.jpg",
+    imageAlt: "Gaming PC setup with curved monitor",
+    chip: "100 DHS diagnostic fee",
+    tone: "light",
   },
   {
     id: "hardware-repair",
-    title: "Hardware Repair",
-    subtitle: "Precision fixes for high-end components.",
-    description:
-      "From failing GPU fans to thermal issues, our technicians safely repair or replace damaged components using professional ESD-safe procedures.",
-    icon: Wrench,
-    image:
-      "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "GPU repasting & thermal pads",
-      "AIO cooler diagnostics",
-      "Storage cloning & recovery",
-      "RAM testing & replacement",
-    ],
-    ctaText: "Book Hardware Repair",
+    icon: Cpu,
+    eyebrow: "Hardware",
+    title: "CPU, GPU &",
+    accent: "Graphics Card Repair",
+    text: "Artifacts, crashes, overheating or no display? We service and repair graphics cards and processors with precision, and replace parts with quality components only when it is truly needed.",
+    items: ["GPU & CPU repair", "Graphics card servicing", "Overheating fixes", "Quality replacement parts"],
+    cta: "Repair My Hardware",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzS0S8C31xx8ZY1izbqzNEInjAhSsF2cAJYFfrZb_iK86BtX_fQlDfYdk&s=10",
+    imageAlt: "High-end graphics card",
+    chip: "Quality parts",
+    tone: "violet",
+    reverse: true,
   },
   {
     id: "motherboard-repair",
-    title: "Motherboard Repair",
-    subtitle: "Advanced board-level repair.",
-    description:
-      "A dead motherboard doesn't always mean a dead PC. Our technicians diagnose and repair damaged traces, capacitors, VRMs and other board-level components.",
-    icon: Cpu,
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "CPU socket pin realignment",
-      "Capacitor & VRM replacement",
-      "Liquid damage cleaning",
-      "BIOS flashing & reprogramming",
-    ],
-    ctaText: "Book Motherboard Repair",
+    icon: CircuitBoard,
+    eyebrow: "Motherboard",
+    title: "Motherboard",
+    accent: "Repair",
+    text: "No power, no POST or dead ports? We trace the fault on the board and repair it where it makes sense, or advise on the best replacement when a repair is not worth it.",
+    items: ["No-boot & no-POST faults", "Port & socket issues", "Component-level checks", "Replacement advice"],
+    cta: "Fix My Motherboard",
+    image: "https://thumbs.dreamstime.com/b/computer-motherboard-bright-colorful-connections-vertical-mobile-wallpaper-computer-motherboard-bright-colorful-302826839.jpg",
+    imageAlt: "Motherboard with processor",
+    chip: "Component-level repair",
+    tone: "light",
   },
   {
     id: "power-supply-repair",
-    title: "Power Supply Repair & Replacement",
-    subtitle: "Stable power for maximum performance.",
-    description:
-      "Random shutdowns and instability can be caused by failing power delivery. We test your system and recommend the right replacement when necessary.",
-    icon: Zap,
-    image:
-      "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "Voltage rail testing",
-      "Cable management",
-      "Over-voltage diagnostics",
-      "ATX 3.0 PSU upgrades",
-    ],
-    ctaText: "Book PSU Service",
+    icon: PlugZap,
+    eyebrow: "Power supply",
+    title: "Power Supply",
+    accent: "Repair",
+    text: "An unstable or failing power supply can damage every other part in your rig. We test output, replace faulty units and make sure your PC gets clean, stable power.",
+    items: ["PSU load testing", "Unit replacement", "Cable & connector checks", "Wattage advice for upgrades"],
+    cta: "Check My Power Supply",
+    image: "https://seasonic.com/wp-content/uploads/2026/04/4-4.webp",
+    imageAlt: "Gaming PC case with RGB fans",
+    chip: "Stable power",
+    tone: "dark",
+    reverse: true,
   },
   {
     id: "virus-malware-removal",
-    title: "Virus & Malware Removal",
-    subtitle: "Secure your system and restore performance.",
-    description:
-      "Malware, background miners and unwanted software can seriously affect gaming performance. We remove threats and optimize your system without unnecessarily disturbing your game library.",
-    icon: ShieldAlert,
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop",
-    features: [
-      "Rootkit & ransomware removal",
-      "Gaming performance optimization",
-      "OS integrity restoration",
-      "Adware & bloatware cleanup",
-    ],
-    ctaText: "Book Malware Removal",
+    icon: Bug,
+    eyebrow: "Software",
+    title: "Virus & Malware",
+    accent: "Removal",
+    text: "Slow performance, pop-ups or a hijacked browser? We clean the system, repair Windows where needed and harden it so your games and files stay safe.",
+    items: ["Full malware scan & removal", "Windows repair & clean-up", "Startup & driver optimisation", "Security hardening advice"],
+    cta: "Clean My PC",
+    image: "https://s3.amazonaws.com/www.iobit.com/blog/20260626/1782472890304728.jpg",
+    imageAlt: "RGB gaming keyboard",
+    chip: "Safe & secure",
+    tone: "light",
   },
-];
+  {
+    id: "upgrades",
+    icon: Fan,
+    eyebrow: "Upgrades & cooling",
+    title: "RAM, SSD &",
+    accent: "Thermal Upgrades",
+    text: "Get more speed from the machine you already own. We upgrade memory and storage, refresh thermal paste, clear dust and replace fans so temperatures and noise drop.",
+    items: ["RAM & SSD upgrades", "Thermal paste refresh", "Dust & debris removal", "Fan replacement"],
+    cta: "Upgrade My PC",
+    image: "https://nnlaptops.com/products/1tb-nvme-ssd-wd-blue-sn570-gen3-laptop-upgrade-1.webp?v=m1",
+    imageAlt: "Custom gaming PC with RGB cooling",
+    chip: "Maximize performance",
+    tone: "violet",
+    reverse: true,
+  },
+]
 
-const brands = [
-  "NVIDIA",
-  "AMD RYZEN",
-  "INTEL CORE",
-  "ASUS ROG",
-  "MSI GAMING",
-  "GIGABYTE AORUS",
-  "CORSAIR",
-  "NZXT",
-  "RAZER",
-  "LOGITECH G",
-];
+/* Shared layout tokens (identical to the services page) */
+const wrap = "mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-10"
+const sectionY = "py-5 sm:py-6 lg:py-8"
+const card = "rounded-3xl"
+/* offsets anchor jumps from the sticky navbar mega menu links */
+const anchor = "scroll-mt-32"
 
-const trustItems = [
-  {
-    icon: ShieldCheck,
-    title: "90-Day Warranty",
+const toneCls: Record<Tone, { box: string; title: string; body: string; eyebrow: string; icon: string; check: string; item: string; cta: string }> = {
+  light: {
+    box: "border border-slate-200 bg-white",
+    title: "text-slate-900",
+    body: "text-slate-500",
+    eyebrow: "bg-violet-100 text-violet-700",
+    icon: "bg-violet-50 text-violet-600",
+    check: "text-violet-500",
+    item: "text-slate-700",
+    cta: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/30",
   },
-  {
-    icon: Clock,
-    title: "Fast Turnaround",
+  dark: {
+    box: "bg-slate-900",
+    title: "text-white",
+    body: "text-slate-300",
+    eyebrow: "bg-violet-500/15 text-violet-300",
+    icon: "bg-white/10 text-white",
+    check: "text-violet-400",
+    item: "text-slate-100",
+    cta: "bg-white text-slate-900 shadow-lg",
   },
-  {
-    icon: Settings,
-    title: "OEM Parts",
+  violet: {
+    box: "bg-gradient-to-br from-violet-600 to-indigo-700",
+    title: "text-white",
+    body: "text-violet-100",
+    eyebrow: "bg-white/15 text-white",
+    icon: "bg-white/20 text-white",
+    check: "text-violet-200",
+    item: "text-white",
+    cta: "bg-white text-violet-700 shadow-lg",
   },
-];
+}
+
+/* One reusable "text + image + CTA" section */
+function FeatureSection({ f }: { f: Feature }) {
+  const t = toneCls[f.tone]
+  const dark = f.tone !== "light"
+
+  return (
+    <section id={f.id} className={`${sectionY} ${anchor}`}>
+      <div className={wrap}>
+        <div className={`overflow-hidden ${card} ${t.box}`}>
+          <div className="grid lg:grid-cols-2">
+            {/* text */}
+            <div className={`flex flex-col justify-center p-7 sm:p-10 lg:p-14 ${f.reverse ? "lg:order-2" : ""}`}>
+              <span className={`mb-4 inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider ${t.eyebrow}`}>
+                <f.icon className="size-3.5" /> {f.eyebrow}
+              </span>
+              <h2 className={`mb-4 text-3xl font-black leading-tight sm:text-4xl lg:text-5xl ${t.title}`}>
+                {f.title}{" "}
+                <span className={dark ? "text-fuchsia-300" : "text-violet-600"}>{f.accent}</span>
+              </h2>
+              <p className={`mb-6 max-w-xl text-base font-medium leading-relaxed sm:text-lg ${t.body}`}>{f.text}</p>
+
+              <ul className="mb-8 grid max-w-xl gap-3 sm:grid-cols-2">
+                {f.items.map((item) => (
+                  <li key={item} className={`flex items-center gap-2.5 text-base font-semibold ${t.item}`}>
+                    <CheckCircle2 className={`size-5 shrink-0 ${t.check}`} /> {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div>
+                <Link
+                  href={FORM}
+                  className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold transition-transform hover:-translate-y-0.5 ${t.cta}`}
+                >
+                  {f.cta} <ArrowRight className="size-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* image */}
+            <div className={`relative min-h-[300px] sm:min-h-[400px] lg:min-h-[480px] ${f.reverse ? "lg:order-1" : ""}`}>
+              <Image
+                src={f.image}
+                alt={f.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+              />
+              <div
+                className={`absolute inset-0 ${
+                  f.reverse
+                    ? "bg-gradient-to-t from-slate-950/60 via-transparent to-transparent lg:bg-gradient-to-l lg:from-transparent lg:via-transparent lg:to-slate-950/20"
+                    : "bg-gradient-to-t from-slate-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-slate-950/20"
+                }`}
+              />
+              <div className="absolute bottom-5 left-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/50 px-4 py-2 text-sm font-bold text-white backdrop-blur">
+                <f.icon className="size-4 text-violet-300" /> {f.chip}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function GamingPCRepairPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-white text-slate-900">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      {/* ================= HERO (image = full background) ================= */}
+      <section className="relative isolate flex min-h-[680px] flex-col overflow-hidden bg-[#050816] text-white lg:min-h-[760px] xl:min-h-[820px]">
+        <Image
+          src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1792816921/hero-bg_gqfshv.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover object-[70%_50%] lg:object-right"
+        />
+        {/* dark on the text side, clear on the PC side */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050816] via-[#050816]/85 to-[#050816]/20 lg:via-[#050816]/70 lg:to-transparent" />
 
-      {/* =====================================================
-          HERO
-      ====================================================== */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50">
+        <div className={`${wrap} flex flex-1 flex-col justify-center py-10 sm:py-14 lg:py-16`}>
+          <div className="max-w-4xl">
+            <p className="flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.4em] text-slate-200 sm:text-base">
+              Expert
+              <span className="h-px w-24 bg-gradient-to-r from-sky-400 to-transparent sm:w-40" />
+            </p>
 
-        {/* Background */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-32 -top-32 size-[360px] rounded-full bg-violet-200/50 blur-[100px] sm:size-[500px]" />
-          <div className="absolute -bottom-40 -left-32 size-[300px] rounded-full bg-indigo-100/60 blur-[90px] sm:size-[450px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-[90rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
-
-            {/* Hero Content */}
-            <div className="max-w-2xl">
-
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-violet-700 sm:mb-5 sm:px-4 sm:py-2 sm:text-xs">
-                <Wrench className="size-3.5 sm:size-4" />
-                Professional PC Services
-              </div>
-
-              <h1 className="text-3xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                Expert{" "}
-                <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                  Gaming PC
-                </span>{" "}
-                Repair & Upgrades
-              </h1>
-
-              <p className="mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-5 sm:text-base sm:leading-7 lg:text-lg">
-                Professional diagnostics, hardware repair, upgrades and
-                malware removal to get your gaming rig performing at its best.
-              </p>
-
-              {/* Buttons */}
-              <div className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:gap-3">
-                <Link
-                  href="/repair"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 hover:shadow-violet-600/30 active:scale-[0.98] sm:h-12 sm:px-7"
-                >
-                  Book a Repair
-                  <ArrowRight className="size-4" />
-                </Link>
-
-                <a
-                  href="#services-breakdown"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.98] sm:h-12 sm:px-7"
-                >
-                  Explore Services
-                </a>
-              </div>
-
-              {/* Trust */}
-              <div className="mt-7 grid grid-cols-3 gap-2 border-t border-slate-200 pt-5 sm:mt-8 sm:gap-5 sm:pt-6">
-                {trustItems.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <div
-                      key={item.title}
-                      className="flex items-center gap-1.5 sm:gap-2.5"
-                    >
-                      <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-100 sm:size-9">
-                        <Icon className="size-3.5 text-violet-600 sm:size-4" />
-                      </div>
-
-                      <span className="text-[9px] font-bold leading-3 text-slate-600 sm:text-xs sm:leading-4">
-                        {item.title}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Hero Image */}
-            <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-
-              <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-300/30 sm:rounded-3xl">
-                <Image
-                  src="https://res.cloudinary.com/dvu9vmcqd/image/upload/v1786215933/setup2_ylsx6s.png"
-                  alt="Gaming PC repair and custom hardware"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent" />
-              </div>
-
-              {/* Decorative pattern */}
-              <div className="pointer-events-none absolute -inset-3 -z-10 rounded-3xl bg-[radial-gradient(#cbd5e1_1.5px,transparent_1.5px)] [background-size:16px_16px] opacity-60 sm:-inset-5 sm:[background-size:20px_20px]" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================
-          BRANDS
-      ====================================================== */}
-      <section className="overflow-hidden border-b border-slate-800 bg-slate-950 py-6 sm:py-8">
-
-        <p className="mb-4 text-center text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500 sm:mb-5 sm:text-xs">
-          Trusted experience across premium gaming brands
-        </p>
-
-        <div className="relative overflow-hidden">
-
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-slate-950 to-transparent sm:w-24" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-slate-950 to-transparent sm:w-24" />
-
-          <motion.div
-            className="flex w-max items-center gap-8 whitespace-nowrap sm:gap-12 md:gap-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 28,
-            }}
-          >
-            {[...brands, ...brands].map((brand, index) => (
-              <span
-                key={`${brand}-${index}`}
-                className="text-base font-black tracking-tight text-slate-700 transition-colors hover:text-white sm:text-xl md:text-2xl"
-              >
-                {brand}
+            <h1 className="mt-3 text-5xl font-black leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
+              <span className="block text-white">GAMING PC</span>
+              <span className="block bg-gradient-to-r from-fuchsia-500 via-violet-500 to-sky-400 bg-clip-text text-transparent">
+                REPAIR &amp; UPGRADES
               </span>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+            </h1>
 
-      {/* =====================================================
-          SERVICES
-      ====================================================== */}
-      <section
-        id="services-breakdown"
-        className="scroll-mt-16 bg-white py-12 sm:py-16 lg:py-20"
-      >
-        <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-10">
-
-          {/* Heading */}
-          <div className="mb-10 max-w-2xl sm:mb-14">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600 sm:text-xs">
-              Our services
+            <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-lg font-medium text-slate-300 sm:text-xl lg:text-2xl">
+              <span>Restore</span>
+              <span className="h-5 w-px bg-slate-500" />
+              <span>Upgrade</span>
+              <span className="h-5 w-px bg-slate-500" />
+              <span>Maximize Performance</span>
             </p>
 
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl md:text-4xl">
-              Complete PC repair solutions
-            </h2>
-
-            <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
-              From routine upgrades to advanced board-level repairs, our
-              technicians handle the hardware and software issues that matter.
-            </p>
-          </div>
-
-          {/* Service List */}
-          <div className="space-y-10 sm:space-y-14 lg:space-y-20">
-
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              const reversed = index % 2 !== 0;
-
-              return (
-                <article
-                  key={service.id}
-                  id={service.id}
-                  className={`scroll-mt-20 grid items-center gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-12 ${
-                    reversed ? "lg:[&>*:first-child]:order-2" : ""
-                  }`}
+            <ul className="mt-8 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+              {heroFeatures.map((f) => (
+                <li
+                  key={f.label}
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-4 text-center backdrop-blur"
                 >
+                  <f.icon className="size-7 text-violet-400" />
+                  <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-slate-100">{f.label}</span>
+                </li>
+              ))}
+            </ul>
 
-                  {/* Image */}
-                  <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 sm:rounded-3xl">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={FORM}
+                className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-xl shadow-violet-900/50 transition-transform hover:-translate-y-0.5 sm:text-base"
+              >
+                Get your PC fixed today <ArrowRight className="size-5" />
+              </Link>
+              <Link
+                href={FORM}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-8 py-4 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15 sm:text-base"
+              >
+                <Settings className="size-4" /> Book a Diagnostic
+              </Link>
+            </div>
+          </div>
+        </div>
 
-                    <div className="relative aspect-[16/10]">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-slate-950/35 via-transparent to-transparent" />
-                    </div>
-
-                    {/* Number */}
-                    <span className="absolute left-3 top-3 flex size-8 items-center justify-center rounded-lg bg-white/90 text-xs font-black text-slate-900 shadow-sm backdrop-blur sm:left-4 sm:top-4 sm:size-9">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="max-w-xl">
-
-                    <div className="mb-4 flex size-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600 ring-1 ring-violet-100 sm:mb-5 sm:size-12 sm:rounded-2xl">
-                      <Icon className="size-5 sm:size-6" />
-                    </div>
-
-                    <h3 className="text-xl font-black leading-tight tracking-tight text-slate-950 sm:text-2xl md:text-3xl">
-                      {service.title}
-                    </h3>
-
-                    <p className="mt-2 text-sm font-bold text-violet-600 sm:text-base">
-                      {service.subtitle}
-                    </p>
-
-                    <p className="mt-3 text-sm leading-6 text-slate-500 sm:mt-4 sm:text-base sm:leading-7">
-                      {service.description}
-                    </p>
-
-                    {/* Features */}
-                    <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-3">
-                      {service.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-start gap-2"
-                        >
-                          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-violet-500" />
-
-                          <span className="text-xs font-semibold leading-5 text-slate-700 sm:text-sm">
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* CTA */}
-                    <div className="mt-5 sm:mt-6">
-                      <Link
-                        href="/repair"
-                        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-xs font-bold text-white transition hover:bg-violet-600 sm:h-11 sm:w-auto sm:text-sm"
-                      >
-                        {service.ctaText}
-                        <ArrowRight className="size-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+        {/* floating badge */}
+        <div className={`${wrap} relative hidden pb-6 lg:block`}>
+          <div className="ml-auto flex w-fit items-center gap-3 rounded-xl border border-violet-400/30 bg-[#050816]/70 px-5 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md">
+            <ShieldCheck className="size-6 text-sky-300" />
+            <span className="leading-tight">
+              Built for
+              <br />
+              better gaming
+            </span>
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          CTA
-      ====================================================== */}
-      <section className="relative overflow-hidden bg-slate-950">
+      {/* ================= BRANDS MARQUEE (coloured logos) ================= */}
+      <div className="relative overflow-hidden border-b border-slate-200 bg-white py-5">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-40" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-40" />
 
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-32 top-1/2 size-80 -translate-y-1/2 rounded-full bg-violet-700/20 blur-[100px]" />
-          <div className="absolute -left-32 bottom-0 size-72 rounded-full bg-indigo-700/20 blur-[100px]" />
+        <div className="animate-marquee flex items-center gap-14 px-8 sm:gap-24">
+          {[...brands, ...brands, ...brands, ...brands].map((brand, i) => (
+            <div
+              key={i}
+              className="flex shrink-0 cursor-default items-center justify-center transition-transform duration-300 hover:scale-110"
+              title={brand.name}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://cdn.simpleicons.org/${brand.slug}`}
+                alt={brand.name}
+                loading="lazy"
+                className="h-8 w-auto object-contain sm:h-10"
+              />
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:py-20">
-
-          <div className="mx-auto mb-5 flex size-12 items-center justify-center rounded-2xl border border-violet-500/20 bg-violet-500/10 sm:size-14">
-            <Wrench className="size-6 text-violet-300 sm:size-7" />
+      {/* ================= INTRO + QUICK LINKS ================= */}
+      <section id="services" className="pb-1 pt-6 sm:pt-8 lg:pt-10">
+        <div className={wrap}>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
+              <Sparkles className="size-3.5" /> Gaming PC Services
+            </span>
+            <h2 className="mb-3 text-3xl font-black text-slate-900 sm:text-4xl lg:text-5xl">Everything Inside Your Rig</h2>
+            <p className="text-base text-slate-500 sm:text-lg">
+              From a PC that won&apos;t boot to a full performance upgrade, we diagnose first and repair with precision.
+            </p>
           </div>
 
-          <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
-            Ready to revive your rig?
-          </h2>
-
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7">
-            Bring your system to our service center or schedule a pickup.
-            We diagnose the issue and provide a transparent quote before
-            starting any work.
-          </p>
-
-          <Link
-            href="/repair"
-            className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-6 text-sm font-bold text-white shadow-lg shadow-violet-500/20 transition hover:bg-violet-400 hover:shadow-violet-500/30 active:scale-[0.98] sm:mt-7 sm:h-12 sm:w-auto sm:px-8"
-          >
-            Book Your Repair
-            <ArrowRight className="size-4" />
-          </Link>
+          <ul className="mt-5 flex flex-wrap justify-center gap-2">
+            {features.map((f) => (
+              <li key={f.id}>
+                <a
+                  href={`#${f.id}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-violet-300 hover:text-violet-600"
+                >
+                  <f.icon className="size-4 text-violet-500" /> {f.eyebrow}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
-    </main>
-  );
+
+      {/* ================= TEXT + IMAGE + CTA SECTIONS ================= */}
+      {features.map((f) => (
+        <FeatureSection key={f.id} f={f} />
+      ))}
+
+    
+      
+      {/* Global marquee animation */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 35s linear infinite;
+          width: max-content;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee { animation: none; }
+        }
+      `}</style>
+    </div>
+  )
 }

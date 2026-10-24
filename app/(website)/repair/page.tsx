@@ -5,6 +5,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock,
+  Cpu,
   Laptop,
   Mail,
   MonitorCog,
@@ -32,6 +33,33 @@ const trustItems = [
     icon: Wrench,
     title: "Expert Technicians",
     text: "Professional device care",
+  },
+];
+
+const services = [
+  {
+    icon: MonitorCog,
+    title: "Gaming PC Repair",
+    text: "Diagnostics, cooling, power supply, graphics and motherboard repairs.",
+    href: "/gaming-pc-repair",
+  },
+  {
+    icon: Laptop,
+    title: "Gaming Laptop Repair",
+    text: "Screens, keyboards, batteries, charging ports and chip-level work.",
+    href: "/gaming-laptop-repair",
+  },
+  {
+    icon: Tablet,
+    title: "iPad & Tablet Repair",
+    text: "Displays, batteries, charging ports and water damage recovery.",
+    href: "/ipad-repair",
+  },
+  {
+    icon: Cpu,
+    title: "Deep Cleaning & Thermal",
+    text: "Dust removal, thermal paste replacement and cooling maintenance.",
+    href: "/deep-cleaning",
   },
 ];
 
@@ -63,63 +91,71 @@ const processSteps = [
   },
 ];
 
-
+const inputCls =
+  "h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10";
+const labelCls = "mb-2 block text-xs font-bold text-slate-700";
 
 export default function RepairPage() {
   const [contactMethod, setContactMethod] = useState("WhatsApp");
 
   return (
-    <main className="min-h-screen overflow-hidden bg-slate-100 text-slate-900">
-      {/* HERO */}
+    <main className="min-h-screen overflow-hidden bg-white text-slate-900">
+      {/* ====================================================== */}
+      {/* HERO                                                    */}
+      {/* ====================================================== */}
       <section className="relative overflow-hidden bg-slate-950">
-        {/* Background effects */}
         <div className="absolute inset-0">
-          <div className="absolute right-[-10%] top-[-35%] h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-[120px]" />
+          <div className="absolute right-[-10%] top-[-35%] h-[520px] w-[520px] rounded-full bg-violet-600/20 blur-[120px]" />
           <div className="absolute bottom-[-45%] left-[-10%] h-[450px] w-[450px] rounded-full bg-indigo-600/15 blur-[120px]" />
-
           <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,1)_1px,transparent_1px)] [background-size:40px_40px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[96rem] px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-18">
-          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        <div className="relative mx-auto max-w-[112rem] px-4 py-12 sm:px-8 sm:py-16 lg:px-14 lg:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-violet-300 sm:text-xs">
+              <div className="inline-flex items-center gap-2 rounded-md border border-violet-400/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-violet-300 sm:text-xs">
                 <Wrench className="size-3.5" />
                 Professional Repair Center
               </div>
 
-              <h1 className="mt-4 text-4xl font-black leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+              <h1 className="mt-5 text-4xl font-black leading-[1.03] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
                 Get your device
                 <span className="block bg-gradient-to-r from-violet-400 via-violet-300 to-indigo-400 bg-clip-text text-transparent">
                   back in the game.
                 </span>
               </h1>
 
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7 lg:text-lg">
-                Tell us what's wrong with your device and our repair team will
-                review your request, diagnose the issue, and get back to you
-                with the next steps.
+              <p className="mt-5 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base sm:leading-7 lg:text-lg lg:leading-8">
+                Tell us what&apos;s wrong with your device and our repair team
+                will review your request, diagnose the issue, and get back to
+                you with the next steps.
               </p>
 
-              <a
-                href="#repair-form"
-                className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-violet-600 px-5 text-xs font-bold text-white shadow-xl shadow-violet-900/30 transition hover:bg-violet-500 sm:h-12 sm:text-sm"
-              >
-                Start Repair Request
-                <ArrowRight className="ml-2 size-4" />
-              </a>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a
+                  href="#repair-form"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white shadow-xl shadow-violet-900/30 transition hover:bg-violet-500"
+                >
+                  Start Repair Request
+                  <ArrowRight className="ml-2 size-4" />
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  How it works
+                </a>
+              </div>
 
               {/* Trust */}
-              <div className="mt-8 grid grid-cols-3 gap-3 border-t border-white/10 pt-6 sm:gap-6">
+              <div className="mt-10 grid grid-cols-3 gap-4 border-t border-white/10 pt-7 sm:gap-8">
                 {trustItems.map(({ icon: Icon, title, text }) => (
                   <div key={title}>
-                    <Icon className="size-4 text-violet-400 sm:size-5" />
-
-                    <p className="mt-2 text-[10px] font-bold text-white sm:text-xs">
+                    <Icon className="size-5 text-violet-400" />
+                    <p className="mt-2.5 text-[11px] font-bold text-white sm:text-sm">
                       {title}
                     </p>
-
-                    <p className="mt-0.5 hidden text-[10px] leading-4 text-slate-500 sm:block">
+                    <p className="mt-0.5 hidden text-xs leading-5 text-slate-500 sm:block">
                       {text}
                     </p>
                   </div>
@@ -129,7 +165,7 @@ export default function RepairPage() {
 
             {/* Hero side panel */}
             <div className="hidden lg:block">
-              <div className="rounded-3xl border border-white/10 bg-white/[0.045] p-6 backdrop-blur-xl">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-7 backdrop-blur-xl">
                 <div className="flex items-center justify-between border-b border-white/10 pb-5">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-400">
@@ -139,13 +175,12 @@ export default function RepairPage() {
                       Gaming Hardware
                     </h2>
                   </div>
-
-                  <div className="flex size-11 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
+                  <div className="flex size-11 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
                     <MonitorCog className="size-5" />
                   </div>
                 </div>
 
-                <div className="mt-5 space-y-2.5">
+                <div className="mt-5 space-y-3">
                   {[
                     {
                       icon: MonitorCog,
@@ -165,34 +200,29 @@ export default function RepairPage() {
                   ].map(({ icon: Icon, title, text }) => (
                     <div
                       key={title}
-                      className="flex items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.035] p-3"
+                      className="flex items-center gap-4 rounded-xl border border-white/5 bg-white/[0.035] p-4"
                     >
-                      <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
+                      <div className="flex size-11 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
                         <Icon className="size-5" />
                       </div>
-
                       <div>
-                        <p className="text-xs font-bold text-white">
-                          {title}
-                        </p>
-                        <p className="mt-0.5 text-[10px] text-slate-500">
-                          {text}
-                        </p>
+                        <p className="text-sm font-bold text-white">{title}</p>
+                        <p className="mt-0.5 text-xs text-slate-500">{text}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-violet-500/10 bg-violet-500/5 p-4">
-                  <div className="flex gap-2.5">
+                <div className="mt-4 rounded-xl border border-violet-500/10 bg-violet-500/5 p-4">
+                  <div className="flex gap-3">
                     <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" />
                     <div>
-                      <p className="text-xs font-bold text-white">
-                        Not sure what's wrong?
+                      <p className="text-sm font-bold text-white">
+                        Not sure what&apos;s wrong?
                       </p>
-                      <p className="mt-1 text-[10px] leading-4 text-slate-500">
-                        That's okay. Describe the symptoms and our technicians
-                        will help identify the issue.
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                        That&apos;s okay. Describe the symptoms and our
+                        technicians will help identify the issue.
                       </p>
                     </div>
                   </div>
@@ -203,79 +233,131 @@ export default function RepairPage() {
         </div>
       </section>
 
-      {/* process */}
-
-      <section
-  id="how-it-works"
-  className="relative overflow-hidden bg-slate-950 py-10 text-white sm:py-14 md:py-20"
->
-  <div className="pointer-events-none absolute left-1/4 top-0 h-72 w-72 rounded-full bg-violet-900/20 blur-[100px] md:h-96 md:w-96" />
-
-  <div className="pointer-events-none absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-fuchsia-900/10 blur-[100px] md:h-96 md:w-96" />
-
-  <div
-    className="pointer-events-none absolute inset-0 z-0 opacity-[0.12]"
-    style={{
-      backgroundImage:
-        "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
-      backgroundSize: "3rem 3rem",
-    }}
-  />
-
-  <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-12">
-    <div className="mb-8 text-center sm:mb-12 md:mb-16">
-      <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-400 shadow-sm">
-        <span className="h-2 w-2 rounded-full bg-violet-500" />
-        How It Works
-      </span>
-
-      <h2 className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-2xl font-black tracking-tight text-transparent sm:text-3xl md:text-5xl">
-        Simple. Transparent. Reliable.
-      </h2>
-    </div>
-
-    <div className="relative mx-auto max-w-7xl">
-      <div className="absolute left-[10%] right-[10%] top-8 z-0 hidden h-[2px] bg-gradient-to-r from-transparent via-violet-600/50 to-transparent lg:block" />
-
-      <div className="relative flex flex-col justify-between gap-4 sm:gap-6 lg:flex-row lg:items-stretch lg:gap-4">
-        <div className="pointer-events-none absolute bottom-6 left-6 top-6 z-0 w-[2px] bg-gradient-to-b from-transparent via-violet-600/50 to-transparent lg:hidden" />
-
-        {processSteps.map((step, idx) => (
-          <div
-            key={idx}
-            className="group relative z-10 flex w-full items-stretch text-left lg:flex-1 lg:flex-col lg:items-center lg:text-center"
-          >
-            <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-900 text-base font-black text-slate-300 shadow-md transition-colors duration-300 group-hover:border-violet-500 group-hover:bg-violet-700 group-hover:text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              {step.step}
+      {/* ====================================================== */}
+      {/* WHAT WE REPAIR                                          */}
+      {/* ====================================================== */}
+      <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-[112rem] px-4 sm:px-8 lg:px-14">
+          <div className="mb-8 flex flex-col gap-3 sm:mb-10 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-600">
+                Our services
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
+                What we repair
+              </h2>
             </div>
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-violet-600 hover:underline"
+            >
+              View all services <ArrowRight className="size-4" />
+            </Link>
+          </div>
 
-            <div className="ml-4 flex w-full flex-1 sm:ml-6 lg:ml-0 lg:mt-6">
-              <div className="flex min-h-[120px] w-full flex-col rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-md transition-colors duration-300 group-hover:border-violet-500/30 sm:rounded-2xl sm:p-5 lg:h-[150px] lg:min-h-[150px]">
-                <h4 className="mb-1 text-base font-bold text-slate-100 transition-colors group-hover:text-violet-300 sm:mb-2 sm:text-lg">
-                  {step.title}
-                </h4>
-
-                <p className="text-xs font-medium leading-relaxed text-slate-400 sm:text-sm">
-                  {step.desc}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            {services.map(({ icon: Icon, title, text, href }) => (
+              <Link
+                key={href}
+                href={href}
+                className="group flex flex-col rounded-xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg hover:shadow-violet-500/5"
+              >
+                <div className="flex size-12 items-center justify-center rounded-lg bg-violet-50 text-violet-600 transition group-hover:bg-violet-600 group-hover:text-white">
+                  <Icon className="size-6" />
+                </div>
+                <h3 className="mt-5 text-base font-extrabold text-slate-900">
+                  {title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-6 text-slate-500">
+                  {text}
                 </p>
-              </div>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-violet-600">
+                  Learn more
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================== */}
+      {/* PROCESS (unchanged)                                     */}
+      {/* ====================================================== */}
+      <section
+        id="how-it-works"
+        className="relative overflow-hidden bg-slate-950 py-10 text-white sm:py-14 md:py-20"
+      >
+        <div className="pointer-events-none absolute left-1/4 top-0 h-72 w-72 rounded-full bg-violet-900/20 blur-[100px] md:h-96 md:w-96" />
+
+        <div className="pointer-events-none absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-fuchsia-900/10 blur-[100px] md:h-96 md:w-96" />
+
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
+            backgroundSize: "3rem 3rem",
+          }}
+        />
+
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="mb-8 text-center sm:mb-12 md:mb-16">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-400 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-violet-500" />
+              How It Works
+            </span>
+
+            <h2 className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-2xl font-black tracking-tight text-transparent sm:text-3xl md:text-5xl">
+              Simple. Transparent. Reliable.
+            </h2>
+          </div>
+
+          <div className="relative mx-auto max-w-7xl">
+            <div className="absolute left-[10%] right-[10%] top-8 z-0 hidden h-[2px] bg-gradient-to-r from-transparent via-violet-600/50 to-transparent lg:block" />
+
+            <div className="relative flex flex-col justify-between gap-4 sm:gap-6 lg:flex-row lg:items-stretch lg:gap-4">
+              <div className="pointer-events-none absolute bottom-6 left-6 top-6 z-0 w-[2px] bg-gradient-to-b from-transparent via-violet-600/50 to-transparent lg:hidden" />
+
+              {processSteps.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="group relative z-10 flex w-full items-stretch text-left lg:flex-1 lg:flex-col lg:items-center lg:text-center"
+                >
+                  <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-900 text-base font-black text-slate-300 shadow-md transition-colors duration-300 group-hover:border-violet-500 group-hover:bg-violet-700 group-hover:text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+                    {step.step}
+                  </div>
+
+                  <div className="ml-4 flex w-full flex-1 sm:ml-6 lg:ml-0 lg:mt-6">
+                    <div className="flex min-h-[120px] w-full flex-col rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-md transition-colors duration-300 group-hover:border-violet-500/30 sm:rounded-2xl sm:p-5 lg:h-[150px] lg:min-h-[150px]">
+                      <h4 className="mb-1 text-base font-bold text-slate-100 transition-colors group-hover:text-violet-300 sm:mb-2 sm:text-lg">
+                        {step.title}
+                      </h4>
+
+                      <p className="text-xs font-medium leading-relaxed text-slate-400 sm:text-sm">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
-      {/* FORM SECTION */}
+        </div>
+      </section>
+
+      {/* ====================================================== */}
+      {/* FORM SECTION                                            */}
+      {/* ====================================================== */}
       <section
         id="repair-form"
-        className="scroll-mt-10 border-b border-slate-200 bg-slate-100 py-8 sm:py-12 lg:py-16"
+        className="scroll-mt-24 border-b border-slate-200 bg-slate-100 py-12 sm:py-16 lg:py-20"
       >
-        <div className="mx-auto max-w-[96rem] px-4 sm:px-6 lg:px-10">
-          <div className="grid gap-6 lg:grid-cols-[0.7fr_1.3fr] lg:gap-10">
+        <div className="mx-auto max-w-[112rem] px-4 sm:px-8 lg:px-14">
+          <div className="grid gap-8 lg:grid-cols-[0.5fr_1.5fr] lg:gap-14">
             {/* LEFT INFO */}
-            <div className="lg:sticky lg:top-8 lg:self-start">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600 sm:text-xs">
+            <div className="lg:sticky lg:top-32 lg:self-start">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-600">
                 Repair request
               </p>
 
@@ -283,13 +365,13 @@ export default function RepairPage() {
                 Tell us what happened.
               </h2>
 
-              <p className="mt-3 max-w-md text-sm leading-6 text-slate-500 sm:text-base">
+              <p className="mt-4 max-w-md text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
                 Complete the form and give us as much information as possible.
                 It helps our technicians understand the problem before
                 contacting you.
               </p>
 
-              <div className="mt-6 space-y-2.5">
+              <div className="mt-7 space-y-2.5">
                 {[
                   "Professional diagnosis",
                   "Transparent communication",
@@ -298,90 +380,97 @@ export default function RepairPage() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5"
+                    className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3"
                   >
                     <CheckCircle2 className="size-4 shrink-0 text-emerald-500" />
-                    <span className="text-xs font-semibold text-slate-600">
+                    <span className="text-sm font-semibold text-slate-700">
                       {item}
                     </span>
                   </div>
                 ))}
               </div>
+
+              <div className="mt-5 rounded-lg border border-violet-100 bg-violet-50 p-4">
+                <p className="text-sm font-bold text-violet-900">
+                  Inspection &amp; diagnosis
+                </p>
+                <p className="mt-1 text-xs leading-5 text-violet-800/80">
+                  A 100 DHS service charge applies for inspection, diagnosis
+                  and testing.{" "}
+                  <Link
+                    href="/legal?doc=refund-and-return-policy#service-and-diagnostic-charge"
+                    className="font-bold underline underline-offset-2"
+                  >
+                    Read the policy
+                  </Link>
+                </p>
+              </div>
             </div>
 
             {/* FORM */}
-            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
               {/* Form Header */}
-              <div className="bg-slate-950 px-5 py-5 sm:px-7">
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
+              <div className="bg-slate-950 px-6 py-6 sm:px-10">
+                <div className="flex items-center gap-4">
+                  <div className="flex size-11 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
                     <Wrench className="size-5" />
                   </div>
 
                   <div>
-                    <h3 className="text-base font-black text-white sm:text-lg">
+                    <h3 className="text-lg font-black text-white sm:text-xl">
                       Submit a repair request
                     </h3>
-
-                    <p className="mt-0.5 text-[10px] text-slate-500 sm:text-xs">
+                    <p className="mt-0.5 text-xs text-slate-500">
                       Usually takes less than 2 minutes
                     </p>
                   </div>
                 </div>
               </div>
 
-              <form className="space-y-6 p-5 sm:p-7">
+              <form className="space-y-8 p-6 sm:p-10">
                 {/* CUSTOMER DETAILS */}
                 <div>
-                  <div className="mb-4 flex items-center gap-2">
-                    <div className="flex size-7 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
-                      <User className="size-3.5" />
+                  <div className="mb-5 flex items-center gap-3">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+                      <User className="size-4" />
                     </div>
 
                     <div>
                       <h4 className="text-sm font-black text-slate-900">
                         Your details
                       </h4>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-xs text-slate-400">
                         So we know how to reach you
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label
-                        htmlFor="name"
-                        className="mb-1.5 block text-xs font-bold text-slate-700"
-                      >
+                      <label htmlFor="name" className={labelCls}>
                         Full name
                       </label>
-
                       <input
                         id="name"
                         name="name"
                         type="text"
                         required
                         placeholder="Your full name"
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                        className={inputCls}
                       />
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="phone"
-                        className="mb-1.5 block text-xs font-bold text-slate-700"
-                      >
+                      <label htmlFor="phone" className={labelCls}>
                         Phone number
                       </label>
-
                       <input
                         id="phone"
                         name="phone"
                         type="tel"
                         required
                         placeholder="+92 300 1234567"
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                        className={inputCls}
                       />
                     </div>
                   </div>
@@ -389,28 +478,17 @@ export default function RepairPage() {
 
                 {/* CONTACT METHOD */}
                 <div>
-                  <label className="mb-2 block text-xs font-bold text-slate-700">
-                    Preferred contact method
-                  </label>
+                  <label className={labelCls}>Preferred contact method</label>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     {[
-                      {
-                        name: "WhatsApp",
-                        icon: Phone,
-                      },
-                      {
-                        name: "Phone",
-                        icon: Phone,
-                      },
-                      {
-                        name: "Email",
-                        icon: Mail,
-                      },
+                      { name: "WhatsApp", icon: Phone },
+                      { name: "Phone", icon: Phone },
+                      { name: "Email", icon: Mail },
                     ].map(({ name, icon: Icon }) => (
                       <label
                         key={name}
-                        className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
+                        className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border py-3.5 text-sm font-bold transition ${
                           contactMethod === name
                             ? "border-violet-500 bg-violet-50 text-violet-600"
                             : "border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300"
@@ -424,8 +502,7 @@ export default function RepairPage() {
                           onChange={() => setContactMethod(name)}
                           className="sr-only"
                         />
-
-                        <Icon className="size-3.5" />
+                        <Icon className="size-4" />
                         {name}
                       </label>
                     ))}
@@ -433,55 +510,45 @@ export default function RepairPage() {
                 </div>
 
                 {/* DEVICE */}
-                <div>
-                  <div className="mb-4">
+                <div className="border-t border-slate-100 pt-8">
+                  <div className="mb-5">
                     <h4 className="text-sm font-black text-slate-900">
                       Device information
                     </h4>
-                    <p className="mt-0.5 text-[10px] text-slate-400">
-                      Tell us what you're bringing in
+                    <p className="mt-0.5 text-xs text-slate-400">
+                      Tell us what you&apos;re bringing in
                     </p>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label
-                        htmlFor="device"
-                        className="mb-1.5 block text-xs font-bold text-slate-700"
-                      >
+                      <label htmlFor="device" className={labelCls}>
                         Device type
                       </label>
-
                       <select
                         id="device"
                         name="device"
                         required
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                        className={`${inputCls} text-slate-700`}
                       >
                         <option value="">Select device</option>
                         <option value="gaming-pc">Gaming PC</option>
-                        <option value="gaming-laptop">
-                          Gaming Laptop
-                        </option>
+                        <option value="gaming-laptop">Gaming Laptop</option>
                         <option value="ipad">iPad</option>
                         <option value="other">Other</option>
                       </select>
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="model"
-                        className="mb-1.5 block text-xs font-bold text-slate-700"
-                      >
+                      <label htmlFor="model" className={labelCls}>
                         Brand / Model
                       </label>
-
                       <input
                         id="model"
                         name="model"
                         type="text"
                         placeholder="e.g. ASUS ROG G15"
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                        className={inputCls}
                       />
                     </div>
                   </div>
@@ -489,10 +556,7 @@ export default function RepairPage() {
 
                 {/* ISSUE */}
                 <div>
-                  <label
-                    htmlFor="issue"
-                    className="mb-1.5 block text-xs font-bold text-slate-700"
-                  >
+                  <label htmlFor="issue" className={labelCls}>
                     Describe the problem
                   </label>
 
@@ -500,12 +564,12 @@ export default function RepairPage() {
                     id="issue"
                     name="issue"
                     required
-                    rows={5}
+                    rows={6}
                     placeholder="What happened? When did the problem start? Any unusual sounds, overheating, crashes, physical damage, or other symptoms?"
-                    className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-5 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                    className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm leading-6 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
                   />
 
-                  <p className="mt-1.5 text-[10px] text-slate-400">
+                  <p className="mt-2 text-xs text-slate-400">
                     More details help our technicians diagnose your device
                     faster.
                   </p>
@@ -515,18 +579,17 @@ export default function RepairPage() {
                 <div>
                   <label
                     htmlFor="attachment"
-                    className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 transition hover:border-violet-300 hover:bg-violet-50/50"
+                    className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-5 py-4 transition hover:border-violet-300 hover:bg-violet-50/50"
                   >
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm">
-                      <Upload className="size-4" />
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm">
+                      <Upload className="size-5" />
                     </div>
 
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-700">
+                      <p className="text-sm font-bold text-slate-700">
                         Add photos of the issue
                       </p>
-
-                      <p className="mt-0.5 truncate text-[10px] text-slate-400">
+                      <p className="mt-0.5 truncate text-xs text-slate-400">
                         Optional • JPG, PNG • Up to 10MB
                       </p>
                     </div>
@@ -543,17 +606,17 @@ export default function RepairPage() {
                 </div>
 
                 {/* SUBMIT */}
-                <div className="border-t border-slate-100 pt-5">
+                <div className="border-t border-slate-100 pt-6">
                   <button
                     type="submit"
-                    className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-violet-600 px-5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 sm:h-12"
+                    className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 sm:h-14"
                   >
                     Submit Repair Request
                     <ArrowRight className="ml-2 size-4" />
                   </button>
 
-                  <div className="mt-3 flex items-start justify-center gap-1.5 text-center text-[10px] leading-4 text-slate-400">
-                    <ShieldCheck className="mt-0.5 size-3 shrink-0" />
+                  <div className="mt-4 flex items-start justify-center gap-1.5 text-center text-xs leading-5 text-slate-400">
+                    <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
                     Your information is securely handled and only used to
                     process your repair request.
                   </div>
@@ -564,29 +627,39 @@ export default function RepairPage() {
         </div>
       </section>
 
-      {/* BOTTOM CTA */}
-      <section className="bg-slate-950 py-10 sm:py-12">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-400">
+      {/* ====================================================== */}
+      {/* BOTTOM CTA                                              */}
+      {/* ====================================================== */}
+      <section className="bg-slate-950 py-12 sm:py-16">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-400">
             Need help first?
           </p>
 
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
             Not sure which service you need?
           </h2>
 
-          <p className="mx-auto mt-2 max-w-xl text-xs leading-5 text-slate-500 sm:text-sm">
-            Don't worry. Explain the symptoms in your repair request and our
-            technicians can help identify the right service.
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
+            Don&apos;t worry. Explain the symptoms in your repair request and
+            our technicians can help identify the right service.
           </p>
 
-          <Link
-            href="/"
-            className="mt-5 inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/5 px-5 text-xs font-bold text-white transition hover:bg-white/10"
-          >
-            Back to Home
-            <ArrowRight className="ml-2 size-3.5" />
-          </Link>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/services"
+              className="inline-flex h-11 items-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white transition hover:bg-violet-500"
+            >
+              Browse Services
+              <ArrowRight className="ml-2 size-4" />
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex h-11 items-center rounded-lg border border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
       </section>
     </main>
