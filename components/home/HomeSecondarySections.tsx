@@ -329,71 +329,81 @@ export function HomeSecondarySections() {
       </section>
 
       {/* 5. HOW OUR REPAIR PROCESS WORKS - MOBILE OPTIMIZED FLOW */}
-      <section id="how-it-works" className="py-10 sm:py-14 md:py-20 bg-slate-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-violet-900/20 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-0 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-fuchsia-900/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
+<section
+  id="how-it-works"
+  className="relative overflow-hidden bg-slate-950 py-10 text-white sm:py-14 md:py-20"
+>
+  <div className="pointer-events-none absolute left-1/4 top-0 h-72 w-72 rounded-full bg-violet-900/20 blur-[100px] mix-blend-screen md:h-96 md:w-96" />
 
-        <div
-          className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
-            backgroundSize: "3rem 3rem",
-          }}
-        ></div>
+  <div className="pointer-events-none absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-fuchsia-900/10 blur-[100px] mix-blend-screen md:h-96 md:w-96" />
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+  <div
+    className="pointer-events-none absolute inset-0 z-0 opacity-[0.12]"
+    style={{
+      backgroundImage:
+        "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
+      backgroundSize: "3rem 3rem",
+    }}
+  />
+
+  <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-12">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      className="mb-8 text-center sm:mb-12 md:mb-16"
+    >
+      <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-400 shadow-sm">
+        <span className="h-2 w-2 rounded-full bg-violet-500" />
+        How It Works
+      </span>
+
+      <h2 className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-2xl font-black tracking-tight text-transparent sm:text-3xl md:text-5xl">
+        Simple. Transparent. Reliable.
+      </h2>
+    </motion.div>
+
+    <div className="relative mx-auto max-w-7xl">
+      {/* Desktop Connector */}
+      <div className="absolute left-[10%] right-[10%] top-8 z-0 hidden h-[2px] bg-gradient-to-r from-transparent via-violet-600/50 to-transparent lg:block" />
+
+      <div className="relative flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-stretch lg:gap-4">
+        {/* Mobile Connector */}
+        <div className="pointer-events-none absolute bottom-6 left-6 top-6 z-0 w-[2px] bg-gradient-to-b from-transparent via-violet-600/50 to-transparent lg:hidden" />
+
+        {processSteps.map((step, idx) => (
           <motion.div
+            key={idx}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="text-center mb-8 sm:mb-12 md:mb-16"
+            className="group relative z-10 flex w-full items-stretch text-left lg:flex-1 lg:flex-col lg:items-center lg:text-center"
           >
-            <span className="inline-flex items-center gap-1.5 text-violet-400 font-bold tracking-wider text-xs uppercase bg-violet-500/10 px-3.5 py-1.5 rounded-full border border-violet-500/20 mb-3 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
-              How It Works
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 tracking-tight">
-              Simple. Transparent. Reliable.
-            </h2>
-          </motion.div>
-
-          <div className="relative max-w-7xl mx-auto">
-            <div className="hidden lg:block absolute top-8 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-violet-600/50 to-transparent z-0"></div>
-
-            <div className="flex flex-col lg:flex-row justify-between gap-4 sm:gap-6 lg:gap-4 relative">
-              <div className="lg:hidden absolute top-6 bottom-6 left-6 w-[2px] bg-gradient-to-b from-transparent via-violet-600/50 to-transparent z-0"></div>
-
-              {processSteps.map((step, idx) => (
-                <motion.div
-                  key={idx}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={fadeUp}
-                  className="relative z-10 flex lg:flex-col items-start lg:items-center text-left lg:text-center w-full lg:flex-1 group"
-                >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-slate-900 border-2 border-slate-700 rounded-full flex items-center justify-center text-base sm:text-lg font-black text-slate-300 group-hover:bg-violet-700 group-hover:border-violet-500 group-hover:text-white transition-all duration-300 flex-shrink-0 z-10 relative shadow-md">
-                    {step.step}
-                  </div>
-
-                  <div className="ml-4 sm:ml-6 lg:ml-0 lg:mt-6 w-full">
-                    <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 group-hover:border-violet-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all duration-300 h-full">
-                      <h4 className="font-bold text-base sm:text-lg mb-1 sm:mb-2 text-slate-100 group-hover:text-violet-300 transition-colors">
-                        {step.title}
-                      </h4>
-                      <p className="text-slate-400 text-xs sm:text-sm font-medium leading-relaxed">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+            {/* Step Number */}
+            <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-900 text-base font-black text-slate-300 shadow-md transition-all duration-300 group-hover:border-violet-500 group-hover:bg-violet-700 group-hover:text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+              {step.step}
             </div>
-          </div>
-        </div>
-      </section>
+
+            {/* Equal-Height Card */}
+            <div className="ml-4 flex w-full flex-1 sm:ml-6 lg:ml-0 lg:mt-6 lg:flex-none">
+              <div className="flex min-h-[120px] w-full flex-col rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-md transition-all duration-300 group-hover:border-violet-500/30 sm:rounded-2xl sm:p-5 lg:h-[160px] lg:min-h-[160px]">
+                <h4 className="mb-1 text-base font-bold text-slate-100 transition-colors group-hover:text-violet-300 sm:mb-2 sm:text-lg">
+                  {step.title}
+                </h4>
+
+                <p className="text-xs font-medium leading-relaxed text-slate-400 sm:text-sm">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* GAMING SPECIALIST SECTION - TIGHT & COMPACT */}
       <section className="bg-white py-8 sm:py-12 md:py-16">

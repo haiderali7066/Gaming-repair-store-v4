@@ -136,9 +136,34 @@ export function Footer() {
           </div>
           
           <div className="flex items-center gap-6 text-slate-500">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          </div>
+  <Link
+    href="/legal?doc=privacy-policy"
+    className="hover:text-white transition-colors"
+  >
+    Privacy Policy
+  </Link>
+
+  <Link
+    href="/legal?doc=terms-and-conditions"
+    className="hover:text-white transition-colors"
+  >
+    Terms & Conditions
+  </Link>
+
+  <Link
+    href="/legal?doc=refund-and-return-policy"
+    className="hover:text-white transition-colors"
+  >
+    Refund & Return Policy
+  </Link>
+
+  <Link
+    href="/legal?doc=trade-in-policy"
+    className="hover:text-white transition-colors"
+  >
+    Trade-In Policy
+  </Link>
+</div>
 
           {/* Developer Credit */}
           <div className="text-slate-500 flex items-center gap-1.5 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800">

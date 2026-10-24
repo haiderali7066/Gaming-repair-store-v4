@@ -35,6 +35,36 @@ const trustItems = [
   },
 ];
 
+const processSteps = [
+  {
+    step: "01",
+    title: "Book Repair",
+    desc: "Tell us about your device and the issue online or in-store.",
+  },
+  {
+    step: "02",
+    title: "Diagnosis",
+    desc: "Our technicians run deep diagnostics to pinpoint the exact fault.",
+  },
+  {
+    step: "03",
+    title: "Approval",
+    desc: "We provide a clear quote and proceed only with your approval.",
+  },
+  {
+    step: "04",
+    title: "Fix & Test",
+    desc: "Professional repair followed by rigorous stress testing.",
+  },
+  {
+    step: "05",
+    title: "Collection",
+    desc: "Pick up your functional device, backed by our warranty.",
+  },
+];
+
+
+
 export default function RepairPage() {
   const [contactMethod, setContactMethod] = useState("WhatsApp");
 
@@ -173,6 +203,69 @@ export default function RepairPage() {
         </div>
       </section>
 
+      {/* process */}
+
+      <section
+  id="how-it-works"
+  className="relative overflow-hidden bg-slate-950 py-10 text-white sm:py-14 md:py-20"
+>
+  <div className="pointer-events-none absolute left-1/4 top-0 h-72 w-72 rounded-full bg-violet-900/20 blur-[100px] md:h-96 md:w-96" />
+
+  <div className="pointer-events-none absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-fuchsia-900/10 blur-[100px] md:h-96 md:w-96" />
+
+  <div
+    className="pointer-events-none absolute inset-0 z-0 opacity-[0.12]"
+    style={{
+      backgroundImage:
+        "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
+      backgroundSize: "3rem 3rem",
+    }}
+  />
+
+  <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-12">
+    <div className="mb-8 text-center sm:mb-12 md:mb-16">
+      <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-400 shadow-sm">
+        <span className="h-2 w-2 rounded-full bg-violet-500" />
+        How It Works
+      </span>
+
+      <h2 className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-2xl font-black tracking-tight text-transparent sm:text-3xl md:text-5xl">
+        Simple. Transparent. Reliable.
+      </h2>
+    </div>
+
+    <div className="relative mx-auto max-w-7xl">
+      <div className="absolute left-[10%] right-[10%] top-8 z-0 hidden h-[2px] bg-gradient-to-r from-transparent via-violet-600/50 to-transparent lg:block" />
+
+      <div className="relative flex flex-col justify-between gap-4 sm:gap-6 lg:flex-row lg:items-stretch lg:gap-4">
+        <div className="pointer-events-none absolute bottom-6 left-6 top-6 z-0 w-[2px] bg-gradient-to-b from-transparent via-violet-600/50 to-transparent lg:hidden" />
+
+        {processSteps.map((step, idx) => (
+          <div
+            key={idx}
+            className="group relative z-10 flex w-full items-stretch text-left lg:flex-1 lg:flex-col lg:items-center lg:text-center"
+          >
+            <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-900 text-base font-black text-slate-300 shadow-md transition-colors duration-300 group-hover:border-violet-500 group-hover:bg-violet-700 group-hover:text-white sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+              {step.step}
+            </div>
+
+            <div className="ml-4 flex w-full flex-1 sm:ml-6 lg:ml-0 lg:mt-6">
+              <div className="flex min-h-[120px] w-full flex-col rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-md transition-colors duration-300 group-hover:border-violet-500/30 sm:rounded-2xl sm:p-5 lg:h-[150px] lg:min-h-[150px]">
+                <h4 className="mb-1 text-base font-bold text-slate-100 transition-colors group-hover:text-violet-300 sm:mb-2 sm:text-lg">
+                  {step.title}
+                </h4>
+
+                <p className="text-xs font-medium leading-relaxed text-slate-400 sm:text-sm">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
       {/* FORM SECTION */}
       <section
         id="repair-form"
