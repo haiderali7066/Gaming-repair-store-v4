@@ -136,6 +136,11 @@ export async function Navbar() {
         .mm[data-closed] .chev { transform:none !important; }
         .mm[data-closed] > a { border-color:transparent !important; color:#1e293b !important; }
 
+        /* Click-to-open mega menu (Shop): opened via data-open, never by hover */
+        .cm[data-open] .drop { visibility:visible; opacity:1; transform:none; }
+        .cm[data-open] > button { border-color:#7c3aed; color:#7c3aed; }
+        .cm[data-open] .chev { transform:rotate(180deg); }
+
         /* Lock page scroll while the mobile drawer is open */
         body:has(#nav-toggle:checked) { overflow:hidden; }
 
@@ -148,10 +153,14 @@ export async function Navbar() {
 
       {/*
         Menu behaviour (runs once):
-        - click on any link  -> close its mega menu, drop focus, close mobile drawer / user menu
-        - pointer moves away -> re-arm the menu so hover opens it again
-        - Escape             -> close everything
-        - Tab                -> re-arm so keyboard focus can open menus
+        - Home / Services (hover menus):
+            click on any link  -> close its mega menu, drop focus, close mobile drawer / user menu
+            pointer moves away -> re-arm the menu so hover opens it again
+            Tab                -> re-arm so keyboard focus can open menus
+        - Shop (click menu):
+            click button       -> toggle open / closed
+            click a link, click outside, focus leaves, Escape, or hover another menu -> close
+        - Escape closes everything
       */}
       <Script id="nav-autoclose" strategy="afterInteractive">{`
         (function () {
@@ -164,6 +173,15 @@ export async function Navbar() {
           function rearm(except) {
             document.querySelectorAll(".mm[data-closed]").forEach(function (m) {
               if (!except || !m.contains(except)) m.removeAttribute("data-closed");
+            });
+          }
+          // click-to-open menus (Shop)
+          function closeClickMenus(except) {
+            document.querySelectorAll(".cm[data-open]").forEach(function (m) {
+              if (except && m.contains(except)) return;
+              m.removeAttribute("data-open");
+              var b = m.querySelector("[data-cm-toggle]");
+              if (b) b.setAttribute("aria-expanded", "false");
             });
           }
           function closeDrawer() {
@@ -182,6 +200,21 @@ export async function Navbar() {
             var a = target.closest("a");
             var btn = target.closest("button");
 
+            // Shop toggle button
+            var toggle = target.closest("[data-cm-toggle]");
+            if (toggle) {
+              var cm = toggle.closest(".cm");
+              var wasOpen = cm.hasAttribute("data-open");
+              closeClickMenus(null);
+              if (!wasOpen) {
+                cm.setAttribute("data-open", "");
+                toggle.setAttribute("aria-expanded", "true");
+              }
+            } else if (!target.closest(".cm") || a) {
+              // click outside the Shop menu, or on a link inside it
+              closeClickMenus(null);
+            }
+
             if (a) {
               var group = a.closest(".mm");
               if (group) {
@@ -197,13 +230,21 @@ export async function Navbar() {
           });
 
           // pointer left the closed menu -> allow hover to open it again
-          document.addEventListener("mouseover", function (e) { rearm(e.target); });
+          document.addEventListener("mouseover", function (e) {
+            rearm(e.target);
+            // hovering another (hover) mega menu closes the Shop menu so they never overlap
+            if (e.target && e.target.closest && e.target.closest(".mm")) closeClickMenus(null);
+          });
           document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) rearm(null); });
           document.addEventListener("touchstart", function (e) { rearm(e.target); }, { passive: true });
+
+          // keyboard focus moved outside the Shop menu -> close it
+          document.addEventListener("focusin", function (e) { closeClickMenus(e.target); });
 
           document.addEventListener("keydown", function (e) {
             if (e.key === "Escape") {
               closeMenus();
+              closeClickMenus(null);
               closeDrawer();
               closeUserMenus(null, true);
               if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -318,12 +359,19 @@ export async function Navbar() {
               </div>
             </div>
 
-            {/* SHOP */}
-            <div className="mm group flex h-full items-center">
-              <Link href="/shop" className={linkCls}>
-                Shop <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
-              </Link>
-              <div className={dropCls}>
+            {/* SHOP — opens on click only (no hover / focus-within) */}
+            <div className="cm flex h-full items-center">
+              <button
+                type="button"
+                data-cm-toggle
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="shop-menu"
+                className={`${linkCls} cursor-pointer`}
+              >
+                Shop <ChevronDown className="chev size-4 text-slate-400 transition-transform" />
+              </button>
+              <div id="shop-menu" className={dropCls}>
                 <div className={`${innerCls} grid grid-cols-12 gap-10`}>
                   {/* Left: featured products */}
                   <div className="col-span-7">
