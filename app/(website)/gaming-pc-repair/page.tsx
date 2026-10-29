@@ -15,9 +15,9 @@ import {
   MemoryStick,
   Fan,
   CircuitBoard,
-  Bug,
   PlugZap,
   Search,
+  ChevronDown,
   type LucideIcon,
 } from "lucide-react"
 
@@ -50,6 +50,14 @@ const heroFeatures = [
 
 type Tone = "light" | "dark" | "violet"
 
+type Detail = {
+  title: string
+  intro: string
+  blocks: { heading: string; body: string }[]
+  listTitle?: string
+  list?: string[]
+}
+
 type Feature = {
   id: string
   icon: LucideIcon
@@ -64,6 +72,7 @@ type Feature = {
   chip: string
   tone: Tone
   reverse?: boolean
+  detail?: Detail
 }
 
 /* Section ids match the navbar mega-menu anchors */
@@ -77,9 +86,9 @@ const features: Feature[] = [
     text: "We test the CPU, GPU, memory, storage, power and cooling to find the real cause of the problem before recommending any repair or replacement. You get a clear explanation and your options upfront.",
     items: ["Full component testing", "Temperature & stress tests", "Clear written findings", "Options explained upfront"],
     cta: "Book a Diagnostic",
-    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793191307/img_uj0ubt.png",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793294889/Neon_RGB_Gaming_Setup_htjtt4.png",
     imageAlt: "Gaming PC setup with curved monitor",
-    chip: "100 DHS diagnostic fee",
+    chip: "diagnostic ",
     tone: "light",
   },
   {
@@ -91,26 +100,86 @@ const features: Feature[] = [
     text: "Artifacts, crashes, overheating or no display? We service and repair graphics cards and processors with precision, and replace parts with quality components only when it is truly needed.",
     items: ["GPU & CPU repair", "Graphics card servicing", "Overheating fixes", "Quality replacement parts"],
     cta: "Repair My Hardware",
-    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793192104/Neon_RGB_Triple-Fan_Graphics_Card_lhgeh0.png",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793294181/Neon_PC_Repair_Workshop_iu4gun.png",
     imageAlt: "High-end graphics card",
     chip: "Quality parts",
-    tone: "violet",
+    tone: "dark",
     reverse: true,
+    detail: {
+      title: "CPU, GPU and Graphics Card Repair",
+      intro:
+        "At Al Dana we provide professional CPU, GPU and graphics card repair services to help your computer perform smoothly and reliably. If your gaming PC has display problems, unexpected crashes, overheating, low performance or graphics errors, our technicians inspect the system to identify the root cause before recommending a suitable solution.",
+      blocks: [
+        {
+          heading: "Professional CPU and GPU Repair",
+          body: "The CPU and GPU are essential components of your computer. A faulty processor or graphics card can affect gaming performance, system stability and everyday use. We diagnose common hardware problems and check important components to determine whether repair, servicing or replacement is the best option.",
+        },
+        {
+          heading: "Graphics Card Servicing",
+          body: "Graphics cards handle the demanding visual performance required for modern gaming and professional applications. If your graphics card shows visual artifacts, screen flickering, driver crashes or no display, we perform careful diagnostic checks to identify possible issues. Our servicing may include inspection, cleaning, cooling checks and troubleshooting related hardware problems.",
+        },
+        {
+          heading: "Overheating and Cooling Solutions",
+          body: "Excessive heat can reduce performance and cause unexpected shutdowns. We inspect cooling fans, airflow, heatsinks and thermal paste where required. Our team works to identify the cause of overheating and recommends suitable solutions to help maintain stable temperatures and improve system reliability.",
+        },
+        {
+          heading: "Hardware Testing and Reliable Repairs",
+          body: "Before recommending any replacement we assess the affected components and explain the available options. When a part cannot be repaired or replacement is the more practical solution, we discuss the expected cost with you before proceeding. We focus on suitable quality components and careful installation.",
+        },
+      ],
+      listTitle: "Our Repair Services Include",
+      list: [
+        "CPU and GPU fault diagnosis",
+        "Graphics card inspection and servicing",
+        "Screen artifact and no display troubleshooting",
+        "Overheating and cooling problem solutions",
+        "Performance and system stability checks",
+        "Component replacement when necessary",
+      ],
+    },
   },
   {
-    id: "motherboard-repair",
-    icon: CircuitBoard,
-    eyebrow: "Motherboard",
-    title: "Motherboard",
-    accent: "Repair",
-    text: "No power, no POST or dead ports? We trace the fault on the board and repair it where it makes sense, or advise on the best replacement when a repair is not worth it.",
-    items: ["No-boot & no-POST faults", "Port & socket issues", "Component-level checks", "Replacement advice"],
-    cta: "Fix My Motherboard",
-    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793191780/Neon_Motherboard_Repair_Lab_ookkmf.png",
-    imageAlt: "Motherboard with processor",
-    chip: "Component-level repair",
-    tone: "dark",
+  id: "motherboard-repair",
+  icon: CircuitBoard,
+  eyebrow: "Motherboard",
+  title: "Motherboard",
+  accent: "Repair",
+  text: "Experiencing motherboard failures, random shutdowns, overheating or connectivity issues? We diagnose motherboard faults, inspect damaged components and provide reliable repair or replacement solutions to restore your computer's functionality.",
+  items: [
+    "Motherboard diagnostics & testing",
+    "Power circuit & boot failure repair",
+    "Damaged ports & connector repair",
+    "Component-level fault detection",
+  ],
+  cta: "Fix My Motherboard",
+  image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793191780/Neon_Motherboard_Repair_Lab_ookkmf.png",
+  imageAlt: "Computer motherboard with CPU socket, electronic components and circuit connections",
+  chip: "Motherboard diagnostics & repair",
+  tone: "dark",
+  detail: {
+    title: "Motherboard Repair Services",
+    intro:
+      "Your motherboard is the central circuit board that connects and coordinates your computer's essential hardware, including the processor, RAM, graphics card, storage devices and power supply. A faulty motherboard can cause startup failures, unexpected shutdowns, overheating and hardware connectivity problems. Our motherboard repair service focuses on identifying the underlying fault and recommending a practical solution for your system.",
+    blocks: [
+      {
+        heading: "Motherboard Diagnostics & Testing",
+        body: "We perform systematic motherboard diagnostics to identify hardware faults, electrical issues and component failures. Our technicians inspect the board, check relevant connections and test affected circuits to determine the source of the problem. This helps distinguish motherboard faults from issues involving the power supply, RAM, processor or other hardware.",
+      },
+      {
+        heading: "Power Circuit & Boot Failure Repair",
+        body: "If your computer does not power on, repeatedly shuts down or fails to start correctly, the motherboard's power delivery system may require inspection. We investigate potential faults involving power circuits, voltage regulation components and related connections. We also diagnose no-boot and no-POST issues to determine whether the motherboard is preventing the system from starting.",
+      },
+      {
+        heading: "Damaged Ports & Connector Repair",
+        body: "Faulty USB ports, damaged connectors and loose or physically damaged motherboard sockets can interrupt normal hardware operation. We inspect affected ports and connections, assess the condition of the surrounding circuitry and determine whether component-level repair or connector replacement is practical. Our goal is to restore reliable connectivity wherever possible.",
+      },
+      {
+        heading: "Component-Level Repair & Replacement",
+        body: "Motherboard faults can involve damaged capacitors, power regulation components, short circuits or other electronic components. Where the board's design and damage allow, we assess the feasibility of component-level repair rather than replacing the entire motherboard. If the damage is extensive or repair is not cost-effective, we explain suitable replacement options compatible with your system.",
+      },
+    ],
   },
+},
   {
     id: "power-supply-repair",
     icon: PlugZap,
@@ -125,37 +194,124 @@ const features: Feature[] = [
     chip: "Stable power",
     tone: "dark",
     reverse: true,
+    detail: {
+      title: "Power Supply Services",
+      intro:
+        "We offer power supply services to help keep your gaming PC or desktop computer running safely and reliably. The power supply unit (PSU) delivers electricity to essential components including the motherboard, CPU, GPU and storage devices. A faulty or unstable power supply can cause unexpected shutdowns, startup failures and performance issues. Our technicians inspect the power system to identify problems and recommend the right solution for your computer.",
+      blocks: [
+        {
+          heading: "PSU Testing and Diagnosis",
+          body: "If your PC does not turn on, restarts unexpectedly or shuts down during gaming, our technicians check the power supply and related connections. We assess power delivery and perform appropriate diagnostic tests to identify signs of an unstable or failing unit. Our goal is to find the cause of the problem before recommending a replacement.",
+        },
+        {
+          heading: "Power Supply Replacement",
+          body: "A faulty power supply may need replacement to restore reliable operation. We help you choose a suitable PSU based on your computer specifications and power requirements, focusing on compatible quality units that provide adequate power for your components. For safety we recommend replacing a defective unit rather than attempting unsuitable internal repairs.",
+        },
+        {
+          heading: "Cable and Connector Inspection",
+          body: "Loose, damaged or incorrectly connected power cables can affect system stability. Our technicians inspect relevant cables and connectors to identify visible damage or connection problems. We also check that the power supply is properly connected to the motherboard, graphics card and other supported components.",
+        },
+        {
+          heading: "Wattage Advice for Upgrades",
+          body: "Planning to upgrade your graphics card, CPU or other hardware? We help you understand your system's power requirements and select an appropriate power supply. Choosing the correct wattage and suitable connectors helps support stable operation and future upgrades.",
+        },
+      ],
+    },
   },
-  // {
-  //   id: "virus-malware-removal",
-  //   icon: Bug,
-  //   eyebrow: "Software",
-  //   title: "Virus & Malware",
-  //   accent: "Removal",
-  //   text: "Slow performance, pop-ups or a hijacked browser? We clean the system, repair Windows where needed and harden it so your games and files stay safe.",
-  //   items: ["Full malware scan & removal", "Windows repair & clean-up", "Startup & driver optimisation", "Security hardening advice"],
-  //   cta: "Clean My PC",
-  //   image: "https://s3.amazonaws.com/www.iobit.com/blog/20260626/1782472890304728.jpg",
-  //   imageAlt: "RGB gaming keyboard",
-  //   chip: "Safe & secure",
-  //   tone: "dark",
-  // },
-  // {
-  //   id: "upgrades",
-  //   icon: Fan,
-  //   eyebrow: "Upgrades & cooling",
-  //   title: "RAM, SSD &",
-  //   accent: "Thermal Upgrades",
-  //   text: "Get more speed from the machine you already own. We upgrade memory and storage, refresh thermal paste, clear dust and replace fans so temperatures and noise drop.",
-  //   items: ["RAM & SSD upgrades", "Thermal paste refresh", "Dust & debris removal", "Fan replacement"],
-  //   cta: "Upgrade My PC",
-  //   image: "https://nnlaptops.com/products/1tb-nvme-ssd-wd-blue-sn570-gen3-laptop-upgrade-1.webp?v=m1",
-  //   imageAlt: "Custom gaming PC with RGB cooling",
-  //   chip: "Maximize performance",
-  //   tone: "dark",
-  //   reverse: true,
-  // },
 ]
+
+/* Bottom-of-page article content */
+const articleIntro = {
+  eyebrow: "Professional Technology Repair and Support",
+  title: "Complete Technology Solutions for Modern Needs",
+  paragraphs: [
+    "Technology plays an important role in our daily lives. From high-performance gaming computers and professional workstations to laptops and tablets, we depend on our devices for work and entertainment. When a device develops a fault or fails to perform as expected, professional technical support can make all the difference.",
+    "We provide reliable technology repair and maintenance services to help customers restore performance and extend the life of their devices. Our services cover gaming PCs and desktop computers along with laptops and iPads. Whether you are experiencing hardware problems, software issues or reduced system performance, our focus is on finding the cause and recommending the right solution.",
+    "Our goal is to make technology repair simple and dependable through professional service and clear communication.",
+  ],
+}
+
+const articleSections: { title: string; paragraphs: string[] }[] = [
+  {
+    title: "Professional Computer Repair Services",
+    paragraphs: [
+      "Computer problems can affect productivity and everyday use. Unexpected shutdowns, slow performance or startup failures may have several possible causes. Identifying the actual problem is an important part of delivering an effective repair.",
+      "We provide diagnostic and repair services for desktop computers and gaming systems. Our technicians assess the reported issue and inspect the relevant components before recommending a suitable solution. Depending on the problem, the service may include hardware troubleshooting, component servicing or replacement of faulty parts.",
+      "We also help customers improve their systems through suitable hardware upgrades. These may include memory upgrades, storage improvements or graphics card replacements. Every recommendation is based on system compatibility and the customer's needs.",
+    ],
+  },
+  {
+    title: "Gaming PC Maintenance and Performance",
+    paragraphs: [
+      "Gaming computers require proper cooling and stable power to perform reliably. Demanding games and applications can place additional pressure on the processor and graphics card.",
+      "Our gaming PC services include system diagnostics and overheating troubleshooting along with graphics card inspection and motherboard fault investigation. We also check power supply problems and other issues that may cause unexpected crashes or reduced performance.",
+      "Regular maintenance can help reduce dust buildup and identify cooling problems. Where necessary, we inspect fans, airflow, heatsinks and thermal paste. We recommend practical solutions that support reliable performance without unnecessary replacements.",
+      "For customers planning an upgrade, we provide guidance on compatible components and power requirements. Our aim is to help you choose improvements that suit your system and budget.",
+    ],
+  },
+  {
+    title: "Laptop and iPad Repair Solutions",
+    paragraphs: [
+      "Laptops and iPads are essential for work, education and communication. A damaged screen, charging problem or battery fault can interrupt your daily routine.",
+      "We provide repair assessments and technical support for laptops and iPads. Depending on the device and its condition, our services may include screen replacement, charging port inspection and battery diagnosis along with hardware troubleshooting and software support.",
+      "Every device is assessed according to its specific requirements. We explain the available options and help customers understand whether repair or replacement is the better choice.",
+      "Parts availability and compatibility can vary between models. For this reason our recommendations are based on the actual device and the issue reported.",
+    ],
+  },
+  {
+    title: "Accurate Diagnostics and Technical Expertise",
+    paragraphs: [
+      "A reliable repair starts with a proper diagnosis. Problems such as no power, a blank display or repeated crashes do not always mean that the most obvious component is faulty.",
+      "Our diagnostic process focuses on the reported symptoms and the components related to the issue. Depending on the device, we may check power delivery, memory, storage, cooling systems and motherboard connections.",
+      "After the assessment we explain the findings in clear language. Our goal is to help customers understand the problem and make an informed decision about the recommended repair.",
+      "Not every component can be repaired economically. When replacement is the more practical option, we explain the reasons and discuss suitable alternatives before proceeding.",
+    ],
+  },
+  {
+    title: "Quality and Customer Confidence",
+    paragraphs: [
+      "We believe professional technical service should be built on honesty and clear communication. Customers deserve to understand what has been identified and what work is being recommended.",
+      "Before major repair work begins, we explain the proposed solution and the estimated cost. If additional work is required, we discuss it with the customer before proceeding.",
+      "We aim to avoid unnecessary repairs and focus on solutions that address the actual problem. When replacement parts are needed, we consider compatibility, suitability and quality before recommending available options.",
+      "Every device is handled with appropriate care. Existing damage may be recorded during inspection where relevant. Customers are encouraged to share information about previous repairs, liquid damage or known faults to help us assess the device accurately.",
+    ],
+  },
+  {
+    title: "Maintenance and Hardware Upgrades",
+    paragraphs: [
+      "Regular maintenance can help keep compatible devices operating efficiently. Dust buildup, restricted airflow and ageing components may affect performance over time.",
+      "Our maintenance services focus on identifying these problems and recommending suitable action. Depending on the device, this may include internal cleaning, cooling system inspection and thermal paste replacement when required.",
+      "We also assist customers who want to upgrade their existing systems instead of replacing the entire computer. Before recommending an upgrade, we consider hardware compatibility, current specifications and the intended use of the device.",
+      "This helps customers understand their options and make informed decisions about their investment.",
+    ],
+  },
+  {
+    title: "Trade-In and Buy-Back Services",
+    paragraphs: [
+      "As technology develops, customers may wish to sell or trade in equipment they no longer use. Our trade-in and buy-back services offer an option for customers who want to move on from eligible devices.",
+      "Eligibility and valuation depend on the model, age, condition and functionality of the device. Any offer is subject to inspection and the applicable terms.",
+      "Before handing over a device, customers should back up important information and remove personal accounts where appropriate. Trade-in arrangements should be confirmed with our team so that the process and relevant conditions are clear.",
+    ],
+  },
+  {
+    title: "A Service Experience Built Around You",
+    paragraphs: [
+      "Every customer has different needs. Some customers require help with an unexpected fault while others may need routine maintenance or a performance upgrade.",
+      "We aim to provide a service experience based on listening carefully, assessing the problem and explaining the available solutions. Our priority is to make technical support easier to understand while maintaining a professional approach to every repair.",
+      "We value customer feedback and understand that trust is earned through dependable service and clear communication.",
+    ],
+  },
+]
+
+const articleClosing = {
+  title: "Your Technology Support Partner",
+  paragraphs: [
+    "Whether you need help with a gaming PC, desktop computer, laptop or iPad, our goal is to help you find a practical solution. We focus on careful assessment and professional service to address technical problems and support the reliable use of your devices.",
+    "We understand that your equipment is important to your work, entertainment and everyday activities. That is why we focus on responsible recommendations, transparent pricing discussions and attention to detail throughout the service process.",
+    "Thank you for considering our services. We look forward to supporting your technology needs with professional care, reliable guidance and a commitment to customer satisfaction.",
+  ],
+  tagline: "Reliable Repairs. Professional Expertise. Technology You Can Depend On.",
+}
 
 /* Shared layout tokens */
 const wrap = "mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-10"
@@ -256,13 +412,139 @@ function FeatureSection({ f }: { f: Feature }) {
           </div>
         </div>
       </div>
+
+    </section>
+  )
+}
+
+/* Long-form content at the bottom of the page — collapsed by default, "Read more" opens it */
+function BottomArticle() {
+  const [open, setOpen] = React.useState(false)
+  const panelId = "bottom-content-panel"
+  const serviceDetails = features.filter((f) => f.detail)
+
+  return (
+    <section id="technology-repair-support" className={`${sectionY} ${anchor}`}>
+      <div className={wrap}>
+        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 lg:p-12">
+          {/* intro (always visible) */}
+          <div className="mx-auto max-w-6xl text-center">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
+              <Sparkles className="size-3.5" /> {articleIntro.eyebrow}
+            </span>
+            <h2 className="mb-4 text-2xl font-black leading-tight text-slate-900 sm:text-3xl lg:text-4xl">
+              {articleIntro.title}
+            </h2>
+          </div>
+
+          {/* collapsible body */}
+          <div
+            id={panelId}
+            className={`relative mx-auto mt-2 max-w-none overflow-hidden transition-[max-height] duration-500 ease-in-out motion-reduce:transition-none ${
+              open ? "max-h-[20000px]" : "max-h-[17rem] sm:max-h-[15rem]"
+            }`}
+          >
+            <div className="space-y-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+              {articleIntro.paragraphs.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+            </div>
+
+            {/* service write-ups: CPU/GPU, motherboard, power supply */}
+            <div className="mt-8 space-y-8">
+              {serviceDetails.map((f) => {
+                const d = f.detail as Detail
+                return (
+                  <div key={f.id}>
+                    <h3 className="mb-2 flex items-center gap-2 text-xl font-black leading-snug text-slate-900 sm:text-2xl">
+                      <f.icon className="size-5 shrink-0 text-violet-600 sm:size-6" /> {d.title}
+                    </h3>
+                    <p className="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">{d.intro}</p>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {d.blocks.map((b) => (
+                        <div key={b.heading} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
+                          <h4 className="mb-1.5 text-base font-bold text-slate-900 sm:text-lg">{b.heading}</h4>
+                          <p className="text-sm leading-relaxed text-slate-600">{b.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {d.list && (
+                      <div className="mt-4 rounded-2xl bg-slate-900 p-5 sm:p-6">
+                        <h4 className="mb-3 text-base font-bold text-white sm:text-lg">{d.listTitle}</h4>
+                        <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                          {d.list.map((item) => (
+                            <li key={item} className="flex items-start gap-2 text-sm font-semibold text-slate-100">
+                              <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-violet-400" /> {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* general repair & support sections */}
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:gap-6">
+              {articleSections.map((s) => (
+                <article key={s.title} className="rounded-2xl border border-slate-100 bg-slate-50 p-5 sm:p-6">
+                  <h3 className="mb-3 text-lg font-black leading-snug text-slate-900 sm:text-xl">{s.title}</h3>
+                  <div className="space-y-3 text-sm leading-relaxed text-slate-600">
+                    {s.paragraphs.map((p) => (
+                      <p key={p}>{p}</p>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {/* closing */}
+            <div className="mt-8 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 text-center sm:p-8 lg:p-12">
+              <h3 className="mb-4 text-xl font-black text-white sm:text-2xl lg:text-3xl">{articleClosing.title}</h3>
+              <div className="mx-auto max-w-5xl space-y-3 text-sm leading-relaxed text-slate-300 sm:text-base">
+                {articleClosing.paragraphs.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+              </div>
+              <p className="mt-6 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-sky-400 bg-clip-text text-base font-black text-transparent sm:text-lg lg:text-xl">
+                {articleClosing.tagline}
+              </p>
+              <Link
+                href={FORM}
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition-transform hover:-translate-y-0.5 sm:text-base"
+              >
+                Book a Repair <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            {/* fade while collapsed */}
+            {!open && (
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
+            )}
+          </div>
+
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls={panelId}
+              className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-6 py-3 text-sm font-bold text-violet-700 transition-colors hover:bg-violet-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 sm:text-base"
+            >
+              {open ? "Read less" : "Read more"}
+              <ChevronDown className={`size-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
 
 export default function GamingPCRepairPage() {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+    <div className="min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-800">
       {/* ================= HERO (compact: about half the screen) ================= */}
       <section className="relative isolate flex min-h-[420px] flex-col overflow-hidden bg-[#050816] text-white lg:min-h-[60vh]">
         <Image
@@ -394,6 +676,9 @@ export default function GamingPCRepairPage() {
       {features.map((f) => (
         <FeatureSection key={f.id} f={f} />
       ))}
+
+      {/* ================= BOTTOM CONTENT (Read more / Read less) ================= */}
+      <BottomArticle />
 
       <div className="h-6 lg:h-8" />
 
