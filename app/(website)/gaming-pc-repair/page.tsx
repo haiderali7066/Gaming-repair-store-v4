@@ -17,7 +17,6 @@ import {
   CircuitBoard,
   PlugZap,
   Search,
-  ChevronDown,
   type LucideIcon,
 } from "lucide-react"
 
@@ -88,15 +87,15 @@ const features: Feature[] = [
     cta: "Book a Diagnostic",
     image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793294889/Neon_RGB_Gaming_Setup_htjtt4.png",
     imageAlt: "Gaming PC setup with curved monitor",
-    chip: "diagnostic ",
+    chip: "Diagnostic",
     tone: "light",
   },
   {
     id: "hardware-repair",
     icon: Cpu,
     eyebrow: "Hardware",
-    title: "CPU, GPU & Graphics Card Repair",
-    accent: ".",
+    title: "CPU, GPU & Graphics Card",
+    accent: "Repair",
     text: "Artifacts, crashes, overheating or no display? We service and repair graphics cards and processors with precision, and replace parts with quality components only when it is truly needed.",
     items: ["GPU & CPU repair", "Graphics card servicing", "Overheating fixes", "Quality replacement parts"],
     cta: "Repair My Hardware",
@@ -139,47 +138,42 @@ const features: Feature[] = [
     },
   },
   {
-  id: "motherboard-repair",
-  icon: CircuitBoard,
-  eyebrow: "Motherboard",
-  title: "Motherboard",
-  accent: "Repair",
-  text: "Experiencing motherboard failures, random shutdowns, overheating or connectivity issues? We diagnose motherboard faults, inspect damaged components and provide reliable repair or replacement solutions to restore your computer's functionality.",
-  items: [
-    "Motherboard diagnostics & testing",
-    "Power circuit & boot failure repair",
-    "Damaged ports & connector repair",
-    "Component-level fault detection",
-  ],
-  cta: "Fix My Motherboard",
-  image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793191780/Neon_Motherboard_Repair_Lab_ookkmf.png",
-  imageAlt: "Computer motherboard with CPU socket, electronic components and circuit connections",
-  chip: "Motherboard diagnostics & repair",
-  tone: "dark",
-  detail: {
-    title: "Motherboard Repair Services",
-    intro:
-      "Your motherboard is the central circuit board that connects and coordinates your computer's essential hardware, including the processor, RAM, graphics card, storage devices and power supply. A faulty motherboard can cause startup failures, unexpected shutdowns, overheating and hardware connectivity problems. Our motherboard repair service focuses on identifying the underlying fault and recommending a practical solution for your system.",
-    blocks: [
-      {
-        heading: "Motherboard Diagnostics & Testing",
-        body: "We perform systematic motherboard diagnostics to identify hardware faults, electrical issues and component failures. Our technicians inspect the board, check relevant connections and test affected circuits to determine the source of the problem. This helps distinguish motherboard faults from issues involving the power supply, RAM, processor or other hardware.",
-      },
-      {
-        heading: "Power Circuit & Boot Failure Repair",
-        body: "If your computer does not power on, repeatedly shuts down or fails to start correctly, the motherboard's power delivery system may require inspection. We investigate potential faults involving power circuits, voltage regulation components and related connections. We also diagnose no-boot and no-POST issues to determine whether the motherboard is preventing the system from starting.",
-      },
-      {
-        heading: "Damaged Ports & Connector Repair",
-        body: "Faulty USB ports, damaged connectors and loose or physically damaged motherboard sockets can interrupt normal hardware operation. We inspect affected ports and connections, assess the condition of the surrounding circuitry and determine whether component-level repair or connector replacement is practical. Our goal is to restore reliable connectivity wherever possible.",
-      },
-      {
-        heading: "Component-Level Repair & Replacement",
-        body: "Motherboard faults can involve damaged capacitors, power regulation components, short circuits or other electronic components. Where the board's design and damage allow, we assess the feasibility of component-level repair rather than replacing the entire motherboard. If the damage is extensive or repair is not cost-effective, we explain suitable replacement options compatible with your system.",
-      },
-    ],
+    id: "motherboard-repair",
+    icon: CircuitBoard,
+    eyebrow: "Motherboard",
+    title: "Motherboard",
+    accent: "Repair",
+    text: "The motherboard connects your CPU, GPU, RAM, storage and power system. When it develops a fault, your PC may not start or may shut down unexpectedly. We trace the fault and repair it where it makes sense, or advise on the best replacement.",
+    items: ["No power & no POST repairs", "Port & socket repair", "Component-level diagnosis", "Repair or replacement advice"],
+    cta: "Fix My Motherboard",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793191780/Neon_Motherboard_Repair_Lab_ookkmf.png",
+    imageAlt: "Motherboard with processor",
+    chip: "Component-level repair",
+    tone: "light",
+    detail: {
+      title: "Motherboard Repair Services",
+      intro:
+        "We provide professional motherboard repair services to help restore your computer's stability and performance. The motherboard connects important components such as the CPU, GPU, RAM, storage and power system. When it develops a fault, your computer may fail to start or experience unexpected shutdowns and hardware problems.",
+      blocks: [
+        {
+          heading: "No Power and No POST Repairs",
+          body: "If your PC does not turn on or starts without displaying anything, our technicians perform diagnostic checks to identify the possible cause. We inspect power connections and related components to determine whether the issue comes from the motherboard or another part of the system. We also troubleshoot no POST problems where the computer powers on but fails to complete its startup process.",
+        },
+        {
+          heading: "Port and Socket Repair",
+          body: "Damaged or faulty ports and sockets can affect the way your computer connects with other devices. We inspect common connection problems involving USB ports and other motherboard connections. Where practical, we assess whether the affected component can be repaired or requires replacement.",
+        },
+        {
+          heading: "Component-Level Diagnosis",
+          body: "Motherboard problems can be caused by damaged components, electrical faults, overheating or physical damage. Our technicians carefully inspect the board and test relevant areas to locate the fault. We explain the findings clearly and recommend a suitable repair based on the condition of the motherboard.",
+        },
+        {
+          heading: "Repair or Replacement Advice",
+          body: "Not every motherboard fault can be repaired economically. We assess the issue and explain the available options before proceeding with major work. If a repair is not practical, we can advise you on a suitable replacement based on your computer's specifications and requirements. Any recommended repair or replacement cost is discussed with you beforehand.",
+        },
+      ],
+    },
   },
-},
   {
     id: "power-supply-repair",
     icon: PlugZap,
@@ -350,6 +344,47 @@ const toneCls: Record<Tone, { box: string; title: string; body: string; eyebrow:
   },
 }
 
+/* Written content shown under a feature card */
+function DetailPanel({ d, icon: Icon }: { d: Detail; icon: LucideIcon }) {
+  return (
+    <div className={`${wrap} mt-3 sm:mt-4`}>
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 lg:p-10">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
+            <Icon className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <h3 className="text-xl font-black leading-tight text-slate-900 sm:text-2xl lg:text-3xl">{d.title}</h3>
+            <p className="mt-2 max-w-4xl text-sm leading-relaxed text-slate-600 sm:text-base">{d.intro}</p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:gap-5">
+          {d.blocks.map((b) => (
+            <div key={b.heading} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
+              <h4 className="mb-1.5 text-base font-bold text-slate-900 sm:text-lg">{b.heading}</h4>
+              <p className="text-sm leading-relaxed text-slate-600">{b.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {d.list && (
+          <div className="mt-6 rounded-2xl bg-slate-900 p-5 sm:p-6">
+            <h4 className="mb-3 text-base font-bold text-white sm:text-lg">{d.listTitle}</h4>
+            <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              {d.list.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm font-semibold text-slate-100">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-violet-400" /> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* One reusable "text + image + CTA" section — every card has the same fixed height on desktop */
 function FeatureSection({ f }: { f: Feature }) {
   const t = toneCls[f.tone]
@@ -413,128 +448,64 @@ function FeatureSection({ f }: { f: Feature }) {
         </div>
       </div>
 
+
+      {f.detail && <DetailPanel d={f.detail} icon={f.icon} />}
     </section>
   )
 }
 
-/* Long-form content at the bottom of the page — collapsed by default, "Read more" opens it */
+/* Long-form content at the bottom of the page */
 function BottomArticle() {
-  const [open, setOpen] = React.useState(false)
-  const panelId = "bottom-content-panel"
-  const serviceDetails = features.filter((f) => f.detail)
-
   return (
     <section id="technology-repair-support" className={`${sectionY} ${anchor}`}>
       <div className={wrap}>
         <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 lg:p-12">
-          {/* intro (always visible) */}
-          <div className="mx-auto max-w-6xl text-center">
+          {/* intro */}
+          <div className="mx-auto max-w-4xl text-center">
             <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
               <Sparkles className="size-3.5" /> {articleIntro.eyebrow}
             </span>
             <h2 className="mb-4 text-2xl font-black leading-tight text-slate-900 sm:text-3xl lg:text-4xl">
               {articleIntro.title}
             </h2>
-          </div>
-
-          {/* collapsible body */}
-          <div
-            id={panelId}
-            className={`relative mx-auto mt-2 max-w-none overflow-hidden transition-[max-height] duration-500 ease-in-out motion-reduce:transition-none ${
-              open ? "max-h-[20000px]" : "max-h-[17rem] sm:max-h-[15rem]"
-            }`}
-          >
             <div className="space-y-3 text-sm leading-relaxed text-slate-600 sm:text-base">
               {articleIntro.paragraphs.map((p) => (
                 <p key={p}>{p}</p>
               ))}
             </div>
-
-            {/* service write-ups: CPU/GPU, motherboard, power supply */}
-            <div className="mt-8 space-y-8">
-              {serviceDetails.map((f) => {
-                const d = f.detail as Detail
-                return (
-                  <div key={f.id}>
-                    <h3 className="mb-2 flex items-center gap-2 text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-                      <f.icon className="size-5 shrink-0 text-violet-600 sm:size-6" /> {d.title}
-                    </h3>
-                    <p className="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">{d.intro}</p>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {d.blocks.map((b) => (
-                        <div key={b.heading} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
-                          <h4 className="mb-1.5 text-base font-bold text-slate-900 sm:text-lg">{b.heading}</h4>
-                          <p className="text-sm leading-relaxed text-slate-600">{b.body}</p>
-                        </div>
-                      ))}
-                    </div>
-                    {d.list && (
-                      <div className="mt-4 rounded-2xl bg-slate-900 p-5 sm:p-6">
-                        <h4 className="mb-3 text-base font-bold text-white sm:text-lg">{d.listTitle}</h4>
-                        <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-                          {d.list.map((item) => (
-                            <li key={item} className="flex items-start gap-2 text-sm font-semibold text-slate-100">
-                              <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-violet-400" /> {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-
-            {/* general repair & support sections */}
-            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:gap-6">
-              {articleSections.map((s) => (
-                <article key={s.title} className="rounded-2xl border border-slate-100 bg-slate-50 p-5 sm:p-6">
-                  <h3 className="mb-3 text-lg font-black leading-snug text-slate-900 sm:text-xl">{s.title}</h3>
-                  <div className="space-y-3 text-sm leading-relaxed text-slate-600">
-                    {s.paragraphs.map((p) => (
-                      <p key={p}>{p}</p>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            {/* closing */}
-            <div className="mt-8 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 text-center sm:p-8 lg:p-12">
-              <h3 className="mb-4 text-xl font-black text-white sm:text-2xl lg:text-3xl">{articleClosing.title}</h3>
-              <div className="mx-auto max-w-5xl space-y-3 text-sm leading-relaxed text-slate-300 sm:text-base">
-                {articleClosing.paragraphs.map((p) => (
-                  <p key={p}>{p}</p>
-                ))}
-              </div>
-              <p className="mt-6 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-sky-400 bg-clip-text text-base font-black text-transparent sm:text-lg lg:text-xl">
-                {articleClosing.tagline}
-              </p>
-              <Link
-                href={FORM}
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition-transform hover:-translate-y-0.5 sm:text-base"
-              >
-                Book a Repair <ArrowRight className="size-4" />
-              </Link>
-            </div>
-
-            {/* fade while collapsed */}
-            {!open && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
-            )}
           </div>
 
-          <div className="mt-4 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls={panelId}
-              className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-6 py-3 text-sm font-bold text-violet-700 transition-colors hover:bg-violet-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 sm:text-base"
+          {/* sections */}
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-10 lg:gap-6">
+            {articleSections.map((s) => (
+              <article key={s.title} className="rounded-2xl border border-slate-100 bg-slate-50 p-5 sm:p-6">
+                <h3 className="mb-3 text-lg font-black leading-snug text-slate-900 sm:text-xl">{s.title}</h3>
+                <div className="space-y-3 text-sm leading-relaxed text-slate-600">
+                  {s.paragraphs.map((p) => (
+                    <p key={p}>{p}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* closing */}
+          <div className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 text-center sm:p-8 lg:mt-10 lg:p-12">
+            <h3 className="mb-4 text-xl font-black text-white sm:text-2xl lg:text-3xl">{articleClosing.title}</h3>
+            <div className="mx-auto max-w-3xl space-y-3 text-sm leading-relaxed text-slate-300 sm:text-base">
+              {articleClosing.paragraphs.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+            </div>
+            <p className="mt-6 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-sky-400 bg-clip-text text-base font-black text-transparent sm:text-lg lg:text-xl">
+              {articleClosing.tagline}
+            </p>
+            <Link
+              href={FORM}
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg transition-transform hover:-translate-y-0.5 sm:text-base"
             >
-              {open ? "Read less" : "Read more"}
-              <ChevronDown className={`size-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
-            </button>
+              Book a Repair <ArrowRight className="size-4" />
+            </Link>
           </div>
         </div>
       </div>
@@ -677,7 +648,7 @@ export default function GamingPCRepairPage() {
         <FeatureSection key={f.id} f={f} />
       ))}
 
-      {/* ================= BOTTOM CONTENT (Read more / Read less) ================= */}
+      {/* ================= BOTTOM CONTENT  ================= */}
       <BottomArticle />
 
       <div className="h-6 lg:h-8" />
