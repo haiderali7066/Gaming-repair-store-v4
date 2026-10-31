@@ -22,7 +22,7 @@ import {
 const FORM = "/repair#repair-form"
 
 /* Hero background */
-const HERO_IMG = "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?q=80&w=2000&auto=format&fit=crop"
+const HERO_IMG = "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793463389/Neon_PC_Cleaning_and_Thermal_Paste_Service_asuaj3.png"
 
 /* Same brand logos + colours as the services page marquee */
 const brands = [
