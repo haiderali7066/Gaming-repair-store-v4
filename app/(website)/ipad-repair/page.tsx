@@ -21,7 +21,7 @@ import {
 const FORM = "/repair#repair-form"
 
 /* Hero background */
-const HERO_IMG = "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1792819447/Neon-Lit_Tablet_Repair_Bench_q55tnx.png"
+const HERO_IMG = "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793458792/Neon_iPad_Repair_Workshop_setmdd.png"
 
 /* Same brand logos + colours as the services page marquee */
 const brands = [
@@ -86,7 +86,7 @@ const features: Feature[] = [
     items: ["Glass & digitizer replacement", "LCD and OLED panel swaps", "True Tone restoration*", "Apple Pencil testing"],
     cta: "Book Screen Repair",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLd7aA3Zd5HWTixvnbegU4BFxze5dkCp1BCwvM2bDQIQ8cHVldUXcQ6RNI&s=10",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793458000/ipad_gcpexq.png",
     imageAlt: "iPad screen replacement",
     chip: "Touch accuracy restored",
     tone: "light",
@@ -123,7 +123,7 @@ const features: Feature[] = [
     text: "If your iPad drains quickly, shuts down randomly or takes forever to charge, it's time for a new battery. We safely replace degraded cells with premium, high-capacity batteries.",
     items: ["Premium cell replacement", "Swollen battery safe removal", "Battery health testing", "Charging calibration"],
     cta: "Book Battery Service",
-    image: "https://guide-images.cdn.ifixit.com/igi/FZVCBR3UtwMVHf25.full",
+    image: "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793457999/ipad_battery_sexezh.png",
     imageAlt: "iPad battery replacement",
     chip: "All-day battery life",
     tone: "dark",
@@ -162,7 +162,7 @@ const features: Feature[] = [
     items: ["Lightning & USB-C replacement", "Debris extraction & cleaning", "Logic board micro-soldering", "Voltage & fast-charge tests"],
     cta: "Book Port Repair",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJjxBeiVsUprxRFyoyhjoqoU6e7xVhktRolXkCjsOXewMDTGJ3QlYTDCU&s=10",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793457995/ipad_charging_fieygq.png",
     imageAlt: "iPad charging port repair",
     chip: "Fast-charge tested",
     tone: "light",
@@ -200,7 +200,7 @@ const features: Feature[] = [
     items: ["Ultrasonic board cleaning", "Corrosion removal", "Short-circuit repair", "Data recovery assessment"],
     cta: "Book Water Damage Repair",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo5GbPHe1NzzV_azNbpv3j6o9tdB2iLWdWar3IB4lBwtMXoi0idv8MNdU&s=10",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793457994/ipad_water_khjups.png",
     imageAlt: "Liquid damaged iPad logic board",
     chip: "Ultrasonic board cleaning",
     tone: "dark",
@@ -591,7 +591,7 @@ export default function IPadRepairPage() {
         />
         {/* dark on the text side, clear on the iPad side */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050816] via-[#050816]/85 to-[#050816]/20 lg:via-[#050816]/70 lg:to-transparent" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#050816]/80 via-transparent to-[#050816]/30" />
+       
 
         <div className={`${wrap} flex flex-1 flex-col justify-center py-8 sm:py-10 lg:py-8`}>
           <div className="max-w-4xl">
