@@ -14,8 +14,10 @@ import {
   Newspaper,
   Package,
   PhoneCall,
+  Recycle,
   Search,
   ShoppingBag,
+  Sparkles,
   Tablet,
   User,
   Wrench,
@@ -92,20 +94,28 @@ const services = [
   },
 ];
 
+const shopConditions = [
+  { label: "Brand New", href: "/shop#brand-new", desc: "Sealed, with full warranty.", icon: Sparkles },
+  { label: "Pre-Loved", href: "/shop#pre-loved", desc: "Tested, certified and well priced.", icon: Recycle },
+];
+
 // nav link: bottom border indicator, highlights while its mega menu is open
 const linkCls =
   "flex h-full items-center gap-1 border-b-2 border-transparent px-3.5 text-sm font-semibold text-slate-800 transition-colors hover:border-violet-600 hover:text-violet-600 group-hover:border-violet-600 group-hover:text-violet-600 focus-visible:outline-none focus-visible:border-violet-600 focus-visible:text-violet-600";
 // every mega menu: full width, same fixed height
 const dropCls =
-  "drop absolute inset-x-0 top-full h-[360px] overflow-hidden invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 bg-white border-t-2 border-violet-600 border-b border-b-slate-200 shadow-2xl shadow-slate-900/10 z-50";
+  "drop absolute inset-x-0 top-full h-[360px] overflow-hidden invisible opacity-0 pointer-events-none translate-y-1 group-hover:pointer-events-auto group-focus-within:pointer-events-auto group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 bg-white border-t-2 border-violet-600 border-b border-b-slate-200 shadow-2xl shadow-slate-900/10 z-50";
 const innerCls = "mx-auto h-full max-w-7xl px-8 py-7";
 const labelCls = "mb-3 text-[11px] font-bold uppercase tracking-widest text-violet-600";
+const chevCls = "chev size-4 text-slate-400 transition-transform group-hover:rotate-180";
 
 export async function Navbar() {
   const session = await auth();
   const all = ((await getFeaturedProducts()) ?? []).slice(0, 8);
   const featured = all.slice(0, 4);
-  const recent = all.length > 4 ? all.slice(4, 8) : featured;
+  // "Just in" keeps rotating. Uses products after the first 4 when available,
+  // otherwise falls back to the full list so the section is never empty.
+  const recent = all.length > 4 ? all.slice(4, 8) : all;
 
   // Always 4 rotation slots (3s each, 12s loop) so there is never a blank gap,
   // even when there are fewer than 4 products.
@@ -124,6 +134,9 @@ export async function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white">
       <style>{`
+        /* Anchor links (/#section, /page#id) must clear the sticky header */
+        html { scroll-padding-top: 6.5rem; }
+
         @keyframes nav-rotate { 0%,22% {opacity:1;visibility:visible;transform:none} 27%,100% {opacity:0;visibility:hidden;transform:translateX(8px)} }
         @keyframes nav-dot { 0%,22% {background:#7c3aed;width:18px} 27%,100% {background:#cbd5e1;width:6px} }
         .nav-rotate { opacity:0; visibility:hidden; animation: nav-rotate 12s linear infinite; }
@@ -131,15 +144,11 @@ export async function Navbar() {
         .rot:hover .nav-rotate, .rot:hover .nav-dot { animation-play-state: paused; }
         .nav-solo { opacity:1; visibility:visible; animation:none; }
 
-        /* Force-close a mega menu after a click, even if the link still has focus */
+        /* Force-close a mega menu after a click, even if the link still has focus.
+           translate/rotate reset too, for Tailwind v4 (which uses those properties). */
         .mm[data-closed] .drop { visibility:hidden !important; opacity:0 !important; pointer-events:none !important; transition:none !important; }
-        .mm[data-closed] .chev { transform:none !important; }
+        .mm[data-closed] .chev { transform:none !important; rotate:none !important; }
         .mm[data-closed] > a { border-color:transparent !important; color:#1e293b !important; }
-
-        /* Click-to-open mega menu (Shop): opened via data-open, never by hover */
-        .cm[data-open] .drop { visibility:visible; opacity:1; transform:none; }
-        .cm[data-open] > button { border-color:#7c3aed; color:#7c3aed; }
-        .cm[data-open] .chev { transform:rotate(180deg); }
 
         /* Lock page scroll while the mobile drawer is open */
         body:has(#nav-toggle:checked) { overflow:hidden; }
@@ -147,20 +156,17 @@ export async function Navbar() {
         @media (prefers-reduced-motion: reduce) {
           .nav-rotate, .nav-dot { animation:none; }
           .nav-rotate:first-child { opacity:1; visibility:visible; }
+          .nav-dot:first-child { background:#7c3aed; width:18px; }
           .drop { transition:none !important; }
         }
       `}</style>
 
       {/*
-        Menu behaviour (runs once):
-        - Home / Services (hover menus):
-            click on any link  -> close its mega menu, drop focus, close mobile drawer / user menu
-            pointer moves away -> re-arm the menu so hover opens it again
-            Tab                -> re-arm so keyboard focus can open menus
-        - Shop (click menu):
-            click button       -> toggle open / closed
-            click a link, click outside, focus leaves, Escape, or hover another menu -> close
-        - Escape closes everything
+        Menu behaviour (runs once). Home, Services and Shop are all hover menus:
+          click on any link  -> close its mega menu, drop focus, close mobile drawer / user menu
+          pointer moves away -> re-arm the menu so hover opens it again
+          Tab                -> re-arm so keyboard focus can open menus
+          Escape             -> close everything
       */}
       <Script id="nav-autoclose" strategy="afterInteractive">{`
         (function () {
@@ -173,15 +179,6 @@ export async function Navbar() {
           function rearm(except) {
             document.querySelectorAll(".mm[data-closed]").forEach(function (m) {
               if (!except || !m.contains(except)) m.removeAttribute("data-closed");
-            });
-          }
-          // click-to-open menus (Shop)
-          function closeClickMenus(except) {
-            document.querySelectorAll(".cm[data-open]").forEach(function (m) {
-              if (except && m.contains(except)) return;
-              m.removeAttribute("data-open");
-              var b = m.querySelector("[data-cm-toggle]");
-              if (b) b.setAttribute("aria-expanded", "false");
             });
           }
           function closeDrawer() {
@@ -200,21 +197,6 @@ export async function Navbar() {
             var a = target.closest("a");
             var btn = target.closest("button");
 
-            // Shop toggle button
-            var toggle = target.closest("[data-cm-toggle]");
-            if (toggle) {
-              var cm = toggle.closest(".cm");
-              var wasOpen = cm.hasAttribute("data-open");
-              closeClickMenus(null);
-              if (!wasOpen) {
-                cm.setAttribute("data-open", "");
-                toggle.setAttribute("aria-expanded", "true");
-              }
-            } else if (!target.closest(".cm") || a) {
-              // click outside the Shop menu, or on a link inside it
-              closeClickMenus(null);
-            }
-
             if (a) {
               var group = a.closest(".mm");
               if (group) {
@@ -230,21 +212,13 @@ export async function Navbar() {
           });
 
           // pointer left the closed menu -> allow hover to open it again
-          document.addEventListener("mouseover", function (e) {
-            rearm(e.target);
-            // hovering another (hover) mega menu closes the Shop menu so they never overlap
-            if (e.target && e.target.closest && e.target.closest(".mm")) closeClickMenus(null);
-          });
+          document.addEventListener("mouseover", function (e) { rearm(e.target); });
           document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) rearm(null); });
           document.addEventListener("touchstart", function (e) { rearm(e.target); }, { passive: true });
-
-          // keyboard focus moved outside the Shop menu -> close it
-          document.addEventListener("focusin", function (e) { closeClickMenus(e.target); });
 
           document.addEventListener("keydown", function (e) {
             if (e.key === "Escape") {
               closeMenus();
-              closeClickMenus(null);
               closeDrawer();
               closeUserMenus(null, true);
               if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -272,7 +246,7 @@ export async function Navbar() {
           <Link href="/" aria-label="Al Dana home" className="flex shrink-0 items-center gap-2.5">
             <span className="relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-violet-600 text-white">
               <Gamepad2 className="size-5" />
-              <Image src="/logo.jpeg" alt="Al Dana" fill sizes="36px" className="object-cover" />
+              <Image src="/logo.jpeg" alt="" fill sizes="36px" className="object-cover" />
             </span>
             <span className="text-xl font-black leading-none tracking-tight text-slate-900">
               AL <span className="text-violet-600">DANA</span>
@@ -284,7 +258,7 @@ export async function Navbar() {
             {/* HOME */}
             <div className="mm group flex h-full items-center">
               <Link href="/" className={linkCls}>
-                Home <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
+                Home <ChevronDown className={chevCls} />
               </Link>
               <div className={dropCls}>
                 <div className={`${innerCls} grid grid-cols-12 gap-10`}>
@@ -327,7 +301,7 @@ export async function Navbar() {
             {/* SERVICES */}
             <div className="mm group flex h-full items-center">
               <Link href="/services" className={linkCls}>
-                Services <ChevronDown className="chev size-4 text-slate-400 transition-transform group-hover:rotate-180" />
+                Services <ChevronDown className={chevCls} />
               </Link>
               <div className={dropCls}>
                 <div className={innerCls}>
@@ -359,22 +333,37 @@ export async function Navbar() {
               </div>
             </div>
 
-            {/* SHOP — opens on click only (no hover / focus-within) */}
-            <div className="cm flex h-full items-center">
-              <button
-                type="button"
-                data-cm-toggle
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-controls="shop-menu"
-                className={`${linkCls} cursor-pointer`}
-              >
-                Shop <ChevronDown className="chev size-4 text-slate-400 transition-transform" />
-              </button>
+            {/* SHOP — hover menu, and the link itself goes to /shop */}
+            <div className="mm group flex h-full items-center">
+              <Link href="/shop" className={linkCls}>
+                Shop <ChevronDown className={chevCls} />
+              </Link>
               <div id="shop-menu" className={dropCls}>
-                <div className={`${innerCls} grid grid-cols-12 gap-10`}>
-                  {/* Left: featured products */}
-                  <div className="col-span-7">
+                <div className={`${innerCls} grid grid-cols-12 gap-8`}>
+                  {/* Condition: brand new vs pre-loved */}
+                  <div className="col-span-3 flex flex-col">
+                    <p className={labelCls}>Shop by condition</p>
+                    <div className="flex flex-1 flex-col gap-3">
+                      {shopConditions.map((c) => (
+                        <Link
+                          key={c.href}
+                          href={c.href}
+                          className="group/c flex flex-1 items-center gap-3 rounded-md border border-slate-200 p-4 transition-colors hover:border-violet-300 hover:bg-violet-50"
+                        >
+                          <span className="rounded-md bg-violet-100 p-2.5 text-violet-600 transition-colors group-hover/c:bg-violet-600 group-hover/c:text-white">
+                            <c.icon className="size-5" />
+                          </span>
+                          <span>
+                            <span className="block text-sm font-extrabold text-slate-900">{c.label}</span>
+                            <span className="block text-xs leading-snug text-slate-500">{c.desc}</span>
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Featured products */}
+                  <div className="col-span-5 border-l border-slate-100 pl-8">
                     <div className="mb-3 flex items-center justify-between">
                       <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">Featured Products</p>
                       <Link href="/shop" className="text-xs font-bold text-violet-600 hover:underline">Browse all →</Link>
@@ -383,8 +372,8 @@ export async function Navbar() {
                       <div className="grid grid-cols-2 gap-3">
                         {featured.map((p) => (
                           <Link key={p._id} href={`/shop/${p.slug}`} className="flex items-center gap-3 rounded-md border border-slate-200 p-2.5 transition-colors hover:border-violet-300 hover:bg-violet-50">
-                            <span className="relative size-20 shrink-0 overflow-hidden rounded bg-slate-100">
-                              <Image src={img(p)} alt={p.name} fill sizes="80px" className="object-cover" />
+                            <span className="relative size-16 shrink-0 overflow-hidden rounded bg-slate-100">
+                              <Image src={img(p)} alt={p.name} fill sizes="64px" className="object-cover" />
                             </span>
                             <span className="min-w-0">
                               <span className="line-clamp-2 block text-sm font-bold text-slate-900">{p.name}</span>
@@ -398,11 +387,11 @@ export async function Navbar() {
                     )}
                   </div>
 
-                  {/* Right: rotating recent products (pauses on hover) */}
-                  <div className="rot col-span-5 border-l border-slate-100 pl-10">
+                  {/* Just in: rotates every 3s, pauses on hover */}
+                  <div className="rot col-span-4 border-l border-slate-100 pl-8">
                     <div className="mb-3 flex items-center justify-between">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">New Arrivals</p>
-                      {slots.length > 1 && recent.length >= 4 && (
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">Just In</p>
+                      {slots.length > 1 && (
                         <div className="flex items-center gap-1" aria-hidden="true">
                           {slots.map((_, i) => (
                             <span key={i} className="nav-dot h-1.5 w-1.5 rounded-full bg-slate-300" style={{ animationDelay: `${i * 3}s` }} />
@@ -411,7 +400,7 @@ export async function Navbar() {
                       )}
                     </div>
                     {slots.length ? (
-                      <div className="relative h-[240px]">
+                      <div className="relative h-[236px]">
                         {slots.map((p, i) => (
                           <Link
                             key={`${p._id}-${i}`}
@@ -420,10 +409,10 @@ export async function Navbar() {
                             style={slots.length > 1 ? { animationDelay: `${i * 3}s` } : undefined}
                           >
                             <span className="relative block h-full w-1/2 overflow-hidden rounded-md bg-slate-100">
-                              <Image src={img(p)} alt={p.name} fill sizes="220px" className="object-cover" />
+                              <Image src={img(p)} alt={p.name} fill sizes="180px" className="object-cover" />
                             </span>
                             <span className="flex w-1/2 flex-col justify-center">
-                              <span className="mb-2 w-fit rounded-sm bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">New</span>
+                              <span className="mb-2 w-fit rounded-sm bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">Just in</span>
                               <span className="line-clamp-3 text-base font-extrabold text-slate-900">{p.name}</span>
                               <span className="mt-1 text-base font-bold text-violet-600">{formatCurrency(p.price)}</span>
                               <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-violet-600">
@@ -444,8 +433,8 @@ export async function Navbar() {
             <Link href="/buy-back" className={linkCls}>Trade In</Link>
           </nav>
 
-          {/* Search */}
-          <form action="/shop" role="search" className="ml-auto hidden max-w-xs flex-1 xl:flex">
+          {/* Search (visible from lg up; the mobile drawer has its own) */}
+          <form action="/shop" role="search" className="ml-auto hidden max-w-[200px] flex-1 lg:flex xl:max-w-xs">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
@@ -459,7 +448,7 @@ export async function Navbar() {
           </form>
 
           {/* Right actions */}
-          <div className="ml-auto flex items-center gap-1 sm:gap-2 xl:ml-0">
+          <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
             <Link href="/cart" aria-label="Cart" className="rounded-md p-2 text-slate-800 hover:bg-slate-100">
               <ShoppingBag className="size-5" />
             </Link>
@@ -492,7 +481,7 @@ export async function Navbar() {
                 <Link href="/auth/login" className="hidden px-3 py-2 text-sm font-semibold text-slate-800 hover:text-violet-600 sm:block">
                   Sign In
                 </Link>
-                <Link href="/auth/register" className="rounded-md border border-violet-600 px-3.5 py-2 text-sm font-semibold text-violet-600 hover:bg-violet-50">
+                <Link href="/auth/register" className="hidden rounded-md border border-violet-600 px-3.5 py-2 text-sm font-semibold text-violet-600 hover:bg-violet-50 sm:block">
                   Sign Up
                 </Link>
               </>
@@ -514,7 +503,8 @@ export async function Navbar() {
                 className="invisible fixed inset-0 z-[60] bg-black/50 opacity-0 transition-opacity peer-checked:visible peer-checked:opacity-100"
               />
 
-              <aside className="fixed right-0 top-0 z-[70] flex h-dvh w-[85vw] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300 peer-checked:translate-x-0">
+              {/* invisible when closed so its links are not reachable by keyboard */}
+              <aside className="invisible fixed right-0 top-0 z-[70] flex h-dvh w-[85vw] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-[transform,visibility] duration-300 peer-checked:visible peer-checked:translate-x-0">
                 <div className="flex items-center justify-between border-b border-slate-200 p-4">
                   <span className="text-lg font-black text-slate-900">
                     AL <span className="text-violet-600">DANA</span>
@@ -572,6 +562,8 @@ export async function Navbar() {
                     </summary>
                     <div className="mb-2 ml-1 space-y-1 border-l-2 border-violet-100 pl-3 font-medium text-slate-600">
                       <Link href="/shop" className="block py-1.5 font-bold text-violet-600">Shop all →</Link>
+                      <Link href="/shop#brand-new" className="block py-1.5">Brand New</Link>
+                      <Link href="/shop#pre-loved" className="block py-1.5">Pre-Loved</Link>
                       {featured.map((p) => (
                         <Link key={p._id} href={`/shop/${p.slug}`} className="block py-1.5">{p.name}</Link>
                       ))}
@@ -579,6 +571,21 @@ export async function Navbar() {
                   </details>
 
                   <Link href="/buy-back" className="block border-t border-slate-100 py-2.5">Trade In</Link>
+
+                  {/* Account links (the top bar hides these on small screens) */}
+                  <div className="border-t border-slate-100 pt-2">
+                    {session ? (
+                      <>
+                        <Link href="/account" className="block py-2.5">My Profile</Link>
+                        <Link href="/account/orders" className="block py-2.5">My Orders</Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/auth/login" className="block py-2.5">Sign In</Link>
+                        <Link href="/auth/register" className="block py-2.5">Sign Up</Link>
+                      </>
+                    )}
+                  </div>
                 </nav>
 
                 <div className="border-t border-slate-200 p-4">
