@@ -107,7 +107,7 @@ const features: Feature[] = [
     detail: {
       title: "CPU, GPU and Graphics Card Repair",
       intro:
-        "At Al Dana we provide professional CPU, GPU and graphics card repair services to help your computer perform smoothly and reliably. If your gaming PC has display problems, unexpected crashes, overheating, low performance or graphics errors, our technicians inspect the system to identify the root cause before recommending a suitable solution.",
+        "At our company we provide professional CPU, GPU and graphics card repair services to help your computer perform smoothly and reliably. If your gaming PC has display problems, unexpected crashes, overheating, low performance or graphics errors, our technicians inspect the system to identify the root cause before recommending a suitable solution.",
       blocks: [
         {
           heading: "Professional CPU and GPU Repair",
@@ -344,10 +344,68 @@ const toneCls: Record<Tone, { box: string; title: string; body: string; eyebrow:
   },
 }
 
+/* Scroll-reveal wrapper: fades + slides/zooms children in once they enter the viewport */
+type RevealDir = "up" | "left" | "right" | "zoom"
+const hiddenCls: Record<RevealDir, string> = {
+  up: "translate-y-8",
+  left: "-translate-x-8",
+  right: "translate-x-8",
+  zoom: "scale-95",
+}
+
+function Reveal({
+  children,
+  className = "",
+  dir = "up",
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  dir?: RevealDir
+  delay?: number
+}) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const [shown, setShown] = React.useState(false)
+
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (typeof IntersectionObserver === "undefined") {
+      setShown(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: shown ? `${delay}ms` : "0ms" }}
+      className={`transition-all duration-700 ease-out motion-reduce:transform-none motion-reduce:transition-none ${
+        shown
+          ? "translate-x-0 translate-y-0 scale-100 opacity-100"
+          : `opacity-0 ${hiddenCls[dir]} motion-reduce:opacity-100`
+      } ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
 /* Written content shown under a feature card */
 function DetailPanel({ d, icon: Icon }: { d: Detail; icon: LucideIcon }) {
   return (
-    <div className={`${wrap} mt-3 sm:mt-4`}>
+    <Reveal className={`${wrap} mt-3 sm:mt-4`}>
       <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 lg:p-10">
         <div className="flex items-start gap-3 sm:gap-4">
           <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
@@ -360,11 +418,11 @@ function DetailPanel({ d, icon: Icon }: { d: Detail; icon: LucideIcon }) {
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:gap-5">
-          {d.blocks.map((b) => (
-            <div key={b.heading} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
+          {d.blocks.map((b, i) => (
+            <Reveal key={b.heading} delay={(i % 2) * 120} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
               <h4 className="mb-1.5 text-base font-bold text-slate-900 sm:text-lg">{b.heading}</h4>
               <p className="text-sm leading-relaxed text-slate-600">{b.body}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
 
@@ -381,7 +439,7 @@ function DetailPanel({ d, icon: Icon }: { d: Detail; icon: LucideIcon }) {
           </div>
         )}
       </div>
-    </div>
+    </Reveal>
   )
 }
 
@@ -396,7 +454,7 @@ function FeatureSection({ f }: { f: Feature }) {
         <div className={`overflow-hidden ${card} ${t.box} lg:h-[460px]`}>
           <div className="grid h-full lg:grid-cols-2">
             {/* text */}
-            <div className={`flex flex-col justify-center p-6 sm:p-8 lg:p-10 ${f.reverse ? "lg:order-2" : ""}`}>
+            <Reveal dir={f.reverse ? "right" : "left"} className={`flex flex-col justify-center p-6 sm:p-8 lg:p-10 ${f.reverse ? "lg:order-2" : ""}`}>
               <span className={`mb-3 inline-flex w-fit items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold uppercase tracking-wider ${t.eyebrow}`}>
                 <f.icon className="size-3.5" /> {f.eyebrow}
               </span>
@@ -422,16 +480,17 @@ function FeatureSection({ f }: { f: Feature }) {
                   {f.cta} <ArrowRight className="size-4" />
                 </Link>
               </div>
-            </div>
+            </Reveal>
 
             {/* image */}
-            <div className={`relative h-[240px] sm:h-[300px] lg:h-full ${f.reverse ? "lg:order-1" : ""}`}>
+            <Reveal dir="zoom" delay={150} className={`group relative h-[240px] overflow-hidden sm:h-[300px] lg:h-full ${f.reverse ? "lg:order-1" : ""}`}>
               <Image
                 src={f.image}
                 alt={f.imageAlt}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
+                loading="lazy"
+                className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105 motion-reduce:transition-none"
               />
               <div
                 className={`absolute inset-0 ${
@@ -443,7 +502,7 @@ function FeatureSection({ f }: { f: Feature }) {
               <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/50 px-3.5 py-1.5 text-xs font-bold text-white backdrop-blur sm:text-sm">
                 <f.icon className="size-4 text-violet-300" /> {f.chip}
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>
@@ -461,7 +520,7 @@ function BottomArticle() {
       <div className={wrap}>
         <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 lg:p-12">
           {/* intro */}
-          <div className="mx-auto max-w-4xl text-center">
+          <Reveal className="mx-auto max-w-4xl text-center">
             <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
               <Sparkles className="size-3.5" /> {articleIntro.eyebrow}
             </span>
@@ -473,24 +532,24 @@ function BottomArticle() {
                 <p key={p}>{p}</p>
               ))}
             </div>
-          </div>
+          </Reveal>
 
           {/* sections */}
           <div className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-10 lg:gap-6">
-            {articleSections.map((s) => (
-              <article key={s.title} className="rounded-2xl border border-slate-100 bg-slate-50 p-5 sm:p-6">
+            {articleSections.map((s, i) => (
+              <Reveal key={s.title} delay={(i % 2) * 120} className="rounded-2xl border border-slate-100 bg-slate-50 p-5 sm:p-6">
                 <h3 className="mb-3 text-lg font-black leading-snug text-slate-900 sm:text-xl">{s.title}</h3>
                 <div className="space-y-3 text-sm leading-relaxed text-slate-600">
                   {s.paragraphs.map((p) => (
                     <p key={p}>{p}</p>
                   ))}
                 </div>
-              </article>
+              </Reveal>
             ))}
           </div>
 
           {/* closing */}
-          <div className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 text-center sm:p-8 lg:mt-10 lg:p-12">
+          <Reveal dir="zoom" className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-6 text-center sm:p-8 lg:mt-10 lg:p-12">
             <h3 className="mb-4 text-xl font-black text-white sm:text-2xl lg:text-3xl">{articleClosing.title}</h3>
             <div className="mx-auto max-w-3xl space-y-3 text-sm leading-relaxed text-slate-300 sm:text-base">
               {articleClosing.paragraphs.map((p) => (
@@ -506,7 +565,7 @@ function BottomArticle() {
             >
               Book a Repair <ArrowRight className="size-4" />
             </Link>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -524,26 +583,26 @@ export default function GamingPCRepairPage() {
           fill
           priority
           sizes="100vw"
-          className="-z-20 object-cover object-[70%_50%] lg:object-right"
+          className="animate-hero-zoom -z-20 object-cover object-[70%_50%] lg:object-right"
         />
         {/* dark on the text side, clear on the PC side */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050816] via-[#050816]/85 to-[#050816]/20 lg:via-[#050816]/70 lg:to-transparent" />
 
         <div className={`${wrap} flex flex-1 flex-col justify-center py-8 sm:py-10 lg:py-8`}>
           <div className="max-w-4xl">
-            <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200 sm:text-sm">
+            <p className="hero-in hero-d1 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200 sm:text-sm">
               Expert
               <span className="h-px w-16 bg-gradient-to-r from-sky-400 to-transparent sm:w-28" />
             </p>
 
-            <h1 className="mt-2 text-3xl font-black leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+            <h1 className="hero-in hero-d2 mt-2 text-3xl font-black leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
               <span className="block text-white">GAMING PC</span>
               <span className="block bg-gradient-to-r from-fuchsia-500 via-violet-500 to-sky-400 bg-clip-text text-transparent">
                 REPAIR &amp; UPGRADES
               </span>
             </h1>
 
-            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-slate-300 sm:text-base lg:text-lg">
+            <p className="hero-in hero-d3 mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-slate-300 sm:text-base lg:text-lg">
               <span>Restore</span>
               <span className="h-4 w-px bg-slate-500" />
               <span>Upgrade</span>
@@ -551,7 +610,7 @@ export default function GamingPCRepairPage() {
               <span>Maximize Performance</span>
             </p>
 
-            <ul className="mt-5 hidden max-w-3xl grid-cols-3 gap-2 sm:grid xl:grid-cols-6">
+            <ul className="hero-in hero-d4 mt-5 hidden max-w-3xl grid-cols-3 gap-2 sm:grid xl:grid-cols-6">
               {heroFeatures.map((f) => (
                 <li
                   key={f.label}
@@ -563,7 +622,7 @@ export default function GamingPCRepairPage() {
               ))}
             </ul>
 
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div className="hero-in hero-d5 mt-5 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={FORM}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-xl shadow-violet-900/50 transition-transform hover:-translate-y-0.5"
@@ -592,7 +651,7 @@ export default function GamingPCRepairPage() {
       </section>
 
       {/* ================= BRANDS MARQUEE (coloured logos) ================= */}
-      <div className="relative overflow-hidden border-b border-slate-200 bg-white py-4">
+      <div className="relative overflow-hidden border-b border-slate-200 bg-white py-4"><Link href={FORM}>
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-40" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-40" />
 
@@ -612,13 +671,13 @@ export default function GamingPCRepairPage() {
               />
             </div>
           ))}
-        </div>
+        </div></Link>
       </div>
 
       {/* ================= INTRO + QUICK LINKS ================= */}
       <section id="services" className="pb-1 pt-5 sm:pt-6 lg:pt-8">
         <div className={wrap}>
-          <div className="mx-auto max-w-3xl text-center">
+          <Reveal className="mx-auto max-w-3xl text-center">
             <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-700">
               <Sparkles className="size-3.5" /> Gaming PC Services
             </span>
@@ -626,7 +685,7 @@ export default function GamingPCRepairPage() {
             <p className="text-sm text-slate-500 sm:text-base">
               From a PC that won&apos;t boot to a full performance upgrade, we diagnose first and repair with precision.
             </p>
-          </div>
+          </Reveal>
 
           <ul className="mt-4 flex flex-wrap justify-center gap-2">
             {features.map((f) => (
@@ -666,8 +725,24 @@ export default function GamingPCRepairPage() {
         .animate-marquee:hover {
           animation-play-state: paused;
         }
+        @keyframes heroIn {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: none; }
+        }
+        @keyframes heroZoom {
+          from { transform: scale(1.08); }
+          to { transform: scale(1); }
+        }
+        .hero-in { animation: heroIn 0.8s ease-out both; }
+        .hero-d1 { animation-delay: 0.05s; }
+        .hero-d2 { animation-delay: 0.15s; }
+        .hero-d3 { animation-delay: 0.3s; }
+        .hero-d4 { animation-delay: 0.45s; }
+        .hero-d5 { animation-delay: 0.6s; }
+        .animate-hero-zoom { animation: heroZoom 1.6s ease-out both; }
         @media (prefers-reduced-motion: reduce) {
           .animate-marquee { animation: none; }
+          .hero-in, .animate-hero-zoom { animation: none; }
         }
       `}</style>
     </div>
