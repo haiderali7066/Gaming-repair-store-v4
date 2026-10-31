@@ -276,75 +276,7 @@ export function HomeSecondarySections() {
         </div>
       </div>
 
-      {/* ============================================================ */}
-      {/* STATS STRIP                                                  */}
-      {/* ============================================================ */}
-      <section className="pt-6 sm:pt-8">
-        <div className={wrap}>
-          <motion.ul
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="grid grid-cols-2 gap-3 lg:grid-cols-4"
-          >
-            {stats.map((s) => (
-              <motion.li
-                key={s.label}
-                variants={fadeUp}
-                className="rounded-3xl border border-slate-200 bg-white px-4 py-5 text-center shadow-sm"
-              >
-                <p className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-2xl font-black text-transparent sm:text-3xl">
-                  {s.value}
-                </p>
-                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                  {s.label}
-                </p>
-              </motion.li>
-            ))}
-          </motion.ul>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* TRADE-IN BANNER                                              */}
-      {/* ============================================================ */}
-      <section className="pt-6 sm:pt-8">
-        <div className={wrap}>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-7 sm:p-10 lg:p-14"
-          >
-            <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-fuchsia-400/20 blur-[90px]" />
-            <div className="pointer-events-none absolute -bottom-24 left-10 size-72 rounded-full bg-sky-400/20 blur-[90px]" />
-
-            <div className="relative flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-              <div className="max-w-2xl">
-                <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white">
-                  <HandCoins className="size-3.5" /> Trade-In &amp; Buy Back
-                </span>
-                <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
-                  Turn your old tech into cash or store credit.
-                </h2>
-                <p className="mt-3 text-base font-medium text-violet-100 sm:text-lg">
-                  Gaming PCs, laptops, MacBooks, iPads and phones — get a fair
-                  offer in minutes.
-                </p>
-              </div>
-
-              <Link
-                href="/buy-back"
-                className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet-700 shadow-lg transition-transform hover:-translate-y-0.5 sm:w-auto"
-              >
-                Get my offer <ArrowRight className="size-5" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+     
 
       {/* ============================================================ */}
       {/* WHAT WE REPAIR                                               */}
@@ -413,46 +345,6 @@ export function HomeSecondarySections() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* REPAIR BANNER                                                */}
-      {/* ============================================================ */}
-      <section>
-        <div className={wrap}>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="relative overflow-hidden rounded-3xl bg-slate-900 p-7 sm:p-10 lg:p-14"
-          >
-            <div className="pointer-events-none absolute -left-16 -top-20 size-72 rounded-full bg-violet-600/30 blur-[90px]" />
-            <div className="pointer-events-none absolute -bottom-24 right-10 size-72 rounded-full bg-indigo-500/25 blur-[90px]" />
-
-            <div className="relative flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-              <div className="max-w-2xl">
-                <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-violet-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-violet-300">
-                  <Settings className="size-3.5" /> Fast Diagnostics
-                </span>
-                <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
-                  Something not right?{" "}
-                  <span className="text-fuchsia-300">We&apos;ll fix it.</span>
-                </h2>
-                <p className="mt-3 text-base font-medium text-slate-300 sm:text-lg">
-                  Book a repair online and our technicians will diagnose your
-                  device and send a clear quote — no surprises.
-                </p>
-              </div>
-
-              <Link
-                href="/repair#repair-form"
-                className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 px-8 py-4 text-base font-bold text-white shadow-lg shadow-violet-600/30 transition-transform hover:-translate-y-0.5 sm:w-auto"
-              >
-                Book a Repair <ArrowRight className="size-5" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* ============================================================ */}
       {/* WHY CHOOSE US                                                */}
@@ -738,6 +630,48 @@ export function HomeSecondarySections() {
               </motion.div>
             </div>
           </div>
+        </div>
+      </section>
+
+
+      
+      {/* ============================================================ */}
+      {/* TRADE-IN BANNER                                              */}
+      {/* ============================================================ */}
+      <section className="pt-6 sm:pt-8">
+        <div className={wrap}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-7 sm:p-10 lg:p-14"
+          >
+            <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-fuchsia-400/20 blur-[90px]" />
+            <div className="pointer-events-none absolute -bottom-24 left-10 size-72 rounded-full bg-sky-400/20 blur-[90px]" />
+
+            <div className="relative flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+              <div className="max-w-2xl">
+                <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white">
+                  <HandCoins className="size-3.5" /> Trade-In &amp; Buy Back
+                </span>
+                <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
+                  Turn your old tech into cash or store credit.
+                </h2>
+                <p className="mt-3 text-base font-medium text-violet-100 sm:text-lg">
+                  Gaming PCs, laptops, MacBooks, iPads and phones — get a fair
+                  offer in minutes.
+                </p>
+              </div>
+
+              <Link
+                href="/buy-back"
+                className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet-700 shadow-lg transition-transform hover:-translate-y-0.5 sm:w-auto"
+              >
+                Get my offer <ArrowRight className="size-5" />
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
