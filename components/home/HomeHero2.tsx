@@ -37,21 +37,21 @@ const slides: Slide[] = [
   {
     id: 3,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643409/gaming-pc-repair-banner-2161x728_eto3qs.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645656/Gaming_Laptop_Repair_Banner_2160x720_u3xdtk.png",
     href: "/repair",
     alt: "Custom PC Building and Tuning",
   },
   {
     id: 4,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643407/Gaming_Laptop_Repair_Services_Banner_tc2tue.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645375/Gaming_PC_Repair_Services_Banner_bqril0.png",
     href: "/repair",
     alt: "Custom PC Building and Tuning",
   },
   {
     id: 5,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643405/trade-in-banner-2161x728_nypiao.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645137/Trade-In_Today_Save_More_extlcj.png",
     href: "/repair",
     alt: "Custom PC Building and Tuning",
   },
