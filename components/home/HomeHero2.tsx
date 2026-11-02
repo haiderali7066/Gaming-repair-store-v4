@@ -37,17 +37,24 @@ const slides: Slide[] = [
   {
     id: 3,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793629694/Gaming_Laptop_Repair_Services_Banner_iryw8b.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643409/gaming-pc-repair-banner-2161x728_eto3qs.png",
     href: "/repair",
     alt: "Custom PC Building and Tuning",
   },
-  // {
-  //   id: 3,
-  //   image:
-  //     "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793629692/Gaming_PC_Repair_Services_Banner_nohbwq.png",
-  //   href: "/repair",
-  //   alt: "Custom PC Building and Tuning",
-  // },
+  {
+    id: 4,
+    image:
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643407/Gaming_Laptop_Repair_Services_Banner_tc2tue.png",
+    href: "/repair",
+    alt: "Custom PC Building and Tuning",
+  },
+  {
+    id: 5,
+    image:
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793643405/trade-in-banner-2161x728_nypiao.png",
+    href: "/repair",
+    alt: "Custom PC Building and Tuning",
+  },
 ];
 
 const fadeUp = {
