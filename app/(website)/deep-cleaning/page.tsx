@@ -87,7 +87,7 @@ const features: Feature[] = [
     items: ["High-performance compound", "Heatsink surface cleanup", "CPU & GPU stress testing", "Less thermal throttling"],
     cta: "Book Thermal Service",
     image:
-      "https://gamemaxpc.com/static/upload/image/20250825/1756108686232681.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793725767/thermal_hwrk8p.png",
     imageAlt: "Thermal paste application on a CPU",
     chip: "Lower temperatures",
     tone: "light",
@@ -125,7 +125,7 @@ const features: Feature[] = [
     items: ["Pro-grade gallium alloy", "Non-conductive barrier protection", "Cooling for high-TDP CPUs", "Short-circuit prevention"],
     cta: "Book Liquid Metal Service",
     image:
-      "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=1000&auto=format&fit=crop",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793725912/lequid_z0ehmg.png",
     imageAlt: "Liquid metal service on a processor",
     chip: "Extreme cooling performance",
     tone: "dark",
@@ -164,7 +164,7 @@ const features: Feature[] = [
     items: ["Full internal cleaning", "Heatsink fin clearing", "Port & board dust removal", "Better airflow"],
     cta: "Book Deep Cleaning",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROm6LZaznsb2T37fZhPrXCO4tt3D_bX4pqJ_MjPdz85RpkEeXeGqgxQGmW&s=10",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793725912/dust_m4enzo.png",
     imageAlt: "Deep cleaning dust from a laptop heatsink",
     chip: "Airflow restored",
     tone: "light",
@@ -202,7 +202,7 @@ const features: Feature[] = [
     items: ["OEM-grade fan assemblies", "Bearing & alignment checks", "Noise elimination", "RPM curve testing"],
     cta: "Book Fan Replacement",
     image:
-      "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1000&auto=format&fit=crop",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793725909/rgb_bt2unk.png",
     imageAlt: "Cooling fan replacement",
     chip: "Quiet, powerful airflow",
     tone: "dark",
