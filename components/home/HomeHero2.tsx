@@ -25,21 +25,21 @@ const slides: Slide[] = [
     id: 4,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645375/Gaming_PC_Repair_Services_Banner_bqril0.png",
-    href: "/repair",
+    href: "/repair#repair-form",
     alt: "Gmaing pc",
   },
   {
     id: 3,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645656/Gaming_Laptop_Repair_Banner_2160x720_u3xdtk.png",
-    href: "/repair",
+    href: "/repair#repair-form",
     alt: "gaming Laptop ",
   },
   {
     id: 1,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773567/ChatGPT_Image_Sep_7_2026_02_31_58_PM_pdx0mh.png",
-    href: "/repair",
+    href: "/repair#repair-form",
     alt: "ipad and Hardware Repairs",
   },
   
@@ -47,7 +47,7 @@ const slides: Slide[] = [
     id: 5,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645137/Trade-In_Today_Save_More_extlcj.png",
-    href: "/buy-back",
+    href: "/buy-back#trade-in-form",
     alt: "Trade in ",
   },
   {
