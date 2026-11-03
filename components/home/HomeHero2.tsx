@@ -20,40 +20,42 @@ interface Slide {
 }
 
 const slides: Slide[] = [
+  
   {
-    id: 1,
+    id: 4,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773567/ChatGPT_Image_Sep_7_2026_02_31_58_PM_pdx0mh.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645375/Gaming_PC_Repair_Services_Banner_bqril0.png",
     href: "/repair",
-    alt: "Console and Hardware Repairs",
-  },
-  {
-    id: 2,
-    image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773595/ChatGPT_Image_Sep_7_2026_02_32_53_PM_polvfd.png",
-    href: "/shop",
-    alt: "Gaming Gear & Accessories",
+    alt: "Gmaing pc",
   },
   {
     id: 3,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645656/Gaming_Laptop_Repair_Banner_2160x720_u3xdtk.png",
     href: "/repair",
-    alt: "Custom PC Building and Tuning",
+    alt: "gaming Laptop ",
   },
   {
-    id: 4,
+    id: 1,
     image:
-      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645375/Gaming_PC_Repair_Services_Banner_bqril0.png",
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773567/ChatGPT_Image_Sep_7_2026_02_31_58_PM_pdx0mh.png",
     href: "/repair",
-    alt: "Custom PC Building and Tuning",
+    alt: "ipad and Hardware Repairs",
   },
+  
   {
     id: 5,
     image:
       "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1793645137/Trade-In_Today_Save_More_extlcj.png",
     href: "/repair",
-    alt: "Custom PC Building and Tuning",
+    alt: "Trade in ",
+  },
+  {
+    id: 2,
+    image:
+      "https://res.cloudinary.com/dvu9vmcqd/image/upload/v1788773595/ChatGPT_Image_Sep_7_2026_02_32_53_PM_polvfd.png",
+    href: "/shop",
+    alt: "shop products",
   },
 ];
 
