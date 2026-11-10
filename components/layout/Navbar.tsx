@@ -16,7 +16,6 @@ import {
   PhoneCall,
   Recycle,
   Search,
-  ShoppingBag,
   Sparkles,
   Tablet,
   User,
@@ -28,8 +27,7 @@ import { auth } from "@/auth";
 import { logoutAction } from "@/actions/auth";
 import { getFeaturedProducts } from "@/lib/data";
 import { formatCurrency } from "@/lib/helpers";
-
-const toId = (t: string) => t.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "and");
+import { CartButton } from "./CartButton"; // adjust path if needed
 
 const homePages = [
   { label: "About Us", href: "/about", desc: "Our story, mission and team.", icon: Info },
@@ -37,13 +35,14 @@ const homePages = [
   { label: "Blog", href: "/blog", desc: "News, tech tips and repair guides.", icon: Newspaper },
 ];
 
+// "Our Services Overview" and "Brands We Service" both go to /services
 const homeSections = [
-  "Our Services Overview",
-  "Why Choose Us",
-  "Popular Repairs",
-  "How It Works",
-  "Brands We Service",
-  "Customer Reviews",
+  { label: "Our Services Overview", href: "/services" },
+  { label: "Why Choose Us", href: "/#why-choose-us" },
+  { label: "Popular Repairs", href: "/#popular-repairs" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Brands We Service", href: "/services" },
+  { label: "Customer Reviews", href: "/#customer-reviews" },
 ];
 
 const services = [
@@ -282,8 +281,8 @@ export async function Navbar() {
                     <p className={labelCls}>Home Sections</p>
                     <div className="grid grid-cols-2 gap-x-6">
                       {homeSections.map((s) => (
-                        <Link key={s} href={`/#${toId(s)}`} className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-violet-600">
-                          <span className="size-1.5 rounded-full bg-violet-300" /> {s}
+                        <Link key={s.label} href={s.href} className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-violet-600">
+                          <span className="size-1.5 rounded-full bg-violet-300" /> {s.label}
                         </Link>
                       ))}
                     </div>
@@ -449,9 +448,8 @@ export async function Navbar() {
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
-            <Link href="/cart" aria-label="Cart" className="rounded-md p-2 text-slate-800 hover:bg-slate-100">
-              <ShoppingBag className="size-5" />
-            </Link>
+            {/* Cart with red count badge — pass the real server-side count as initialCount if you have it */}
+            <CartButton initialCount={0} />
 
             {session ? (
               <details className="um relative">

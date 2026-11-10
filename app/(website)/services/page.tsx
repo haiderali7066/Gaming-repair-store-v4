@@ -301,10 +301,7 @@ export default function ServicesPage() {
             </span>
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-blue-50 drop-shadow sm:text-base lg:text-lg">
-            Repairs, deep cleaning, trade-ins and quality products for laptops, gaming PCs, iPads and tablets — fast, reliable and
-            professionally handled.
-          </p>
+         
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link

@@ -1,8 +1,11 @@
 import Link from "next/link"
+import Script from "next/script"
 import {
   ArrowDownRight,
   ArrowUpRight,
   BarChart3,
+  Bell,
+  BellRing,
   CheckCircle2,
   ChevronRight,
   Clock3,
@@ -15,6 +18,7 @@ import {
   Sparkles,
   Users,
   Wrench,
+  type LucideIcon,
 } from "lucide-react"
 
 import { connectToDatabase } from "@/lib/mongodb"
@@ -569,11 +573,6 @@ export default async function DashboardPage() {
     ]),
   ])
 
-  const totalRevenue = (orders as RecentOrder[]).reduce(
-    (sum, order) => sum + (order.subtotal || 0),
-    0,
-  )
-
   const repairsByStatus = {
     submitted: repairs.filter(
       (repair: any) => repair.status === "submitted",
@@ -680,37 +679,33 @@ export default async function DashboardPage() {
 
   const activityLabels = monthlyStats.map((item) => item.label)
 
-  const firstName =
-    (orders[0] as RecentOrder[] | undefined)?.[0]?.userId?.name?.split(
-      " ",
-    )[0] || "there"
-
   return (
     <main className="min-h-screen space-y-8 pb-10">
       {/* ---------------------------------------------------------------- */}
-      {/* Header                                                            */}
+      {/* Header (centered Bismillah)                                       */}
       {/* ---------------------------------------------------------------- */}
-      <section className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/[0.08] via-background to-background p-6 shadow-sm sm:p-8">
+      <section className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/[0.08] via-background to-background p-6 shadow-sm sm:p-10">
         <div className="absolute -right-24 -top-24 size-64 rounded-full bg-primary/[0.06] blur-3xl" />
 
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
-              <Sparkles className="size-3.5 text-primary" />
-              Business overview
-            </div>
-
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Good morning, {firstName}
-            </h1>
-
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Monitor sales, repairs, customers, and trade-ins from one
-              place.
-            </p>
+        <div className="relative flex flex-col items-center text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
+            <Sparkles className="size-3.5 text-primary" />
+            Business overview
           </div>
 
-          <div className="flex items-center gap-3">
+          <h1
+            lang="ar"
+            dir="rtl"
+            className="text-4xl font-bold leading-relaxed tracking-normal sm:text-5xl"
+          >
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          </h1>
+
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+            Monitor sales, repairs, customers, and trade-ins from one place.
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/admin/orders"
               className="inline-flex h-10 items-center gap-2 rounded-xl border bg-background px-4 text-sm font-medium shadow-sm transition hover:bg-muted"
@@ -731,59 +726,64 @@ export default async function DashboardPage() {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-{/* KPI cards                                                        */}
-{/* ---------------------------------------------------------------- */}
-<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-  <Link href="/admin/products" className="block">
-    <DashboardMetric
-      label="Active Products"
-      value={productCount}
-      description="Published products"
-      icon={Package}
-      iconClass="bg-blue-500/10 text-blue-600 dark:text-blue-400"
-    />
-  </Link>
+      {/* Notifications: new orders, trade-ins, repairs                     */}
+      {/* ---------------------------------------------------------------- */}
+      <NotificationsSection />
 
-  <Link href="/admin/orders" className="block">
-    <DashboardMetric
-      label="Total Orders"
-      value={orderCount}
-      description="All-time orders"
-      icon={ShoppingCart}
-      iconClass="bg-violet-500/10 text-violet-600 dark:text-violet-400"
-    />
-  </Link>
+      {/* ---------------------------------------------------------------- */}
+      {/* KPI cards                                                        */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <Link href="/admin/products" className="block">
+          <DashboardMetric
+            label="Active Products"
+            value={productCount}
+            description="Published products"
+            icon={Package}
+            iconClass="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          />
+        </Link>
 
-  <Link href="/admin/customers" className="block">
-    <DashboardMetric
-      label="Customers"
-      value={customerCount}
-      description="Registered customers"
-      icon={Users}
-      iconClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-    />
-  </Link>
+        <Link href="/admin/orders" className="block">
+          <DashboardMetric
+            label="Total Orders"
+            value={orderCount}
+            description="All-time orders"
+            icon={ShoppingCart}
+            iconClass="bg-violet-500/10 text-violet-600 dark:text-violet-400"
+          />
+        </Link>
 
-  <Link href="/admin/repairs" className="block">
-    <DashboardMetric
-      label="Repair Requests"
-      value={repairCount}
-      description="Service requests"
-      icon={Wrench}
-      iconClass="bg-amber-500/10 text-amber-600 dark:text-amber-400"
-    />
-  </Link>
+        <Link href="/admin/customers" className="block">
+          <DashboardMetric
+            label="Customers"
+            value={customerCount}
+            description="Registered customers"
+            icon={Users}
+            iconClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+          />
+        </Link>
 
-  <Link href="/admin/buy-back" className="block">
-    <DashboardMetric
-      label="Trade-ins"
-      value={buybackCount}
-      description="Buy-back requests"
-      icon={RefreshCw}
-      iconClass="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-    />
-  </Link>
-</section>
+        <Link href="/admin/repairs" className="block">
+          <DashboardMetric
+            label="Repair Requests"
+            value={repairCount}
+            description="Service requests"
+            icon={Wrench}
+            iconClass="bg-amber-500/10 text-amber-600 dark:text-amber-400"
+          />
+        </Link>
+
+        <Link href="/admin/buy-back" className="block">
+          <DashboardMetric
+            label="Trade-ins"
+            value={buybackCount}
+            description="Buy-back requests"
+            icon={RefreshCw}
+            iconClass="bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+          />
+        </Link>
+      </section>
 
       {/* ---------------------------------------------------------------- */}
       {/* Revenue + summary                                                 */}
@@ -1170,6 +1170,443 @@ export default async function DashboardPage() {
         />
       </section>
     </main>
+  )
+}
+
+/* ========================================================================== */
+/* Notifications section (compact, "New" badge clears once clicked)           */
+/* ========================================================================== */
+
+/**
+ * "New" means:
+ *  - orders:                     placed in the last 24 hours
+ *  - repair / trade-in requests: still in "submitted" status (not reviewed yet)
+ *
+ * Read state is stored per browser in localStorage by a tiny script
+ * (NOTIFICATION_SCRIPT below) so this whole file stays a single server page.
+ */
+
+type NoticeKind = "order" | "repair" | "buyback"
+
+type Notice = {
+  id: string
+  kind: NoticeKind
+  title: string
+  subtitle: string
+  createdAt: Date
+  isNew: boolean
+  href: string
+}
+
+const noticeStyle: Record<
+  NoticeKind,
+  { icon: LucideIcon; box: string }
+> = {
+  order: {
+    icon: ShoppingCart,
+    box: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+  },
+  repair: {
+    icon: Wrench,
+    box: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  },
+  buyback: {
+    icon: RefreshCw,
+    box: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+  },
+}
+
+function timeAgo(date: Date) {
+  const seconds = Math.max(
+    0,
+    Math.floor((Date.now() - new Date(date).getTime()) / 1000),
+  )
+
+  if (seconds < 60) return "Just now"
+
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+
+  return `${Math.floor(hours / 24)}d ago`
+}
+
+const NOTIFICATION_SCRIPT = `
+(function () {
+  if (window.__notifInit) return;
+  window.__notifInit = true;
+
+  var KEY = "admin-seen-notifications";
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+    catch (e) { return []; }
+  }
+
+  function save(list) {
+    try { localStorage.setItem(KEY, JSON.stringify(list.slice(-200))); }
+    catch (e) {}
+  }
+
+  function apply(root) {
+    var seen = load();
+    var left = { order: 0, repair: 0, buyback: 0 };
+    var unread = 0;
+
+    root.querySelectorAll("[data-tile]").forEach(function (t) {
+      left[t.getAttribute("data-tile")] = Number(t.getAttribute("data-count")) || 0;
+    });
+
+    root.querySelectorAll("[data-notice-id]").forEach(function (el) {
+      var isNew = el.getAttribute("data-new") === "1";
+      var read = seen.indexOf(el.getAttribute("data-notice-id")) > -1;
+      var show = isNew && !read;
+      var badge = el.querySelector("[data-new-badge]");
+
+      if (badge) badge.style.display = show ? "" : "none";
+      el.classList.toggle("bg-primary/[0.04]", show);
+
+      if (show) unread++;
+      if (isNew && read) {
+        var k = el.getAttribute("data-kind");
+        left[k] = Math.max(0, left[k] - 1);
+      }
+    });
+
+    var total = 0;
+    root.querySelectorAll("[data-tile]").forEach(function (t) {
+      var v = left[t.getAttribute("data-tile")];
+      total += v;
+      var n = t.querySelector("[data-tile-value]");
+      if (n) n.textContent = String(v);
+    });
+
+    var pill = root.querySelector("[data-total-pill]");
+    if (pill) {
+      pill.style.display = total > 0 ? "" : "none";
+      pill.textContent = total + " new";
+    }
+
+    var dot = root.querySelector("[data-bell-dot]");
+    if (dot) dot.style.display = total > 0 ? "" : "none";
+
+    var mark = root.querySelector("[data-mark-all]");
+    if (mark) mark.style.display = unread > 0 ? "" : "none";
+
+    root.setAttribute("data-applied", "1");
+  }
+
+  function init() {
+    var root = document.getElementById("notifications");
+    if (root && !root.hasAttribute("data-applied")) apply(root);
+  }
+
+  document.addEventListener("click", function (e) {
+    var target = e.target && e.target.closest
+      ? e.target.closest("[data-notice-id],[data-tile],[data-mark-all]")
+      : null;
+    if (!target) return;
+
+    var root = target.closest("#notifications");
+    if (!root) return;
+
+    var ids = [];
+    var kind = target.getAttribute("data-tile");
+    var all = target.hasAttribute("data-mark-all");
+
+    if (target.hasAttribute("data-notice-id")) {
+      ids.push(target.getAttribute("data-notice-id"));
+    } else {
+      root.querySelectorAll("[data-notice-id][data-new='1']").forEach(function (el) {
+        if (all || el.getAttribute("data-kind") === kind) {
+          ids.push(el.getAttribute("data-notice-id"));
+        }
+      });
+    }
+
+    var seen = load();
+    ids.forEach(function (id) { if (seen.indexOf(id) === -1) seen.push(id); });
+    save(seen);
+    apply(root);
+  });
+
+  // Re-apply when the dashboard is rendered again (client-side navigation)
+  new MutationObserver(init).observe(document.body, { childList: true, subtree: true });
+
+  init();
+})();
+`
+
+async function NotificationsSection() {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000)
+
+  const [
+    newOrders,
+    pendingRepairs,
+    pendingBuybacks,
+    latestOrders,
+    latestRepairs,
+    latestBuybacks,
+  ] = await Promise.all([
+    Order.countDocuments({ createdAt: { $gte: since } }),
+    RepairRequest.countDocuments({ status: "submitted" }),
+    BuyBackRequest.countDocuments({ status: "submitted" }),
+
+    Order.find()
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .populate("userId", "name")
+      .lean(),
+
+    RepairRequest.find()
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .populate("userId", "name")
+      .lean(),
+
+    BuyBackRequest.find()
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .populate("userId", "name")
+      .lean(),
+  ])
+
+  const notices: Notice[] = [
+    ...(latestOrders as any[]).map(
+      (o): Notice => ({
+        id: `order-${o._id}`,
+        kind: "order",
+        title: "New order received",
+        subtitle: `${o.userId?.name || "Customer"} · ${formatCurrency(
+          o.subtotal || 0,
+        )}`,
+        createdAt: o.createdAt,
+        isNew: new Date(o.createdAt) >= since,
+        href: "/admin/orders",
+      }),
+    ),
+
+    ...(latestRepairs as any[]).map(
+      (r): Notice => ({
+        id: `repair-${r._id}`,
+        kind: "repair",
+        title: "New repair request",
+        subtitle: `${
+          [r.brand, r.model].filter(Boolean).join(" ") || "Device"
+        } · ${r.userId?.name || "Customer"}`,
+        createdAt: r.createdAt,
+        isNew: r.status === "submitted",
+        href: "/admin/repairs",
+      }),
+    ),
+
+    ...(latestBuybacks as any[]).map(
+      (b): Notice => ({
+        id: `buyback-${b._id}`,
+        kind: "buyback",
+        title: "New trade-in request",
+        subtitle: `${
+          [b.brand, b.model].filter(Boolean).join(" ") || "Device"
+        } · ${b.userId?.name || "Customer"}`,
+        createdAt: b.createdAt,
+        isNew: b.status === "submitted",
+        href: "/admin/buy-back",
+      }),
+    ),
+  ]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 5)
+
+  const total = newOrders + pendingRepairs + pendingBuybacks
+
+  const tiles: {
+    label: string
+    value: number
+    href: string
+    kind: NoticeKind
+  }[] = [
+    {
+      label: "New orders",
+      value: newOrders,
+      href: "/admin/orders",
+      kind: "order",
+    },
+    {
+      label: "Repair requests",
+      value: pendingRepairs,
+      href: "/admin/repairs",
+      kind: "repair",
+    },
+    {
+      label: "Trade-in requests",
+      value: pendingBuybacks,
+      href: "/admin/buy-back",
+      kind: "buyback",
+    },
+  ]
+
+  return (
+    <section
+      id="notifications"
+      className="rounded-2xl border bg-background shadow-sm"
+    >
+      <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            {total > 0 ? (
+              <BellRing className="size-4" />
+            ) : (
+              <Bell className="size-4" />
+            )}
+
+            <span
+              data-bell-dot
+              style={{ display: total > 0 ? undefined : "none" }}
+              className="absolute -right-1 -top-1 size-2.5 rounded-full bg-red-500 ring-2 ring-background"
+            />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold leading-tight">
+              Notifications
+            </h2>
+
+            <p className="text-[11px] text-muted-foreground">
+              Orders, repairs and trade-ins
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            data-mark-all
+            className="text-[11px] font-medium text-primary hover:underline"
+          >
+            Mark all read
+          </button>
+
+          <span
+            data-total-pill
+            style={{ display: total > 0 ? undefined : "none" }}
+            className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white"
+          >
+            {total} new
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-3 p-4">
+        {/* counters */}
+        <div className="grid gap-2 sm:grid-cols-3">
+          {tiles.map((tile) => {
+            const style = noticeStyle[tile.kind]
+
+            return (
+              <Link
+                key={tile.kind}
+                href={tile.href}
+                data-tile={tile.kind}
+                data-count={tile.value}
+                className="group flex items-center gap-2.5 rounded-lg border bg-muted/20 px-3 py-2.5 transition hover:bg-muted/40"
+              >
+                <div
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${style.box}`}
+                >
+                  <style.icon className="size-3.5" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {tile.label}
+                  </p>
+
+                  <p
+                    data-tile-value
+                    className="text-lg font-bold leading-tight"
+                  >
+                    {tile.value}
+                  </p>
+                </div>
+
+                <ChevronRight className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* feed */}
+        {notices.length === 0 ? (
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/20 px-4 py-5 text-center">
+            <CheckCircle2 className="size-4 text-emerald-500" />
+
+            <p className="text-xs font-medium">
+              You&apos;re all caught up
+            </p>
+          </div>
+        ) : (
+          <ul className="divide-y rounded-lg border">
+            {notices.map((notice) => {
+              const style = noticeStyle[notice.kind]
+
+              return (
+                <li key={notice.id}>
+                  <Link
+                    href={notice.href}
+                    data-notice-id={notice.id}
+                    data-kind={notice.kind}
+                    data-new={notice.isNew ? "1" : "0"}
+                    className={`flex items-center gap-2.5 px-3 py-2 transition hover:bg-muted/50 ${
+                      notice.isNew ? "bg-primary/[0.04]" : ""
+                    }`}
+                  >
+                    <div
+                      className={`flex size-7 shrink-0 items-center justify-center rounded-full ${style.box}`}
+                    >
+                      <style.icon className="size-3.5" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="flex items-center gap-1.5 text-xs font-semibold">
+                        <span className="truncate">{notice.title}</span>
+
+                        {notice.isNew && (
+                          <span
+                            data-new-badge
+                            className="shrink-0 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-bold uppercase leading-none text-white"
+                          >
+                            New
+                          </span>
+                        )}
+                      </p>
+
+                      <p className="truncate text-[11px] text-muted-foreground">
+                        {notice.subtitle}
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 text-[10px] text-muted-foreground">
+                      {timeAgo(notice.createdAt)}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+
+      <Script
+        id="notifications-read-state"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: NOTIFICATION_SCRIPT }}
+      />
+    </section>
   )
 }
 

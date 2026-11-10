@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import {
   Phone,
+  Smartphone,
   Mail,
   MapPin,
   Clock,
@@ -14,6 +15,8 @@ import {
   Cpu,
   Search,
   ShieldCheck,
+  Navigation,
+  ExternalLink,
   type LucideIcon,
 } from "lucide-react"
 
@@ -26,28 +29,39 @@ const anchor = "scroll-mt-28"
 const fieldCls =
   "w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition focus:border-violet-600 focus:bg-white focus:ring-4 focus:ring-violet-600/15"
 
+/* ---- CONTACT DETAILS ---- */
+const MOBILE_DISPLAY = "052-167 7044"
+const MOBILE_TEL = "tel:+971521677044"
+const OFFICE_DISPLAY = "02-6210-555"
+const OFFICE_TEL = "tel:+97126210555"
+const EMAIL = "support@aldana.com"
+
+/* ---- MAP (Al Dana Computer) ---- */
+const PLACE_NAME = "Al Dana Computer"
+const LAT = 24.4775376
+const LNG = 54.3566188
+const MAP_EMBED = `https://www.google.com/maps?q=${LAT},${LNG}(${encodeURIComponent(
+  PLACE_NAME
+)})&z=17&output=embed`
+const MAP_LINK =
+  "https://www.google.com/maps/place/Al+Dana+Computer/@24.4775376,54.3566188,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5e673742e7dd55:0xdc650baa9061d022!8m2!3d24.4775376!4d54.3566188!16s%2Fg%2F11vbm3hsgf?hl=en-GB"
+const DIRECTIONS_LINK = `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`
+
 const quickContacts: {
   icon: LucideIcon
   label: string
   value: string
   href?: string
+  external?: boolean
 }[] = [
-  {
-    icon: Phone,
-    label: "Call Us",
-    value: "+971 50 123 4567",
-    href: "tel:+971501234567",
-  },
-  {
-    icon: Mail,
-    label: "Email Us",
-    value: "support@aldana.com",
-    href: "mailto:support@aldana.com",
-  },
+  { icon: Smartphone, label: "Mobile", value: MOBILE_DISPLAY, href: MOBILE_TEL },
+  { icon: Phone, label: "Office", value: OFFICE_DISPLAY, href: OFFICE_TEL },
+  { icon: Mail, label: "Email Us", value: EMAIL, href: `mailto:${EMAIL}` },
   {
     icon: MapPin,
     label: "Service Center",
-    value: "Industrial Area 1, Dubai, UAE",
+    value: "Abu Dhabi, UAE",
+    href: "#find-us",
   },
   {
     icon: Clock,
@@ -98,15 +112,6 @@ const stepIcon = {
   fuchsia: "bg-fuchsia-100 text-fuchsia-700",
   dark: "bg-slate-900 text-violet-300",
 }
-
-/* ---- MAP (kept for later use) ---- */
-const ADDRESS = "123 Tech Avenue, Industrial Area 1, Dubai, UAE"
-export const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent(
-  ADDRESS
-)}&output=embed`
-export const MAP_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  ADDRESS
-)}`
 
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -163,7 +168,7 @@ export default function ContactPage() {
                 Send a message <ArrowRight className="size-4" />
               </a>
               <a
-                href="tel:+971501234567"
+                href={MOBILE_TEL}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-6 py-3 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15"
               >
                 <Phone className="size-4" /> Call us now
@@ -172,7 +177,7 @@ export default function ContactPage() {
           </div>
 
           {/* quick contact tiles */}
-          <ul className="mx-auto mt-7 grid max-w-6xl grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mx-auto mt-7 grid max-w-7xl grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {quickContacts.map((c) => {
               const inner = (
                 <>
@@ -377,25 +382,36 @@ export default function ContactPage() {
                 </h3>
 
                 <div className="relative space-y-4">
-                  <a
-                    href="tel:+971501234567"
-                    className="group flex items-center gap-3"
-                  >
+                  <a href={MOBILE_TEL} className="group flex items-center gap-3">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
+                      <Smartphone className="size-4" />
+                    </span>
+                    <span>
+                      <span className="block text-xs font-medium text-violet-100">
+                        Mobile
+                      </span>
+                      <span className="block text-base font-bold">
+                        {MOBILE_DISPLAY}
+                      </span>
+                    </span>
+                  </a>
+
+                  <a href={OFFICE_TEL} className="group flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <Phone className="size-4" />
                     </span>
                     <span>
                       <span className="block text-xs font-medium text-violet-100">
-                        Call Us
+                        Office
                       </span>
                       <span className="block text-base font-bold">
-                        +971 50 123 4567
+                        {OFFICE_DISPLAY}
                       </span>
                     </span>
                   </a>
 
                   <a
-                    href="mailto:support@aldana.com"
+                    href={`mailto:${EMAIL}`}
                     className="group flex items-center gap-3"
                   >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
@@ -406,12 +422,17 @@ export default function ContactPage() {
                         Email Us
                       </span>
                       <span className="block break-words text-base font-bold">
-                        support@aldana.com
+                        {EMAIL}
                       </span>
                     </span>
                   </a>
 
-                  <div className="group flex items-start gap-3">
+                  <a
+                    href={MAP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-3"
+                  >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <MapPin className="size-4" />
                     </span>
@@ -420,12 +441,12 @@ export default function ContactPage() {
                         Service Center
                       </span>
                       <span className="block text-base font-bold leading-snug">
-                        123 Tech Avenue,
+                        {PLACE_NAME}
                         <br />
-                        Industrial Area 1, Dubai, UAE
+                        Abu Dhabi, UAE
                       </span>
                     </span>
-                  </div>
+                  </a>
                 </div>
               </div>
 
@@ -462,6 +483,85 @@ export default function ContactPage() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FIND US (MAP) ================= */}
+      <section id="find-us" className={`${sectionY} ${anchor}`}>
+        <div className={wrap}>
+          <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-slate-200/50">
+            <div className="grid lg:grid-cols-[360px_1fr]">
+              {/* Info panel */}
+              <div className="flex flex-col justify-center bg-slate-900 p-5 text-white sm:p-7">
+                <span className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white">
+                  <MapPin className="size-3.5" /> Find us
+                </span>
+
+                <h2 className="text-2xl font-black sm:text-3xl">
+                  Visit our service center
+                </h2>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-200">
+                  Drop by for a free visual inspection from our counter
+                  technicians. No appointment needed during business hours.
+                </p>
+
+                <ul className="mt-5 space-y-3 text-sm font-medium text-slate-200">
+                  <li className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 size-4 shrink-0 text-fuchsia-300" />
+                    <span>
+                      <span className="block font-bold text-white">
+                        {PLACE_NAME}
+                      </span>
+                      Abu Dhabi, UAE
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Smartphone className="size-4 shrink-0 text-fuchsia-300" />
+                    <a href={MOBILE_TEL} className="hover:text-white">
+                      Mobile: <span className="font-bold text-white">{MOBILE_DISPLAY}</span>
+                    </a>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Phone className="size-4 shrink-0 text-fuchsia-300" />
+                    <a href={OFFICE_TEL} className="hover:text-white">
+                      Office: <span className="font-bold text-white">{OFFICE_DISPLAY}</span>
+                    </a>
+                  </li>
+                </ul>
+
+                <div className="mt-6 flex flex-col gap-2.5 sm:flex-row lg:flex-col xl:flex-row">
+                  <a
+                    href={DIRECTIONS_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-violet-900/40 transition-transform hover:-translate-y-0.5"
+                  >
+                    <Navigation className="size-4" /> Get Directions
+                  </a>
+                  <a
+                    href={MAP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/15"
+                  >
+                    <ExternalLink className="size-4" /> Open in Maps
+                  </a>
+                </div>
+              </div>
+
+              {/* Map */}
+              <div className="relative h-[320px] bg-slate-100 sm:h-[380px] lg:h-auto lg:min-h-[420px]">
+                <iframe
+                  title="Al Dana Computer location on Google Maps"
+                  src={MAP_EMBED}
+                  className="absolute inset-0 size-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </div>
           </div>

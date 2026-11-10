@@ -56,3 +56,26 @@ export async function updateProfileAction(formData: FormData) {
     return { error: "Failed to update profile. Please try again." }
   }
 }
+
+/**
+ * Returns the logged-in user's details for prefilling checkout,
+ * or null for guests.
+ */
+export async function getCheckoutProfile() {
+  const session = await auth()
+  if (!session?.user?.id) return null
+
+  await connectToDatabase()
+
+  const user = (await User.findById(session.user.id)
+    .select("name phone address")
+    .lean()) as { name?: string; phone?: string; address?: string } | null
+
+  if (!user) return null
+
+  return {
+    fullName: user.name || "",
+    phone: user.phone || "",
+    address: user.address || "",
+  }
+}

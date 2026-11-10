@@ -161,8 +161,8 @@ export default async function ShopPage({
                 {activeCategoryName ?? "Shop Hardware"}
               </h1>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
-                Gaming PCs, laptops and accessories — brand new and
-                pre-loved, all in one place.
+                Gaming PCs laptops and accessories  brand new and
+                pre-loved all in one place.
               </p>
             </div>
 

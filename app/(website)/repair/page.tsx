@@ -6,17 +6,22 @@ import {
   CheckCircle2,
   Clock,
   Cpu,
+  ExternalLink,
   Laptop,
   Mail,
+  MapPin,
   MonitorCog,
+  Navigation,
   Phone,
   ShieldCheck,
+  Smartphone,
   Tablet,
   Upload,
   User,
   Wrench,
 } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { submitRepair } from "@/actions/requests";
 
 const trustItems = [
   {
@@ -91,12 +96,61 @@ const processSteps = [
   },
 ];
 
+/* ---- CONTACT + MAP (Al Dana Computer) ---- */
+const MOBILE_DISPLAY = "052-167 7044";
+const MOBILE_TEL = "tel:+971521677044";
+const OFFICE_DISPLAY = "02-6210-555";
+const OFFICE_TEL = "tel:+97126210555";
+
+const PLACE_NAME = "Al Dana Computer";
+const LAT = 24.4775376;
+const LNG = 54.3566188;
+const MAP_EMBED = `https://www.google.com/maps?q=${LAT},${LNG}(${encodeURIComponent(
+  PLACE_NAME
+)})&z=16&output=embed`;
+const MAP_LINK =
+  "https://www.google.com/maps/place/Al+Dana+Computer/@24.4775376,54.3566188,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5e673742e7dd55:0xdc650baa9061d022!8m2!3d24.4775376!4d54.3566188!16s%2Fg%2F11vbm3hsgf?hl=en-GB";
+const DIRECTIONS_LINK = `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`;
+
 const inputCls =
   "h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10";
 const labelCls = "mb-2 block text-xs font-bold text-slate-700";
 
+type RepairState = {
+  success?: boolean;
+  message?: string;
+  errors?: Record<string, string>;
+  values?: Record<string, string>;
+};
+
+const initialState: RepairState = {};
+
 export default function RepairPage() {
+  const [state, formAction, isPending] = useActionState(
+    submitRepair,
+    initialState
+  );
   const [contactMethod, setContactMethod] = useState("WhatsApp");
+  const [photoCount, setPhotoCount] = useState(0);
+  const [submittedName, setSubmittedName] = useState("");
+  const [dismissed, setDismissed] = useState<RepairState | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Thank-you only shows for a real, saved submission
+  const showThanks = !!state?.success && state !== dismissed;
+
+  // bring the result (thank-you or error) into view
+  useEffect(() => {
+    if (state?.success || state?.message) {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [state]);
+
+  function resetForm() {
+    setDismissed(state);
+    setPhotoCount(0);
+    setContactMethod("WhatsApp");
+  }
 
   return (
     <main className="min-h-screen overflow-hidden bg-white text-slate-900">
@@ -356,7 +410,7 @@ export default function RepairPage() {
         <div className="mx-auto max-w-[112rem] px-4 sm:px-8 lg:px-14">
           <div className="grid gap-8 lg:grid-cols-[0.5fr_1.5fr] lg:gap-14">
             {/* LEFT INFO */}
-            <div className="lg:sticky lg:top-32 lg:self-start">
+            <div className="lg:sticky lg:top-24 lg:self-start">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-violet-600">
                 Repair request
               </p>
@@ -371,7 +425,7 @@ export default function RepairPage() {
                 contacting you.
               </p>
 
-              <div className="mt-7 space-y-2.5">
+              <div className="mt-6 space-y-2">
                 {[
                   "Professional diagnosis",
                   "Transparent communication",
@@ -380,7 +434,7 @@ export default function RepairPage() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3"
+                    className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-2.5"
                   >
                     <CheckCircle2 className="size-4 shrink-0 text-emerald-500" />
                     <span className="text-sm font-semibold text-slate-700">
@@ -390,25 +444,72 @@ export default function RepairPage() {
                 ))}
               </div>
 
-              <div className="mt-5 rounded-lg border border-violet-100 bg-violet-50 p-4">
-                <p className="text-sm font-bold text-violet-900">
-                  Inspection &amp; diagnosis
-                </p>
-                <p className="mt-1 text-xs leading-5 text-violet-800/80">
-                  A 100 DHS service charge applies for inspection, diagnosis
-                  and testing.{" "}
-                  <Link
-                    href="/legal?doc=refund-and-return-policy#service-and-diagnostic-charge"
-                    className="font-bold underline underline-offset-2"
-                  >
-                    Read the policy
-                  </Link>
-                </p>
+              {/* MAP */}
+              <div className="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="relative h-48 bg-slate-100 sm:h-56">
+                  <iframe
+                    title="Al Dana Computer location on Google Maps"
+                    src={MAP_EMBED}
+                    className="absolute inset-0 size-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+
+                <div className="p-4">
+                  <p className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                    <MapPin className="size-4 text-violet-600" />
+                    Visit {PLACE_NAME}
+                  </p>
+                  <p className="mt-0.5 pl-6 text-xs text-slate-600">
+                    Abu Dhabi, UAE
+                  </p>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                    <a
+                      href={MOBILE_TEL}
+                      className="flex items-center gap-1.5 rounded-md bg-slate-50 px-2.5 py-2 font-semibold text-slate-700 hover:text-violet-700"
+                    >
+                      <Smartphone className="size-3.5 text-violet-600" />
+                      {MOBILE_DISPLAY}
+                    </a>
+                    <a
+                      href={OFFICE_TEL}
+                      className="flex items-center gap-1.5 rounded-md bg-slate-50 px-2.5 py-2 font-semibold text-slate-700 hover:text-violet-700"
+                    >
+                      <Phone className="size-3.5 text-violet-600" />
+                      {OFFICE_DISPLAY}
+                    </a>
+                  </div>
+
+                  <div className="mt-3 flex gap-2">
+                    <a
+                      href={DIRECTIONS_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-violet-700"
+                    >
+                      <Navigation className="size-3.5" /> Directions
+                    </a>
+                    <a
+                      href={MAP_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-violet-400 hover:text-violet-700"
+                    >
+                      <ExternalLink className="size-3.5" /> Open in Maps
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* FORM */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+            <div
+              ref={cardRef}
+              className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60"
+            >
               {/* Form Header */}
               <div className="bg-slate-950 px-6 py-6 sm:px-10">
                 <div className="flex items-center gap-4">
@@ -420,208 +521,328 @@ export default function RepairPage() {
                     <h3 className="text-lg font-black text-white sm:text-xl">
                       Submit a repair request
                     </h3>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-slate-400">
                       Usually takes less than 2 minutes
                     </p>
                   </div>
                 </div>
               </div>
 
-              <form className="space-y-8 p-6 sm:p-10">
-                {/* CUSTOMER DETAILS */}
-                <div>
-                  <div className="mb-5 flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
-                      <User className="size-4" />
+              {showThanks ? (
+                /* ---------- THANK YOU ---------- */
+                <div
+                  role="status"
+                  className="flex min-h-[460px] flex-col items-center justify-center px-6 py-12 text-center sm:px-10"
+                >
+                  <div className="flex size-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <CheckCircle2 className="size-10" />
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-black text-slate-900 sm:text-3xl">
+                    Thank you{submittedName ? `, ${submittedName}` : ""}!
+                  </h3>
+
+                  <p className="mt-3 max-w-md text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
+                    Your repair request has been received. Our technicians will
+                    review the details and contact you via{" "}
+                    <span className="font-bold text-slate-900">
+                      {contactMethod}
+                    </span>{" "}
+                    shortly with the next steps.
+                  </p>
+
+                  <div className="mt-7 flex flex-wrap justify-center gap-3">
+                    <Link
+                      href="/"
+                      className="inline-flex h-11 items-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white transition hover:bg-violet-700"
+                    >
+                      Back to Home
+                      <ArrowRight className="ml-2 size-4" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="inline-flex h-11 items-center rounded-lg border border-slate-300 bg-white px-6 text-sm font-bold text-slate-700 transition hover:border-violet-400 hover:text-violet-700"
+                    >
+                      Submit another request
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form
+                  action={formAction}
+                  onSubmit={(e) =>
+                    setSubmittedName(
+                      String(new FormData(e.currentTarget).get("name") ?? "")
+                        .trim()
+                        .split(" ")[0]
+                    )
+                  }
+                  className="space-y-8 p-6 sm:p-10"
+                >
+                  {!state?.success && state?.message && (
+                    <div
+                      role="alert"
+                      className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                    >
+                      <p>{state.message}</p>
+                      {state.errors && Object.keys(state.errors).length > 0 && (
+                        <ul className="mt-1.5 list-disc pl-5 text-xs font-normal">
+                          {Object.entries(state.errors).map(([field, msg]) => (
+                            <li key={field}>
+                              <span className="font-semibold capitalize">
+                                {field}
+                              </span>
+                              : {msg}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+
+                  {/* CUSTOMER DETAILS */}
+                  <div>
+                    <div className="mb-5 flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+                        <User className="size-4" />
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-black text-slate-900">
+                          Your details
+                        </h4>
+                        <p className="text-xs text-slate-500">
+                          So we know how to reach you
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label htmlFor="name" className={labelCls}>
+                          Full name
+                        </label>
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          required
+                          autoComplete="name"
+                          placeholder="Your full name"
+                          defaultValue={state?.values?.name}
+                          className={inputCls}
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="phone" className={labelCls}>
+                          Phone number
+                        </label>
+                        <input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          required
+                          autoComplete="tel"
+                          inputMode="tel"
+                          placeholder="+971 50 123 4567"
+                          defaultValue={state?.values?.phone}
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CONTACT METHOD */}
+                  <div>
+                    <label className={labelCls}>Preferred contact method</label>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { name: "WhatsApp", icon: Phone },
+                        { name: "Phone", icon: Phone },
+                        { name: "Email", icon: Mail },
+                      ].map(({ name, icon: Icon }) => (
+                        <label
+                          key={name}
+                          className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border py-3.5 text-sm font-bold transition ${
+                            contactMethod === name
+                              ? "border-violet-500 bg-violet-50 text-violet-600"
+                              : "border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="contact"
+                            value={name}
+                            checked={contactMethod === name}
+                            onChange={() => setContactMethod(name)}
+                            className="sr-only"
+                          />
+                          <Icon className="size-4" />
+                          {name}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* DEVICE */}
+                  <div className="border-t border-slate-100 pt-8">
+                    <div className="mb-5">
                       <h4 className="text-sm font-black text-slate-900">
-                        Your details
+                        Device information
                       </h4>
-                      <p className="text-xs text-slate-400">
-                        So we know how to reach you
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        Tell us what you&apos;re bringing in
                       </p>
                     </div>
-                  </div>
 
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="name" className={labelCls}>
-                        Full name
-                      </label>
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        placeholder="Your full name"
-                        className={inputCls}
-                      />
-                    </div>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label htmlFor="device" className={labelCls}>
+                          Device type
+                        </label>
+                        <select
+                          id="device"
+                          name="deviceType"
+                          required
+                          defaultValue={state?.values?.deviceType ?? ""}
+                          className={`${inputCls} text-slate-700`}
+                        >
+                          <option value="">Select device</option>
+                          <option value="Gaming PC">Gaming PC</option>
+                          <option value="Gaming Laptop">Gaming Laptop</option>
+                          <option value="iPad">iPad</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
 
-                    <div>
-                      <label htmlFor="phone" className={labelCls}>
-                        Phone number
-                      </label>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        required
-                        placeholder="+92 300 1234567"
-                        className={inputCls}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* CONTACT METHOD */}
-                <div>
-                  <label className={labelCls}>Preferred contact method</label>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { name: "WhatsApp", icon: Phone },
-                      { name: "Phone", icon: Phone },
-                      { name: "Email", icon: Mail },
-                    ].map(({ name, icon: Icon }) => (
-                      <label
-                        key={name}
-                        className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border py-3.5 text-sm font-bold transition ${
-                          contactMethod === name
-                            ? "border-violet-500 bg-violet-50 text-violet-600"
-                            : "border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300"
-                        }`}
-                      >
+                      <div>
+                        <label htmlFor="brand" className={labelCls}>
+                          Brand
+                        </label>
                         <input
-                          type="radio"
-                          name="contactMethod"
-                          value={name}
-                          checked={contactMethod === name}
-                          onChange={() => setContactMethod(name)}
-                          className="sr-only"
+                          id="brand"
+                          name="brand"
+                          type="text"
+                          required
+                          placeholder="e.g. ASUS"
+                          defaultValue={state?.values?.brand}
+                          className={inputCls}
                         />
-                        <Icon className="size-4" />
-                        {name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                      </div>
 
-                {/* DEVICE */}
-                <div className="border-t border-slate-100 pt-8">
-                  <div className="mb-5">
-                    <h4 className="text-sm font-black text-slate-900">
-                      Device information
-                    </h4>
-                    <p className="mt-0.5 text-xs text-slate-400">
-                      Tell us what you&apos;re bringing in
+                      <div className="sm:col-span-2">
+                        <label htmlFor="model" className={labelCls}>
+                          Model
+                        </label>
+                        <input
+                          id="model"
+                          name="model"
+                          type="text"
+                          required
+                          placeholder="e.g. ROG Strix G15"
+                          defaultValue={state?.values?.model}
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ISSUE */}
+                  <div>
+                    <label htmlFor="issue" className={labelCls}>
+                      Describe the problem
+                    </label>
+
+                    <textarea
+                      id="issue"
+                      name="problem"
+                      required
+                      rows={6}
+                      defaultValue={state?.values?.problem}
+                      placeholder="What happened? When did the problem start? Any unusual sounds, overheating, crashes, physical damage, or other symptoms?"
+                      className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm leading-6 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                    />
+
+                    <p className="mt-2 text-xs text-slate-500">
+                      More details help our technicians diagnose your device
+                      faster.
                     </p>
                   </div>
 
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="device" className={labelCls}>
-                        Device type
-                      </label>
-                      <select
-                        id="device"
-                        name="device"
-                        required
-                        className={`${inputCls} text-slate-700`}
-                      >
-                        <option value="">Select device</option>
-                        <option value="gaming-pc">Gaming PC</option>
-                        <option value="gaming-laptop">Gaming Laptop</option>
-                        <option value="ipad">iPad</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
+                  {/* UPLOAD (optional) */}
+                  <div>
+                    <label
+                      htmlFor="attachment"
+                      className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-5 py-4 transition hover:border-violet-300 hover:bg-violet-50/50"
+                    >
+                      <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm">
+                        <Upload className="size-5" />
+                      </div>
 
-                    <div>
-                      <label htmlFor="model" className={labelCls}>
-                        Brand / Model
-                      </label>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-700">
+                          Add photos of the issue{" "}
+                          <span className="font-medium text-slate-500">
+                            (optional)
+                          </span>
+                        </p>
+                        <p className="mt-0.5 truncate text-xs text-slate-500">
+                          {photoCount > 0
+                            ? `${photoCount} photo${photoCount === 1 ? "" : "s"} selected`
+                            : "JPG, PNG • Up to 10MB each • You can skip this"}
+                        </p>
+                      </div>
+
+                      {/* NOT required: the form submits fine with no photos */}
                       <input
-                        id="model"
-                        name="model"
-                        type="text"
-                        placeholder="e.g. ASUS ROG G15"
-                        className={inputCls}
+                        id="attachment"
+                        name="attachment"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) =>
+                          setPhotoCount(
+                            Array.from(e.target.files ?? []).filter(
+                              (f) => f.size > 0
+                            ).length
+                          )
+                        }
+                        className="sr-only"
                       />
+                    </label>
+                  </div>
+
+                  {/* SUBMIT */}
+                  <div className="border-t border-slate-100 pt-6">
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70 sm:h-14"
+                    >
+                      {isPending ? (
+                        <>
+                          <span className="mr-2 size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Repair Request
+                          <ArrowRight className="ml-2 size-4" />
+                        </>
+                      )}
+                    </button>
+
+                    <div className="mt-4 flex items-start justify-center gap-1.5 text-center text-xs leading-5 text-slate-500">
+                      <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
+                      Your information is securely handled and only used to
+                      process your repair request.
                     </div>
                   </div>
-                </div>
-
-                {/* ISSUE */}
-                <div>
-                  <label htmlFor="issue" className={labelCls}>
-                    Describe the problem
-                  </label>
-
-                  <textarea
-                    id="issue"
-                    name="issue"
-                    required
-                    rows={6}
-                    placeholder="What happened? When did the problem start? Any unusual sounds, overheating, crashes, physical damage, or other symptoms?"
-                    className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm leading-6 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
-                  />
-
-                  <p className="mt-2 text-xs text-slate-400">
-                    More details help our technicians diagnose your device
-                    faster.
-                  </p>
-                </div>
-
-                {/* UPLOAD */}
-                <div>
-                  <label
-                    htmlFor="attachment"
-                    className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-5 py-4 transition hover:border-violet-300 hover:bg-violet-50/50"
-                  >
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm">
-                      <Upload className="size-5" />
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-slate-700">
-                        Add photos of the issue
-                      </p>
-                      <p className="mt-0.5 truncate text-xs text-slate-400">
-                        Optional • JPG, PNG • Up to 10MB
-                      </p>
-                    </div>
-
-                    <input
-                      id="attachment"
-                      name="attachment"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-
-                {/* SUBMIT */}
-                <div className="border-t border-slate-100 pt-6">
-                  <button
-                    type="submit"
-                    className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 sm:h-14"
-                  >
-                    Submit Repair Request
-                    <ArrowRight className="ml-2 size-4" />
-                  </button>
-
-                  <div className="mt-4 flex items-start justify-center gap-1.5 text-center text-xs leading-5 text-slate-400">
-                    <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
-                    Your information is securely handled and only used to
-                    process your repair request.
-                  </div>
-                </div>
-              </form>
+                </form>
+              )}
             </div>
           </div>
         </div>
@@ -640,7 +861,7 @@ export default function RepairPage() {
             Not sure which service you need?
           </h2>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-400">
             Don&apos;t worry. Explain the symptoms in your repair request and
             our technicians can help identify the right service.
           </p>

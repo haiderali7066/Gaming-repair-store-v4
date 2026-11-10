@@ -17,6 +17,8 @@ type RepairState = {
   success?: boolean;
   message?: string;
   errors?: Record<string, string>;
+  /** echoed back on failure so the form doesn't lose what the user typed */
+  values?: Record<string, string>;
 };
 
 async function userId() {
@@ -37,24 +39,94 @@ export async function submitRepair(
   prevState: RepairState,
   formData: FormData
 ): Promise<RepairState> {
-  const rawData = Object.fromEntries(formData.entries());
+  /*
+   * IMPORTANT: resolve the user BEFORE the try/catch.
+   * redirect() works by throwing, so inside a try/catch it was being
+   * swallowed and turned into a generic "something went wrong" error.
+   */
+  const uid = await userId();
+
+  /*
+   * Only text fields go to the validator. The photo input is a File,
+   * which must not be passed into repairSchema.
+   */
+  const rawData: Record<string, string> = {};
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === "string") rawData[key] = value;
+  }
 
   const parsed = repairSchema.safeParse(rawData);
 
   if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+
     return {
       success: false,
       message: "Please complete all required repair details.",
-      errors: parsed.error.flatten().fieldErrors as Record<string, string>,
+      errors: Object.fromEntries(
+        Object.entries(fieldErrors).map(([key, value]) => [
+          key,
+          value?.[0] || "This field is required.",
+        ])
+      ),
+      values: rawData,
     };
+  }
+
+  /* ---------- PHOTOS (OPTIONAL) ---------- */
+  // An empty file input still sends a 0-byte File, so ignore those.
+  const photos = formData
+    .getAll("attachment")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (photos.length > 5) {
+    return {
+      success: false,
+      message: "You can upload a maximum of 5 photos.",
+      errors: { attachment: "Maximum 5 photos are allowed." },
+      values: rawData,
+    };
+  }
+
+  for (const file of photos) {
+    if (!file.type.startsWith("image/")) {
+      return {
+        success: false,
+        message: "Only image files are allowed.",
+        errors: { attachment: "Only image files are allowed." },
+        values: rawData,
+      };
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return {
+        success: false,
+        message: "Each photo must be smaller than 10MB.",
+        errors: { attachment: "Each photo must be smaller than 10MB." },
+        values: rawData,
+      };
+    }
   }
 
   try {
     await connectToDatabase();
 
+    const imageUrls: string[] = [];
+
+    /*
+     * Put your Cloudinary upload here (same helper as buy-back).
+     * With no photos this loop simply does nothing, so photos stay optional.
+     *
+     * for (const file of photos) {
+     *   const buffer = Buffer.from(await file.arrayBuffer());
+     *   const result = await uploadToCloudinary(buffer);
+     *   imageUrls.push(result.secure_url);
+     * }
+     */
+
     await RepairRequest.create({
       ...parsed.data,
-      userId: await userId(),
+      userId: uid,
+      images: imageUrls, // ignored by Mongoose if the model has no "images" field
     });
 
     return {
@@ -69,6 +141,7 @@ export async function submitRepair(
       success: false,
       message:
         "Something went wrong while submitting your repair request. Please try again.",
+      values: rawData,
     };
   }
 }
@@ -81,6 +154,9 @@ export async function submitBuyBack(
   prevState: BuyBackState,
   formData: FormData
 ): Promise<BuyBackState> {
+  // Same fix as above: redirect() must run outside try/catch.
+  const uid = await userId();
+
   try {
     /*
      * Do NOT use Object.fromEntries(formData) directly because
@@ -92,16 +168,13 @@ export async function submitBuyBack(
       brand: formData.get("brand")?.toString() || "",
       model: formData.get("model")?.toString() || "",
       condition: formData.get("condition")?.toString() || "",
-      specifications:
-        formData.get("specifications")?.toString() || "",
+      specifications: formData.get("specifications")?.toString() || "",
       description: formData.get("description")?.toString() || "",
       name: formData.get("name")?.toString() || "",
       idNumber: formData.get("idNumber")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
-      expectedPrice:
-        formData.get("expectedPrice")?.toString() || "",
-      servicePreference:
-        formData.get("servicePreference")?.toString() || "",
+      expectedPrice: formData.get("expectedPrice")?.toString() || "",
+      servicePreference: formData.get("servicePreference")?.toString() || "",
     };
 
     /* ============================================================ */
@@ -111,8 +184,7 @@ export async function submitBuyBack(
     const parsed = buyBackSchema.safeParse(rawData);
 
     if (!parsed.success) {
-      const fieldErrors =
-        parsed.error.flatten().fieldErrors;
+      const fieldErrors = parsed.error.flatten().fieldErrors;
 
       return {
         success: false,
@@ -132,10 +204,7 @@ export async function submitBuyBack(
 
     const imageFiles = formData
       .getAll("images")
-      .filter(
-        (file): file is File =>
-          file instanceof File && file.size > 0
-      );
+      .filter((file): file is File => file instanceof File && file.size > 0);
 
     /* ============================================================ */
     /* VALIDATE IMAGES                                               */
@@ -151,21 +220,15 @@ export async function submitBuyBack(
       };
     }
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-    ];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
     for (const file of imageFiles) {
       if (!allowedTypes.includes(file.type)) {
         return {
           success: false,
-          message:
-            "Only JPG, PNG and WEBP images are allowed.",
+          message: "Only JPG, PNG and WEBP images are allowed.",
           errors: {
-            images:
-              "Only JPG, PNG and WEBP images are allowed.",
+            images: "Only JPG, PNG and WEBP images are allowed.",
           },
         };
       }
@@ -221,7 +284,7 @@ export async function submitBuyBack(
     await BuyBackRequest.create({
       ...parsed.data,
 
-      userId: await userId(),
+      userId: uid,
 
       images: imageUrls,
     });
