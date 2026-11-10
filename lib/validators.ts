@@ -15,9 +15,11 @@ export const registerSchema = loginSchema.extend({
   phone: z.string().min(7).max(20),
   idNumber: z.string().min(3).max(30),
 });
-// Staff creating a walk-in customer record from the admin panel — same identity
-// requirements as self-registration, plus an optional address captured up front.
+// Staff creating a walk-in customer record from the admin panel. Same as
+// self-registration, except the ID number is optional (validated only when
+// provided) and an optional address can be captured up front.
 export const adminCreateCustomerSchema = registerSchema.extend({
+  idNumber: z.string().trim().min(3).max(30).optional().or(z.literal("")),
   address: z.string().max(300).optional().or(z.literal("")),
 });
 // Admin-initiated repair intake: contact is optional since it can fall back to

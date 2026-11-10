@@ -17,25 +17,30 @@ async function guard() {
 }
 
 /**
- * Creates a full customer record from the admin panel (e.g. a walk-in
- * customer at the counter). Mirrors registerAction's identity requirements —
- * name, email, phone, ID number, verification photo, and password — plus an
- * optional address, so the account is immediately usable for self-service
- * login and matches the shape self-registered customers have.
+ * Creates a customer record from the admin panel (e.g. a walk-in
+ * customer at the counter). Name, email, phone and password are required;
+ * address, ID number and verification photo are optional so the account
+ * can be created right away and completed later.
  */
 export async function createCustomerAction(formData: FormData) {
   await guard()
 
-  const parsed = adminCreateCustomerSchema.safeParse(Object.fromEntries(formData))
+  // Blank optional fields arrive as "" — drop them so the schema treats them as missing.
+  const raw: Record<string, FormDataEntryValue> = Object.fromEntries(formData)
+  delete raw.photo
+  if (!raw.idNumber?.toString().trim()) delete raw.idNumber
+  if (!raw.address?.toString().trim()) delete raw.address
+
+  const parsed = adminCreateCustomerSchema.safeParse(raw)
   if (!parsed.success) {
     return { ok: false, error: "Please check the customer details and try again." }
   }
 
+  // Photo is optional: an empty file input still arrives as a File with size 0.
   const photo = formData.get("photo")
-  if (!(photo instanceof File) || photo.size === 0) {
-    return { ok: false, error: "A verification photo is required." }
-  }
-  if (!photo.type.startsWith("image/")) {
+  const hasPhoto = photo instanceof File && photo.size > 0
+
+  if (hasPhoto && !photo.type.startsWith("image/")) {
     return { ok: false, error: "Photo must be an image file." }
   }
 
@@ -43,13 +48,15 @@ export async function createCustomerAction(formData: FormData) {
     return { ok: false, error: "A customer with this email is already registered." }
   }
 
-  let photoUrl: string
-  try {
-    const buffer = Buffer.from(await photo.arrayBuffer())
-    photoUrl = await uploadImageToCloudinary(buffer, "al-dana/customers")
-  } catch (err) {
-    console.error("[v0] createCustomerAction photo upload error:", err)
-    return { ok: false, error: "Failed to upload photo. Please try again." }
+  let photoUrl: string | undefined
+  if (hasPhoto) {
+    try {
+      const buffer = Buffer.from(await photo.arrayBuffer())
+      photoUrl = await uploadImageToCloudinary(buffer, "al-dana/customers")
+    } catch (err) {
+      console.error("[v0] createCustomerAction photo upload error:", err)
+      return { ok: false, error: "Failed to upload photo. Please try again." }
+    }
   }
 
   try {
@@ -59,8 +66,8 @@ export async function createCustomerAction(formData: FormData) {
       email: parsed.data.email,
       phone: parsed.data.phone,
       address: parsed.data.address || undefined,
-      idNumber: parsed.data.idNumber,
-      photoUrl,
+      idNumber: parsed.data.idNumber || undefined,
+      photoUrl, // undefined when no photo, so the model default ("") applies
       passwordHash,
       role: "customer",
       createdByAdmin: true,

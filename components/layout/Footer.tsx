@@ -113,11 +113,11 @@ export function Footer() {
             <ul className="space-y-5 font-medium">
               <li className="flex items-start gap-3 text-slate-400 hover:text-white transition-colors group">
                 <FaMapMarkerAlt className="size-5 text-violet-500 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-                <span>123 Tech Avenue, Industrial Area 1, Dubai, UAE</span>
+                <span>Abu Dhabi, UAE</span>
               </li>
               <li className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors group">
                 <FaPhoneAlt className="size-4 text-violet-500 shrink-0 group-hover:scale-110 transition-transform" />
-                <a href="tel:+971501234567">+971 50 123 4567</a>
+                <a href="tel:+971501234567">02-6210-555</a>
               </li>
               <li className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors group">
                 <FaEnvelope className="size-4 text-violet-500 shrink-0 group-hover:scale-110 transition-transform" />

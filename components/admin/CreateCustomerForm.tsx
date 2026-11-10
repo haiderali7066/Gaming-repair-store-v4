@@ -41,7 +41,7 @@ export function CreateCustomerForm() {
         <CardHeader>
           <CardTitle>Customer Details</CardTitle>
           <CardDescription>
-            Capture the same identity details as self-registration so the customer can sign in later.
+            Create a customer record so they can sign in later. ID number and verification photo are optional and can be added afterwards.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -67,17 +67,17 @@ export function CreateCustomerForm() {
               </Field>
             </div>
             <Field>
-              <FieldLabel htmlFor="idNumber">ID number</FieldLabel>
-              <Input id="idNumber" name="idNumber" required placeholder="Emirates ID / passport number" />
+              <FieldLabel htmlFor="idNumber">ID number (optional)</FieldLabel>
+              <Input id="idNumber" name="idNumber" placeholder="Emirates ID / passport number" />
             </Field>
             <Field>
               <FieldLabel htmlFor="address">Address (optional)</FieldLabel>
               <Textarea id="address" name="address" rows={2} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="photo">Verification photo</FieldLabel>
-              <Input id="photo" name="photo" type="file" accept="image/*" required />
-              <p className="text-xs text-muted-foreground">Upload a clear photo of the customer for identity verification.</p>
+              <FieldLabel htmlFor="photo">Verification photo (optional)</FieldLabel>
+              <Input id="photo" name="photo" type="file" accept="image/*" />
+              <p className="text-xs text-muted-foreground">Upload a clear photo of the customer for identity verification, if available.</p>
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Initial password</FieldLabel>

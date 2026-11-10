@@ -31,6 +31,13 @@ const UserSchema = new Schema(
       default: "",
     },
 
+    // Optional: Emirates ID / passport number (admin-created or self-registered customers)
+    idNumber: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     // Optional because Google users don't have a password
     passwordHash: {
       type: String,
@@ -38,7 +45,7 @@ const UserSchema = new Schema(
       select: false,
     },
 
-    // Google profile image
+    // Google profile image, or the customer's verification photo (optional)
     photoUrl: {
       type: String,
       default: "",
