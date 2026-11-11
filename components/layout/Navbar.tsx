@@ -30,9 +30,24 @@ import { formatCurrency } from "@/lib/helpers";
 import { CartButton } from "./CartButton"; // adjust path if needed
 
 const homePages = [
-  { label: "About Us", href: "/about", desc: "Our story, mission and team.", icon: Info },
-  { label: "Contact Us", href: "/contact", desc: "Support, quotes and our location.", icon: PhoneCall },
-  { label: "Blog", href: "/blog", desc: "News, tech tips and repair guides.", icon: Newspaper },
+  {
+    label: "About Us",
+    href: "/about",
+    desc: "Our story, mission and team.",
+    icon: Info,
+  },
+  {
+    label: "Contact Us",
+    href: "/contact",
+    desc: "Support, quotes and our location.",
+    icon: PhoneCall,
+  },
+  {
+    label: "Blog",
+    href: "/blog",
+    desc: "News, tech tips and repair guides.",
+    icon: Newspaper,
+  },
 ];
 
 // "Our Services Overview" and "Brands We Service" both go to /services
@@ -94,8 +109,18 @@ const services = [
 ];
 
 const shopConditions = [
-  { label: "Brand New", href: "/shop#brand-new", desc: "Sealed, with full warranty.", icon: Sparkles },
-  { label: "Pre-Loved", href: "/shop#pre-loved", desc: "Tested, certified and well priced.", icon: Recycle },
+  {
+    label: "Brand New",
+    href: "/shop#brand-new",
+    desc: "Sealed, with full warranty.",
+    icon: Sparkles,
+  },
+  {
+    label: "Pre-Loved",
+    href: "/shop#pre-loved",
+    desc: "Tested, certified and well priced.",
+    icon: Recycle,
+  },
 ];
 
 // nav link: bottom border indicator, highlights while its mega menu is open
@@ -105,8 +130,10 @@ const linkCls =
 const dropCls =
   "drop absolute inset-x-0 top-full h-[360px] overflow-hidden invisible opacity-0 pointer-events-none translate-y-1 group-hover:pointer-events-auto group-focus-within:pointer-events-auto group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 bg-white border-t-2 border-violet-600 border-b border-b-slate-200 shadow-2xl shadow-slate-900/10 z-50";
 const innerCls = "mx-auto h-full max-w-7xl px-8 py-7";
-const labelCls = "mb-3 text-[11px] font-bold uppercase tracking-widest text-violet-600";
-const chevCls = "chev size-4 text-slate-400 transition-transform group-hover:rotate-180";
+const labelCls =
+  "mb-3 text-[11px] font-bold uppercase tracking-widest text-violet-600";
+const chevCls =
+  "chev size-4 text-slate-400 transition-transform group-hover:rotate-180";
 
 export async function Navbar() {
   const session = await auth();
@@ -119,9 +146,12 @@ export async function Navbar() {
   // Always 4 rotation slots (3s each, 12s loop) so there is never a blank gap,
   // even when there are fewer than 4 products.
   const slots =
-    recent.length > 1 ? Array.from({ length: 4 }, (_, i) => recent[i % recent.length]) : recent;
+    recent.length > 1
+      ? Array.from({ length: 4 }, (_, i) => recent[i % recent.length])
+      : recent;
 
-  const img = (p: (typeof all)[number]) => p.images?.[0] || p.image || "/placeholder.svg";
+  const img = (p: (typeof all)[number]) =>
+    p.images?.[0] || p.image || "/placeholder.svg";
   const initials =
     session?.user?.name
       ?.split(" ")
@@ -232,7 +262,10 @@ export async function Navbar() {
       <div className="bg-[#0b0518] text-xs text-purple-200">
         <div className="mx-auto flex h-8 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <span>Fast &amp; reliable repairs across UAE</span>
-          <Link href="/account/orders" className="flex items-center gap-1.5 hover:text-white">
+          <Link
+            href="/account/orders"
+            className="flex items-center gap-1.5 hover:text-white"
+          >
             <Wrench className="size-3.5" /> Track Repair
           </Link>
         </div>
@@ -242,18 +275,36 @@ export async function Navbar() {
       <div className="relative">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link href="/" aria-label="Al Dana home" className="flex shrink-0 items-center gap-2.5">
+          <Link
+            href="/"
+            aria-label="Al Dana home"
+            className="flex shrink-0 items-center gap-2.5"
+          >
             <span className="relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-violet-600 text-white">
               <Gamepad2 className="size-5" />
-              <Image src="/logo.jpeg" alt="" fill sizes="36px" className="object-cover" />
+              <Image
+                src="/logo.jpeg"
+                alt=""
+                fill
+                sizes="36px"
+                className="object-cover"
+              />
             </span>
-            <span className="text-xl font-black leading-none tracking-tight text-slate-900">
-              AL <span className="text-violet-600">DANA</span>
+
+            <span className="flex flex-col gap-1">
+              <span className="text-xl font-black leading-none tracking-tight text-slate-900">
+                AL <span className="text-violet-600">DANA</span>
+              </span>
+              <span className="text-[9px] font-semibold uppercase tracking-[1px] leading-none text-slate-500">
+                Professional Tech
+              </span>
             </span>
           </Link>
-
           {/* Desktop nav */}
-          <nav aria-label="Main" className="ml-4 hidden h-full items-center lg:flex">
+          <nav
+            aria-label="Main"
+            className="ml-4 hidden h-full items-center lg:flex"
+          >
             {/* HOME */}
             <div className="mm group flex h-full items-center">
               <Link href="/" className={linkCls}>
@@ -265,13 +316,21 @@ export async function Navbar() {
                     <p className={labelCls}>Pages</p>
                     <div className="space-y-2">
                       {homePages.map((p) => (
-                        <Link key={p.href} href={p.href} className="group/c flex items-center gap-3 rounded-md border border-slate-200 p-3 transition-colors hover:border-violet-300 hover:bg-violet-50">
+                        <Link
+                          key={p.href}
+                          href={p.href}
+                          className="group/c flex items-center gap-3 rounded-md border border-slate-200 p-3 transition-colors hover:border-violet-300 hover:bg-violet-50"
+                        >
                           <span className="rounded-md bg-violet-100 p-2 text-violet-600 transition-colors group-hover/c:bg-violet-600 group-hover/c:text-white">
                             <p.icon className="size-4" />
                           </span>
                           <span>
-                            <span className="block text-sm font-bold text-slate-900">{p.label}</span>
-                            <span className="text-xs text-slate-500">{p.desc}</span>
+                            <span className="block text-sm font-bold text-slate-900">
+                              {p.label}
+                            </span>
+                            <span className="text-xs text-slate-500">
+                              {p.desc}
+                            </span>
                           </span>
                         </Link>
                       ))}
@@ -281,14 +340,24 @@ export async function Navbar() {
                     <p className={labelCls}>Home Sections</p>
                     <div className="grid grid-cols-2 gap-x-6">
                       {homeSections.map((s) => (
-                        <Link key={s.label} href={s.href} className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-violet-600">
-                          <span className="size-1.5 rounded-full bg-violet-300" /> {s.label}
+                        <Link
+                          key={s.label}
+                          href={s.href}
+                          className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-violet-600"
+                        >
+                          <span className="size-1.5 rounded-full bg-violet-300" />{" "}
+                          {s.label}
                         </Link>
                       ))}
                     </div>
                     <div className="mt-6 flex items-center justify-between rounded-md border border-violet-100 bg-violet-50 p-4">
-                      <span className="text-sm font-semibold text-violet-900">Something broken? We&apos;ll fix it.</span>
-                      <Link href="/repair" className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-bold text-white hover:bg-violet-700">
+                      <span className="text-sm font-semibold text-violet-900">
+                        Something broken? We&apos;ll fix it.
+                      </span>
+                      <Link
+                        href="/repair"
+                        className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-bold text-white hover:bg-violet-700"
+                      >
                         <Wrench className="size-4" /> Book Repair
                       </Link>
                     </div>
@@ -306,8 +375,14 @@ export async function Navbar() {
                 <div className={innerCls}>
                   <div className="grid grid-cols-4 gap-6">
                     {services.map((s) => (
-                      <div key={s.href} className="rounded-md border border-slate-100 bg-slate-50/60 p-4">
-                        <Link href={s.href} className="flex items-center gap-2 text-sm font-extrabold text-slate-900 hover:text-violet-600">
+                      <div
+                        key={s.href}
+                        className="rounded-md border border-slate-100 bg-slate-50/60 p-4"
+                      >
+                        <Link
+                          href={s.href}
+                          className="flex items-center gap-2 text-sm font-extrabold text-slate-900 hover:text-violet-600"
+                        >
                           <span className="rounded-md bg-violet-600 p-1.5 text-white">
                             <s.icon className="size-4" />
                           </span>
@@ -316,7 +391,10 @@ export async function Navbar() {
                         <ul className="mt-3 space-y-0.5 border-t border-slate-200 pt-3">
                           {s.items.map(([label, id]) => (
                             <li key={id}>
-                              <Link href={`${s.href}#${id}`} className="block py-1 text-sm text-slate-600 hover:text-violet-600">
+                              <Link
+                                href={`${s.href}#${id}`}
+                                className="block py-1 text-sm text-slate-600 hover:text-violet-600"
+                              >
                                 {label}
                               </Link>
                             </li>
@@ -325,7 +403,10 @@ export async function Navbar() {
                       </div>
                     ))}
                   </div>
-                  <Link href="/services" className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-violet-600 hover:underline">
+                  <Link
+                    href="/services"
+                    className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-violet-600 hover:underline"
+                  >
                     All services <ArrowRight className="size-4" />
                   </Link>
                 </div>
@@ -353,8 +434,12 @@ export async function Navbar() {
                             <c.icon className="size-5" />
                           </span>
                           <span>
-                            <span className="block text-sm font-extrabold text-slate-900">{c.label}</span>
-                            <span className="block text-xs leading-snug text-slate-500">{c.desc}</span>
+                            <span className="block text-sm font-extrabold text-slate-900">
+                              {c.label}
+                            </span>
+                            <span className="block text-xs leading-snug text-slate-500">
+                              {c.desc}
+                            </span>
                           </span>
                         </Link>
                       ))}
@@ -364,36 +449,68 @@ export async function Navbar() {
                   {/* Featured products */}
                   <div className="col-span-5 border-l border-slate-100 pl-8">
                     <div className="mb-3 flex items-center justify-between">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">Featured Products</p>
-                      <Link href="/shop" className="text-xs font-bold text-violet-600 hover:underline">Browse all →</Link>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">
+                        Featured Products
+                      </p>
+                      <Link
+                        href="/shop"
+                        className="text-xs font-bold text-violet-600 hover:underline"
+                      >
+                        Browse all →
+                      </Link>
                     </div>
                     {featured.length ? (
                       <div className="grid grid-cols-2 gap-3">
                         {featured.map((p) => (
-                          <Link key={p._id} href={`/shop/${p.slug}`} className="flex items-center gap-3 rounded-md border border-slate-200 p-2.5 transition-colors hover:border-violet-300 hover:bg-violet-50">
+                          <Link
+                            key={p._id}
+                            href={`/shop/${p.slug}`}
+                            className="flex items-center gap-3 rounded-md border border-slate-200 p-2.5 transition-colors hover:border-violet-300 hover:bg-violet-50"
+                          >
                             <span className="relative size-16 shrink-0 overflow-hidden rounded bg-slate-100">
-                              <Image src={img(p)} alt={p.name} fill sizes="64px" className="object-cover" />
+                              <Image
+                                src={img(p)}
+                                alt={p.name}
+                                fill
+                                sizes="64px"
+                                className="object-cover"
+                              />
                             </span>
                             <span className="min-w-0">
-                              <span className="line-clamp-2 block text-sm font-bold text-slate-900">{p.name}</span>
-                              <span className="text-sm font-bold text-violet-600">{formatCurrency(p.price)}</span>
+                              <span className="line-clamp-2 block text-sm font-bold text-slate-900">
+                                {p.name}
+                              </span>
+                              <span className="text-sm font-bold text-violet-600">
+                                {formatCurrency(p.price)}
+                              </span>
                             </span>
                           </Link>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400">No featured products yet.</p>
+                      <p className="text-sm text-slate-400">
+                        No featured products yet.
+                      </p>
                     )}
                   </div>
 
                   {/* Just in: rotates every 3s, pauses on hover */}
                   <div className="rot col-span-4 border-l border-slate-100 pl-8">
                     <div className="mb-3 flex items-center justify-between">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">Just In</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-violet-600">
+                        Just In
+                      </p>
                       {slots.length > 1 && (
-                        <div className="flex items-center gap-1" aria-hidden="true">
+                        <div
+                          className="flex items-center gap-1"
+                          aria-hidden="true"
+                        >
                           {slots.map((_, i) => (
-                            <span key={i} className="nav-dot h-1.5 w-1.5 rounded-full bg-slate-300" style={{ animationDelay: `${i * 3}s` }} />
+                            <span
+                              key={i}
+                              className="nav-dot h-1.5 w-1.5 rounded-full bg-slate-300"
+                              style={{ animationDelay: `${i * 3}s` }}
+                            />
                           ))}
                         </div>
                       )}
@@ -405,15 +522,31 @@ export async function Navbar() {
                             key={`${p._id}-${i}`}
                             href={`/shop/${p.slug}`}
                             className={`nav-rotate absolute inset-0 flex gap-4 ${slots.length === 1 ? "nav-solo" : ""}`}
-                            style={slots.length > 1 ? { animationDelay: `${i * 3}s` } : undefined}
+                            style={
+                              slots.length > 1
+                                ? { animationDelay: `${i * 3}s` }
+                                : undefined
+                            }
                           >
                             <span className="relative block h-full w-1/2 overflow-hidden rounded-md bg-slate-100">
-                              <Image src={img(p)} alt={p.name} fill sizes="180px" className="object-cover" />
+                              <Image
+                                src={img(p)}
+                                alt={p.name}
+                                fill
+                                sizes="180px"
+                                className="object-cover"
+                              />
                             </span>
                             <span className="flex w-1/2 flex-col justify-center">
-                              <span className="mb-2 w-fit rounded-sm bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">Just in</span>
-                              <span className="line-clamp-3 text-base font-extrabold text-slate-900">{p.name}</span>
-                              <span className="mt-1 text-base font-bold text-violet-600">{formatCurrency(p.price)}</span>
+                              <span className="mb-2 w-fit rounded-sm bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">
+                                Just in
+                              </span>
+                              <span className="line-clamp-3 text-base font-extrabold text-slate-900">
+                                {p.name}
+                              </span>
+                              <span className="mt-1 text-base font-bold text-violet-600">
+                                {formatCurrency(p.price)}
+                              </span>
                               <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-violet-600">
                                 View <ArrowRight className="size-4" />
                               </span>
@@ -429,11 +562,17 @@ export async function Navbar() {
               </div>
             </div>
 
-            <Link href="/buy-back" className={linkCls}>Trade In</Link>
+            <Link href="/buy-back" className={linkCls}>
+              Trade In
+            </Link>
           </nav>
 
           {/* Search (visible from lg up; the mobile drawer has its own) */}
-          <form action="/shop" role="search" className="ml-auto hidden max-w-[200px] flex-1 lg:flex xl:max-w-xs">
+          <form
+            action="/shop"
+            role="search"
+            className="ml-auto hidden max-w-[200px] flex-1 lg:flex xl:max-w-xs"
+          >
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
@@ -460,15 +599,26 @@ export async function Navbar() {
                   {initials}
                 </summary>
                 <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-md border border-slate-200 bg-white py-1 shadow-xl">
-                  <p className="truncate border-b border-slate-100 px-4 py-2 text-xs text-slate-500">{session.user?.email}</p>
-                  <Link href="/account" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50">
+                  <p className="truncate border-b border-slate-100 px-4 py-2 text-xs text-slate-500">
+                    {session.user?.email}
+                  </p>
+                  <Link
+                    href="/account"
+                    className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50"
+                  >
                     <User className="size-4" /> My Profile
                   </Link>
-                  <Link href="/account/orders" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50">
+                  <Link
+                    href="/account/orders"
+                    className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50"
+                  >
                     <Package className="size-4" /> My Orders
                   </Link>
                   <form action={logoutAction}>
-                    <button type="submit" className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    <button
+                      type="submit"
+                      className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
                       <LogOut className="size-4" /> Sign Out
                     </button>
                   </form>
@@ -476,23 +626,36 @@ export async function Navbar() {
               </details>
             ) : (
               <>
-                <Link href="/auth/login" className="hidden px-3 py-2 text-sm font-semibold text-slate-800 hover:text-violet-600 sm:block">
+                <Link
+                  href="/auth/login"
+                  className="hidden px-3 py-2 text-sm font-semibold text-slate-800 hover:text-violet-600 sm:block"
+                >
                   Sign In
                 </Link>
-                <Link href="/auth/register" className="hidden rounded-md border border-violet-600 px-3.5 py-2 text-sm font-semibold text-violet-600 hover:bg-violet-50 sm:block">
+                <Link
+                  href="/auth/register"
+                  className="hidden rounded-md border border-violet-600 px-3.5 py-2 text-sm font-semibold text-violet-600 hover:bg-violet-50 sm:block"
+                >
                   Sign Up
                 </Link>
               </>
             )}
 
-            <Link href="/repair" className="hidden items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-violet-700 lg:inline-flex">
+            <Link
+              href="/repair"
+              className="hidden items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-violet-700 lg:inline-flex"
+            >
               <Wrench className="size-4" /> Book Repair
             </Link>
 
             {/* Mobile drawer */}
             <div className="lg:hidden">
               <input type="checkbox" id="nav-toggle" className="peer hidden" />
-              <label htmlFor="nav-toggle" aria-label="Open menu" className="flex cursor-pointer rounded-md p-2 text-slate-800 hover:bg-slate-100">
+              <label
+                htmlFor="nav-toggle"
+                aria-label="Open menu"
+                className="flex cursor-pointer rounded-md p-2 text-slate-800 hover:bg-slate-100"
+              >
                 <Menu className="size-6" />
               </label>
 
@@ -507,12 +670,20 @@ export async function Navbar() {
                   <span className="text-lg font-black text-slate-900">
                     AL <span className="text-violet-600">DANA</span>
                   </span>
-                  <label htmlFor="nav-toggle" aria-label="Close menu" className="cursor-pointer rounded-md p-2 hover:bg-slate-100">
+                  <label
+                    htmlFor="nav-toggle"
+                    aria-label="Close menu"
+                    className="cursor-pointer rounded-md p-2 hover:bg-slate-100"
+                  >
                     <X className="size-5" />
                   </label>
                 </div>
 
-                <form action="/shop" role="search" className="border-b border-slate-200 p-4">
+                <form
+                  action="/shop"
+                  role="search"
+                  className="border-b border-slate-200 p-4"
+                >
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     <input
@@ -525,15 +696,26 @@ export async function Navbar() {
                   </div>
                 </form>
 
-                <nav aria-label="Mobile" className="flex-1 overflow-y-auto overscroll-contain p-4 text-sm font-semibold text-slate-800">
+                <nav
+                  aria-label="Mobile"
+                  className="flex-1 overflow-y-auto overscroll-contain p-4 text-sm font-semibold text-slate-800"
+                >
                   <details>
                     <summary className="flex cursor-pointer list-none items-center justify-between py-2.5 [&::-webkit-details-marker]:hidden">
                       Home <ChevronDown className="size-4 text-slate-400" />
                     </summary>
                     <div className="mb-2 ml-1 space-y-1 border-l-2 border-violet-100 pl-3 font-medium text-slate-600">
-                      <Link href="/" className="block py-1.5">Home</Link>
+                      <Link href="/" className="block py-1.5">
+                        Home
+                      </Link>
                       {homePages.map((p) => (
-                        <Link key={p.href} href={p.href} className="block py-1.5">{p.label}</Link>
+                        <Link
+                          key={p.href}
+                          href={p.href}
+                          className="block py-1.5"
+                        >
+                          {p.label}
+                        </Link>
                       ))}
                     </div>
                   </details>
@@ -545,9 +727,20 @@ export async function Navbar() {
                     <div className="mb-2 ml-1 space-y-3 border-l-2 border-violet-100 pl-3 font-medium text-slate-600">
                       {services.map((s) => (
                         <div key={s.href}>
-                          <Link href={s.href} className="block py-1 font-bold text-slate-900">{s.label}</Link>
+                          <Link
+                            href={s.href}
+                            className="block py-1 font-bold text-slate-900"
+                          >
+                            {s.label}
+                          </Link>
                           {s.items.map(([label, id]) => (
-                            <Link key={id} href={`${s.href}#${id}`} className="block py-1 pl-3 text-xs">{label}</Link>
+                            <Link
+                              key={id}
+                              href={`${s.href}#${id}`}
+                              className="block py-1 pl-3 text-xs"
+                            >
+                              {label}
+                            </Link>
                           ))}
                         </div>
                       ))}
@@ -559,35 +752,66 @@ export async function Navbar() {
                       Shop <ChevronDown className="size-4 text-slate-400" />
                     </summary>
                     <div className="mb-2 ml-1 space-y-1 border-l-2 border-violet-100 pl-3 font-medium text-slate-600">
-                      <Link href="/shop" className="block py-1.5 font-bold text-violet-600">Shop all →</Link>
-                      <Link href="/shop#brand-new" className="block py-1.5">Brand New</Link>
-                      <Link href="/shop#pre-loved" className="block py-1.5">Pre-Loved</Link>
+                      <Link
+                        href="/shop"
+                        className="block py-1.5 font-bold text-violet-600"
+                      >
+                        Shop all →
+                      </Link>
+                      <Link href="/shop#brand-new" className="block py-1.5">
+                        Brand New
+                      </Link>
+                      <Link href="/shop#pre-loved" className="block py-1.5">
+                        Pre-Loved
+                      </Link>
                       {featured.map((p) => (
-                        <Link key={p._id} href={`/shop/${p.slug}`} className="block py-1.5">{p.name}</Link>
+                        <Link
+                          key={p._id}
+                          href={`/shop/${p.slug}`}
+                          className="block py-1.5"
+                        >
+                          {p.name}
+                        </Link>
                       ))}
                     </div>
                   </details>
 
-                  <Link href="/buy-back" className="block border-t border-slate-100 py-2.5">Trade In</Link>
+                  <Link
+                    href="/buy-back"
+                    className="block border-t border-slate-100 py-2.5"
+                  >
+                    Trade In
+                  </Link>
 
                   {/* Account links (the top bar hides these on small screens) */}
                   <div className="border-t border-slate-100 pt-2">
                     {session ? (
                       <>
-                        <Link href="/account" className="block py-2.5">My Profile</Link>
-                        <Link href="/account/orders" className="block py-2.5">My Orders</Link>
+                        <Link href="/account" className="block py-2.5">
+                          My Profile
+                        </Link>
+                        <Link href="/account/orders" className="block py-2.5">
+                          My Orders
+                        </Link>
                       </>
                     ) : (
                       <>
-                        <Link href="/auth/login" className="block py-2.5">Sign In</Link>
-                        <Link href="/auth/register" className="block py-2.5">Sign Up</Link>
+                        <Link href="/auth/login" className="block py-2.5">
+                          Sign In
+                        </Link>
+                        <Link href="/auth/register" className="block py-2.5">
+                          Sign Up
+                        </Link>
                       </>
                     )}
                   </div>
                 </nav>
 
                 <div className="border-t border-slate-200 p-4">
-                  <Link href="/repair" className="flex items-center justify-center gap-2 rounded-md bg-violet-600 py-3 text-sm font-bold text-white hover:bg-violet-700">
+                  <Link
+                    href="/repair"
+                    className="flex items-center justify-center gap-2 rounded-md bg-violet-600 py-3 text-sm font-bold text-white hover:bg-violet-700"
+                  >
                     <Wrench className="size-4" /> Book a Repair
                   </Link>
                 </div>

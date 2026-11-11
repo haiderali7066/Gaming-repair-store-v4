@@ -138,8 +138,7 @@ export function HomeHero() {
   </button>
 
   {/* Slide Navigation Dots */}
-  <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/10 shadow-lg">
-    {slides.map((slide, index) => (
+<div className="absolute bottom-1 sm:bottom-1 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 shadow-lg">    {slides.map((slide, index) => (
       <button
         key={slide.id}
         onClick={(e) => {

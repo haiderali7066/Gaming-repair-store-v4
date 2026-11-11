@@ -689,7 +689,7 @@ export function HomeSecondarySections() {
           >
             <Eyebrow icon={Star}>Testimonials</Eyebrow>
             <h2 className="text-3xl font-black text-slate-900 sm:text-4xl lg:text-5xl">
-              Trusted by Gamers in UAE
+              Trusted by Tech Enthusiasts
             </h2>
           </motion.div>
 
