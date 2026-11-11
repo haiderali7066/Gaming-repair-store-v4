@@ -20,7 +20,6 @@ interface Slide {
 }
 
 const slides: Slide[] = [
-  
   {
     id: 4,
     image:
@@ -42,7 +41,7 @@ const slides: Slide[] = [
     href: "/repair#repair-form",
     alt: "ipad and Hardware Repairs",
   },
-  
+
   {
     id: 5,
     image:
@@ -90,74 +89,73 @@ export function HomeHero() {
   return (
     <div className="w-full">
       {/* 1. HERO CAROUSEL SECTION */}
-     {/* HERO CAROUSEL SECTION */}
-<section className="relative w-full overflow-hidden bg-black group">
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={currentIndex}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
-      className="relative w-full aspect-[2170/725]"
-    >
-      <Link
-        href={slides[currentIndex].href}
-        className="relative block w-full h-full cursor-pointer focus:outline-none"
-        aria-label={`Go to ${slides[currentIndex].href}`}
-      >
-        <Image
-          src={slides[currentIndex].image}
-          alt={slides[currentIndex].alt}
-          fill
-          priority={currentIndex === 0}
-          quality={90}
-          className="object-contain"
-          sizes="100vw"
-        />
-      </Link>
-    </motion.div>
-  </AnimatePresence>
+      {/* HERO CAROUSEL SECTION */}
+      <section className="relative w-full overflow-hidden bg-black group">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="relative w-full aspect-[2170/725]"
+          >
+            <Link
+              href={slides[currentIndex].href}
+              className="relative block w-full h-full cursor-pointer focus:outline-none"
+              aria-label={`Go to ${slides[currentIndex].href}`}
+            >
+              <Image
+                src={slides[currentIndex].image}
+                alt={slides[currentIndex].alt}
+                fill
+                priority={currentIndex === 0}
+                quality={90}
+                className="object-contain"
+                sizes="100vw"
+              />
+            </Link>
+          </motion.div>
+        </AnimatePresence>
 
-  {/* Previous Button */}
-  <button
-    onClick={prevSlide}
-    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center size-11 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-violet-600 hover:border-violet-500"
-    aria-label="Previous slide"
-  >
-    <ChevronLeft className="size-6" />
-  </button>
+        {/* Previous Button */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center size-11 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-violet-600 hover:border-violet-500"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="size-6" />
+        </button>
 
-  {/* Next Button */}
-  <button
-    onClick={nextSlide}
-    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center size-11 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-violet-600 hover:border-violet-500"
-    aria-label="Next slide"
-  >
-    <ChevronRight className="size-6" />
-  </button>
+        {/* Next Button */}
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center size-11 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-violet-600 hover:border-violet-500"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="size-6" />
+        </button>
 
-  {/* Slide Navigation Dots */}
-<div className="absolute bottom-1 sm:bottom-1 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 shadow-lg">    {slides.map((slide, index) => (
-      <button
-        key={slide.id}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setCurrentIndex(index);
-        }}
-        className={`h-2 rounded-full transition-all duration-300 ${
-          currentIndex === index
-            ? "w-6 sm:w-8 bg-violet-500 shadow-[0_0_12px_rgba(139,92,246,0.9)]"
-            : "w-2 bg-white/40 hover:bg-white/80"
-        }`}
-        aria-label={`Go to slide ${index + 1}`}
-      />
-    ))}
-  </div>
-</section>
-
-      
+        {/* Slide Navigation Dots */}
+<div className="absolute bottom-1 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full bg-black/20 px-1.5 py-1 backdrop-blur-sm sm:gap-2 sm:px-2.5 sm:py-1.5 md:bottom-1">
+  {slides.map((slide, index) => (
+    <button
+      key={slide.id}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentIndex(index);
+      }}
+      className={`h-1 rounded-full transition-all duration-300 sm:h-2 ${
+        currentIndex === index
+          ? "w-3 bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.9)] sm:w-6"
+          : "w-1 bg-white/40 hover:bg-white/80 sm:w-2"
+      }`}
+      aria-label={`Go to slide ${index + 1}`}
+    />
+  ))}
+</div>
+      </section>
     </div>
   );
 }
