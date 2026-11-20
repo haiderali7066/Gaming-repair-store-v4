@@ -1,29 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CalendarDays,
-  Clock3,
-  Tag,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Tag } from "lucide-react";
+import { getBlogBySlug } from "@/lib/blogs";
 
-interface Blog {
-  _id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  coverImage: string;
-  category: string;
-  tags: string[];
-  author: string;
-  publishedAt?: string;
-  createdAt: string;
-  seoTitle?: string;
-  seoDescription?: string;
-}
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{
@@ -31,39 +12,11 @@ interface PageProps {
   }>;
 }
 
-async function getBlog(
-  slug: string
-): Promise<Blog | null> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "http://localhost:3000";
-
-  try {
-    const response = await fetch(
-      `${baseUrl}/api/blogs/${encodeURIComponent(slug)}`,
-      {
-        next: {
-          revalidate: 60,
-        },
-      }
-    );
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    return data.success ? data.blog : null;
-  } catch (error) {
-    console.error("GET BLOG ERROR:", error);
-    return null;
-  }
-}
-
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const blog = await getBlog(slug);
+  const blog = await getBlogBySlug(slug);
 
   if (!blog) {
     return {
@@ -73,22 +26,15 @@ export async function generateMetadata({
 
   return {
     title: blog.seoTitle || blog.title,
-    description:
-      blog.seoDescription ||
-      blog.excerpt ||
-      blog.title,
+    description: blog.seoDescription || blog.excerpt || blog.title,
 
     keywords: blog.tags,
 
     openGraph: {
       title: blog.seoTitle || blog.title,
-      description:
-        blog.seoDescription ||
-        blog.excerpt ||
-        blog.title,
+      description: blog.seoDescription || blog.excerpt || blog.title,
       type: "article",
-      publishedTime:
-        blog.publishedAt || blog.createdAt,
+      publishedTime: blog.publishedAt || blog.createdAt,
       authors: [blog.author],
       images: blog.coverImage
         ? [
@@ -103,13 +49,8 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: blog.seoTitle || blog.title,
-      description:
-        blog.seoDescription ||
-        blog.excerpt ||
-        blog.title,
-      images: blog.coverImage
-        ? [blog.coverImage]
-        : undefined,
+      description: blog.seoDescription || blog.excerpt || blog.title,
+      images: blog.coverImage ? [blog.coverImage] : undefined,
     },
 
     alternates: {
@@ -160,10 +101,7 @@ function renderContent(content: string) {
     // H3
     if (trimmed.startsWith("### ")) {
       return (
-        <h3
-          key={index}
-          className="mb-4 mt-10 text-xl font-bold text-gray-950"
-        >
+        <h3 key={index} className="mb-4 mt-10 text-xl font-bold text-gray-950">
           {trimmed.replace("### ", "")}
         </h3>
       );
@@ -182,30 +120,23 @@ function renderContent(content: string) {
     }
 
     return (
-      <p
-        key={index}
-        className="mb-6 text-[17px] leading-8 text-gray-700"
-      >
+      <p key={index} className="mb-6 text-[17px] leading-8 text-gray-700">
         {trimmed}
       </p>
     );
   });
 }
 
-export default async function BlogDetailPage({
-  params,
-}: PageProps) {
+export default async function BlogDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const blog = await getBlog(slug);
+  const blog = await getBlogBySlug(slug);
 
   if (!blog) {
     notFound();
   }
 
-  const readingTime = estimateReadingTime(
-    blog.content
-  );
+  const readingTime = estimateReadingTime(blog.content || "");
 
   return (
     <main className="min-h-screen bg-white">
@@ -245,30 +176,19 @@ export default async function BlogDetailPage({
           {/* Meta */}
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-gray-500">
             <span className="flex items-center gap-2">
-              <CalendarDays
-                size={16}
-                className="text-purple-600"
-              />
+              <CalendarDays size={16} className="text-purple-600" />
 
-              {formatDate(
-                blog.publishedAt || blog.createdAt
-              )}
+              {formatDate(blog.publishedAt || blog.createdAt)}
             </span>
 
             <span className="flex items-center gap-2">
-              <Clock3
-                size={16}
-                className="text-purple-600"
-              />
+              <Clock3 size={16} className="text-purple-600" />
 
               {readingTime}
             </span>
 
             <span>
-              By{" "}
-              <strong className="text-gray-900">
-                {blog.author}
-              </strong>
+              By <strong className="text-gray-900">{blog.author}</strong>
             </span>
           </div>
         </div>
@@ -307,16 +227,13 @@ export default async function BlogDetailPage({
         )}
 
         {/* Content */}
-        <article>
-          {renderContent(blog.content)}
-        </article>
+        <article>{renderContent(blog.content || "")}</article>
 
         {/* Author Card */}
         <div className="mt-16 rounded-2xl border border-purple-100 bg-purple-50 p-6 sm:p-8">
           <div className="flex items-center gap-5">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-purple-600 text-lg font-bold text-white shadow-lg shadow-purple-200">
-              {blog.author?.charAt(0)?.toUpperCase() ||
-                "A"}
+              {blog.author?.charAt(0)?.toUpperCase() || "A"}
             </div>
 
             <div>
@@ -372,8 +289,8 @@ export default async function BlogDetailPage({
             </h2>
 
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-purple-100">
-              Let&apos;s turn your idea into a powerful digital
-              experience built around your business goals.
+              Let&apos;s turn your idea into a powerful digital experience built
+              around your business goals.
             </p>
 
             <Link
