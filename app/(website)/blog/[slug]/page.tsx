@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Tag } from "lucide-react";
-import { getBlogBySlug } from "@/lib/blogs";
+import { getBlogBySlug } from "@/lib/Blogs";
 
 export const revalidate = 60;
 
