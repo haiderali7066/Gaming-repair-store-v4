@@ -1,5 +1,5 @@
-import Link from "next/link"
-import Script from "next/script"
+import Link from "next/link";
+import Script from "next/script";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -19,143 +19,143 @@ import {
   Users,
   Wrench,
   type LucideIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { connectToDatabase } from "@/lib/mongodb"
-import { formatCurrency, formatDate } from "@/lib/helpers"
-import { Product } from "@/models/Product"
-import { Order } from "@/models/Order"
-import { User } from "@/models/User"
-import { RepairRequest } from "@/models/RepairRequest"
-import { BuyBackRequest } from "@/models/BuyBackRequest"
+import { connectToDatabase } from "@/lib/mongodb";
+import { formatCurrency, formatDate } from "@/lib/helpers";
+import { Product } from "@/models/Product";
+import { Order } from "@/models/Order";
+import { User } from "@/models/User";
+import { RepairRequest } from "@/models/RepairRequest";
+import { BuyBackRequest } from "@/models/BuyBackRequest";
 
 type MonthlyStats = {
-  key: string
-  label: string
-  revenue: number
-  orders: number
-  repairs: number
-  buybacks: number
-}
+  key: string;
+  label: string;
+  revenue: number;
+  orders: number;
+  repairs: number;
+  buybacks: number;
+};
 
 type RecentOrder = {
-  _id: string
-  subtotal?: number
-  createdAt: Date
+  _id: string;
+  subtotal?: number;
+  createdAt: Date;
   userId?: {
-    name?: string
-  }
-}
+    name?: string;
+  };
+};
 
 type RecentRepair = {
-  _id: string
-  brand?: string
-  model?: string
-  status?: string
-  createdAt: Date
+  _id: string;
+  brand?: string;
+  model?: string;
+  status?: string;
+  createdAt: Date;
   userId?: {
-    name?: string
-  }
-}
+    name?: string;
+  };
+};
 
 type RecentBuyBack = {
-  _id: string
-  brand?: string
-  model?: string
-  status?: string
-  offeredPrice?: number
-  createdAt: Date
+  _id: string;
+  brand?: string;
+  model?: string;
+  status?: string;
+  offeredPrice?: number;
+  createdAt: Date;
   userId?: {
-    name?: string
-  }
-}
+    name?: string;
+  };
+};
 
 function getMonthStart(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1)
+  return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
 function getMonthKey(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
 function createLastSixMonths() {
-  const current = getMonthStart(new Date())
+  const current = getMonthStart(new Date());
 
   return Array.from({ length: 6 }, (_, index) => {
     const date = new Date(
       current.getFullYear(),
       current.getMonth() - (5 - index),
       1,
-    )
+    );
 
     return {
       key: getMonthKey(date),
       label: date.toLocaleDateString("en", {
         month: "short",
       }),
-    }
-  })
+    };
+  });
 }
 
 function formatCompactNumber(value: number) {
   return new Intl.NumberFormat("en", {
     notation: "compact",
     maximumFractionDigits: 1,
-  }).format(value)
+  }).format(value);
 }
 
 function formatStatus(value?: string) {
-  if (!value) return "Unknown"
+  if (!value) return "Unknown";
 
   return value
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 function getStatusClasses(status?: string) {
   switch (status) {
     case "completed":
     case "accepted":
-      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
 
     case "in-progress":
-      return "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+      return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
 
     case "quoted":
-      return "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+      return "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400";
 
     case "submitted":
-      return "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+      return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
 
     default:
-      return "bg-muted text-muted-foreground"
+      return "bg-muted text-muted-foreground";
   }
 }
 
 function getInitials(name?: string) {
-  if (!name) return "?"
+  if (!name) return "?";
 
   return name
     .trim()
     .split(/\s+/)
     .slice(0, 2)
     .map((part) => part.charAt(0).toUpperCase())
-    .join("")
+    .join("");
 }
 
 function MiniBarChart({
   values,
   labels,
 }: {
-  values: number[]
-  labels: string[]
+  values: number[];
+  labels: string[];
 }) {
-  const max = Math.max(...values, 1)
+  const max = Math.max(...values, 1);
 
   return (
     <div className="flex h-56 items-end gap-3">
       {values.map((value, index) => {
-        const height = Math.max((value / max) * 100, value > 0 ? 8 : 2)
+        const height = Math.max((value / max) * 100, value > 0 ? 8 : 2);
 
         return (
           <div
@@ -177,59 +177,55 @@ function MiniBarChart({
               {labels[index]}
             </span>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 function RevenueChart({ data }: { data: MonthlyStats[] }) {
-  const width = 760
-  const height = 280
+  const width = 760;
+  const height = 280;
   const padding = {
     top: 24,
     right: 24,
     bottom: 42,
     left: 68,
-  }
+  };
 
-  const chartWidth = width - padding.left - padding.right
-  const chartHeight = height - padding.top - padding.bottom
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
 
-  const values = data.map((item) => item.revenue)
-  const max = Math.max(...values, 1)
+  const values = data.map((item) => item.revenue);
+  const max = Math.max(...values, 1);
 
   const points = data.map((item, index) => {
     const x =
-      padding.left +
-      (index / Math.max(data.length - 1, 1)) * chartWidth
+      padding.left + (index / Math.max(data.length - 1, 1)) * chartWidth;
 
-    const y =
-      padding.top +
-      chartHeight -
-      (item.revenue / max) * chartHeight
+    const y = padding.top + chartHeight - (item.revenue / max) * chartHeight;
 
     return {
       x,
       y,
       value: item.revenue,
-    }
-  })
+    };
+  });
 
   const linePath = points
     .map((point, index) => {
-      return `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+      return `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`;
     })
-    .join(" ")
+    .join(" ");
 
   const areaPath = [
     `M ${points[0].x} ${padding.top + chartHeight}`,
     ...points.map((point) => `L ${point.x} ${point.y}`),
     `L ${points[points.length - 1].x} ${padding.top + chartHeight}`,
     "Z",
-  ].join(" ")
+  ].join(" ");
 
-  const gridLines = [0, 0.25, 0.5, 0.75, 1]
+  const gridLines = [0, 0.25, 0.5, 0.75, 1];
 
   return (
     <div className="w-full overflow-hidden">
@@ -240,10 +236,9 @@ function RevenueChart({ data }: { data: MonthlyStats[] }) {
         aria-label="Revenue over the last six months"
       >
         {gridLines.map((ratio) => {
-          const y =
-            padding.top + chartHeight - ratio * chartHeight
+          const y = padding.top + chartHeight - ratio * chartHeight;
 
-          const amount = max * ratio
+          const amount = max * ratio;
 
           return (
             <g key={ratio}>
@@ -266,13 +261,10 @@ function RevenueChart({ data }: { data: MonthlyStats[] }) {
                 {formatCompactNumber(amount)}
               </text>
             </g>
-          )
+          );
         })}
 
-        <path
-          d={areaPath}
-          className="fill-primary/[0.07]"
-        />
+        <path d={areaPath} className="fill-primary/[0.07]" />
 
         <path
           d={linePath}
@@ -293,12 +285,7 @@ function RevenueChart({ data }: { data: MonthlyStats[] }) {
               className="fill-background"
             />
 
-            <circle
-              cx={point.x}
-              cy={point.y}
-              r="4"
-              className="fill-primary"
-            />
+            <circle cx={point.x} cy={point.y} r="4" className="fill-primary" />
 
             <text
               x={point.x}
@@ -312,30 +299,26 @@ function RevenueChart({ data }: { data: MonthlyStats[] }) {
         ))}
       </svg>
     </div>
-  )
+  );
 }
 
 function DonutChart({
   items,
 }: {
   items: {
-    label: string
-    value: number
-    className: string
-  }[]
+    label: string;
+    value: number;
+    className: string;
+  }[];
 }) {
-  const total = items.reduce((sum, item) => sum + item.value, 0)
+  const total = items.reduce((sum, item) => sum + item.value, 0);
 
-  let offset = 0
+  let offset = 0;
 
   return (
     <div className="flex items-center gap-6">
       <div className="relative size-36 shrink-0">
-        <svg
-          viewBox="0 0 100 100"
-          className="-rotate-90"
-          aria-hidden="true"
-        >
+        <svg viewBox="0 0 100 100" className="-rotate-90" aria-hidden="true">
           <circle
             cx="50"
             cy="50"
@@ -348,8 +331,8 @@ function DonutChart({
 
           {total > 0 &&
             items.map((item) => {
-              const percentage = item.value / total
-              const dash = percentage * 238.76
+              const percentage = item.value / total;
+              const dash = percentage * 238.76;
 
               const circle = (
                 <circle
@@ -365,28 +348,24 @@ function DonutChart({
                   strokeLinecap="butt"
                   className={item.className}
                 />
-              )
+              );
 
-              offset += dash
+              offset += dash;
 
-              return circle
+              return circle;
             })}
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-2xl font-bold">{total}</span>
-          <span className="text-[10px] text-muted-foreground">
-            Total
-          </span>
+          <span className="text-[10px] text-muted-foreground">Total</span>
         </div>
       </div>
 
       <div className="min-w-0 flex-1 space-y-3">
         {items.map((item) => {
           const percentage =
-            total > 0
-              ? Math.round((item.value / total) * 100)
-              : 0
+            total > 0 ? Math.round((item.value / total) * 100) : 0;
 
           return (
             <div
@@ -404,32 +383,30 @@ function DonutChart({
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold">
-                  {item.value}
-                </span>
+                <span className="text-sm font-semibold">{item.value}</span>
 
                 <span className="text-[11px] text-muted-foreground">
                   {percentage}%
                 </span>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
 
 export default async function DashboardPage() {
-  await connectToDatabase()
+  await connectToDatabase();
 
-  const sixMonths = createLastSixMonths()
+  const sixMonths = createLastSixMonths();
 
   const sixMonthStart = new Date(
     new Date().getFullYear(),
     new Date().getMonth() - 5,
     1,
-  )
+  );
 
   const [
     productCount,
@@ -571,50 +548,44 @@ export default async function DashboardPage() {
         },
       },
     ]),
-  ])
+  ]);
 
   const repairsByStatus = {
-    submitted: repairs.filter(
-      (repair: any) => repair.status === "submitted",
-    ).length,
-    inProgress: repairs.filter(
-      (repair: any) => repair.status === "in-progress",
-    ).length,
-    completed: repairs.filter(
-      (repair: any) => repair.status === "completed",
-    ).length,
-  }
+    submitted: repairs.filter((repair: any) => repair.status === "submitted")
+      .length,
+    inProgress: repairs.filter((repair: any) => repair.status === "in-progress")
+      .length,
+    completed: repairs.filter((repair: any) => repair.status === "completed")
+      .length,
+  };
 
   const buybackByStatus = {
-    submitted: buybacks.filter(
-      (buyback: any) => buyback.status === "submitted",
-    ).length,
-    quoted: buybacks.filter(
-      (buyback: any) => buyback.status === "quoted",
-    ).length,
-    accepted: buybacks.filter(
-      (buyback: any) => buyback.status === "accepted",
-    ).length,
-  }
+    submitted: buybacks.filter((buyback: any) => buyback.status === "submitted")
+      .length,
+    quoted: buybacks.filter((buyback: any) => buyback.status === "quoted")
+      .length,
+    accepted: buybacks.filter((buyback: any) => buyback.status === "accepted")
+      .length,
+  };
 
   const monthlyStats: MonthlyStats[] = sixMonths.map((month) => {
     const orderData = monthlyOrders.find(
       (item: any) =>
         `${item._id.year}-${String(item._id.month).padStart(2, "0")}` ===
         month.key,
-    )
+    );
 
     const repairData = monthlyRepairs.find(
       (item: any) =>
         `${item._id.year}-${String(item._id.month).padStart(2, "0")}` ===
         month.key,
-    )
+    );
 
     const buybackData = monthlyBuybacks.find(
       (item: any) =>
         `${item._id.year}-${String(item._id.month).padStart(2, "0")}` ===
         month.key,
-    )
+    );
 
     return {
       key: month.key,
@@ -623,16 +594,16 @@ export default async function DashboardPage() {
       orders: orderData?.orders || 0,
       repairs: repairData?.repairs || 0,
       buybacks: buybackData?.buybacks || 0,
-    }
-  })
+    };
+  });
 
   const sixMonthRevenue = monthlyStats.reduce(
     (sum, item) => sum + item.revenue,
     0,
-  )
+  );
 
-  const currentMonth = monthlyStats[monthlyStats.length - 1]
-  const previousMonth = monthlyStats[monthlyStats.length - 2]
+  const currentMonth = monthlyStats[monthlyStats.length - 1];
+  const previousMonth = monthlyStats[monthlyStats.length - 2];
 
   const revenueChange =
     previousMonth.revenue > 0
@@ -641,16 +612,15 @@ export default async function DashboardPage() {
         100
       : currentMonth.revenue > 0
         ? 100
-        : 0
+        : 0;
 
   const orderChange =
     previousMonth.orders > 0
-      ? ((currentMonth.orders - previousMonth.orders) /
-          previousMonth.orders) *
+      ? ((currentMonth.orders - previousMonth.orders) / previousMonth.orders) *
         100
       : currentMonth.orders > 0
         ? 100
-        : 0
+        : 0;
 
   const repairChange =
     previousMonth.repairs > 0
@@ -659,7 +629,7 @@ export default async function DashboardPage() {
         100
       : currentMonth.repairs > 0
         ? 100
-        : 0
+        : 0;
 
   const buybackChange =
     previousMonth.buybacks > 0
@@ -668,62 +638,59 @@ export default async function DashboardPage() {
         100
       : currentMonth.buybacks > 0
         ? 100
-        : 0
+        : 0;
 
   const activityValues = monthlyStats.map(
-    (item) =>
-      item.orders +
-      item.repairs +
-      item.buybacks,
-  )
+    (item) => item.orders + item.repairs + item.buybacks,
+  );
 
-  const activityLabels = monthlyStats.map((item) => item.label)
+  const activityLabels = monthlyStats.map((item) => item.label);
 
   return (
     <main className="min-h-screen space-y-8 pb-10">
-      {/* ---------------------------------------------------------------- */}
-      {/* Header (centered Bismillah)                                       */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/[0.08] via-background to-background p-6 shadow-sm sm:p-10">
-        <div className="absolute -right-24 -top-24 size-64 rounded-full bg-primary/[0.06] blur-3xl" />
+     {/* ---------------------------------------------------------------- */}
+{/* Header (centered Bismillah)                                       */}
+{/* ---------------------------------------------------------------- */}
+<section className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/[0.08] via-background to-background p-4 shadow-sm sm:p-6">
+  <div className="absolute -right-16 -top-16 size-40 rounded-full bg-primary/[0.06] blur-3xl" />
 
-        <div className="relative flex flex-col items-center text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
-            <Sparkles className="size-3.5 text-primary" />
-            Business overview
-          </div>
+  <div className="relative flex flex-col items-center text-center">
+    <div className="mb-2 inline-flex items-center gap-1.5 rounded-full border bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground backdrop-blur">
+      <Sparkles className="size-3 text-primary" />
+      Business overview
+    </div>
 
-          <h1
-            lang="ar"
-            dir="rtl"
-            className="text-4xl font-bold leading-relaxed tracking-normal sm:text-5xl"
-          >
-            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-          </h1>
+    <h1
+      lang="ar"
+      dir="rtl"
+      className="text-2xl font-bold leading-relaxed tracking-normal sm:text-3xl"
+    >
+      بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+    </h1>
 
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            Monitor sales, repairs, customers, and trade-ins from one place.
-          </p>
+    <p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-muted-foreground sm:text-sm">
+      Monitor sales, repairs, customers, and trade-ins from one place.
+    </p>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/admin/orders"
-              className="inline-flex h-10 items-center gap-2 rounded-xl border bg-background px-4 text-sm font-medium shadow-sm transition hover:bg-muted"
-            >
-              <ShoppingCart className="size-4" />
-              View orders
-            </Link>
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+      <Link
+        href="/admin/orders"
+        className="inline-flex h-8 items-center gap-1.5 rounded-lg border bg-background px-3 text-xs font-medium shadow-sm transition hover:bg-muted"
+      >
+        <ShoppingCart className="size-3.5" />
+        View orders
+      </Link>
 
-            <Link
-              href="/admin/buy-back/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
-            >
-              <RefreshCw className="size-4" />
-              New trade-in
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Link
+        href="/admin/buy-back/new"
+        className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+      >
+        <RefreshCw className="size-3.5" />
+        New trade-in
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* ---------------------------------------------------------------- */}
       {/* Notifications: new orders, trade-ins, repairs                     */}
@@ -861,10 +828,7 @@ export default async function DashboardPage() {
               label="Current month orders"
               value={String(currentMonth.orders)}
               current={currentMonth.orders}
-              total={Math.max(
-                ...monthlyStats.map((item) => item.orders),
-                1,
-              )}
+              total={Math.max(...monthlyStats.map((item) => item.orders), 1)}
               className="bg-primary"
             />
 
@@ -875,9 +839,7 @@ export default async function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold">
-                    Operations status
-                  </p>
+                  <p className="text-sm font-semibold">Operations status</p>
                   <p className="text-xs text-muted-foreground">
                     Your dashboard data is up to date.
                   </p>
@@ -898,26 +860,14 @@ export default async function DashboardPage() {
           icon={BarChart3}
         >
           <div className="mb-6 flex flex-wrap items-center gap-4">
-            <LegendItem
-              label="Orders"
-              className="bg-primary"
-            />
+            <LegendItem label="Orders" className="bg-primary" />
 
-            <LegendItem
-              label="Repairs"
-              className="bg-amber-500"
-            />
+            <LegendItem label="Repairs" className="bg-amber-500" />
 
-            <LegendItem
-              label="Trade-ins"
-              className="bg-cyan-500"
-            />
+            <LegendItem label="Trade-ins" className="bg-cyan-500" />
           </div>
 
-          <MiniBarChart
-            values={activityValues}
-            labels={activityLabels}
-          />
+          <MiniBarChart values={activityValues} labels={activityLabels} />
 
           <div className="mt-5 grid grid-cols-3 gap-3">
             <MiniStat
@@ -1059,8 +1009,7 @@ export default async function DashboardPage() {
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">
-                      {repair.brand || "Device"}{" "}
-                      {repair.model || ""}
+                      {repair.brand || "Device"} {repair.model || ""}
                     </p>
 
                     <p className="mt-0.5 truncate text-xs text-muted-foreground">
@@ -1102,8 +1051,7 @@ export default async function DashboardPage() {
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">
-                      {buyback.brand || "Device"}{" "}
-                      {buyback.model || ""}
+                      {buyback.brand || "Device"} {buyback.model || ""}
                     </p>
 
                     <p className="mt-0.5 truncate text-xs text-muted-foreground">
@@ -1170,7 +1118,7 @@ export default async function DashboardPage() {
         />
       </section>
     </main>
-  )
+  );
 }
 
 /* ========================================================================== */
@@ -1186,22 +1134,19 @@ export default async function DashboardPage() {
  * (NOTIFICATION_SCRIPT below) so this whole file stays a single server page.
  */
 
-type NoticeKind = "order" | "repair" | "buyback"
+type NoticeKind = "order" | "repair" | "buyback";
 
 type Notice = {
-  id: string
-  kind: NoticeKind
-  title: string
-  subtitle: string
-  createdAt: Date
-  isNew: boolean
-  href: string
-}
+  id: string;
+  kind: NoticeKind;
+  title: string;
+  subtitle: string;
+  createdAt: Date;
+  isNew: boolean;
+  href: string;
+};
 
-const noticeStyle: Record<
-  NoticeKind,
-  { icon: LucideIcon; box: string }
-> = {
+const noticeStyle: Record<NoticeKind, { icon: LucideIcon; box: string }> = {
   order: {
     icon: ShoppingCart,
     box: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
@@ -1214,23 +1159,23 @@ const noticeStyle: Record<
     icon: RefreshCw,
     box: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
   },
-}
+};
 
 function timeAgo(date: Date) {
   const seconds = Math.max(
     0,
     Math.floor((Date.now() - new Date(date).getTime()) / 1000),
-  )
+  );
 
-  if (seconds < 60) return "Just now"
+  if (seconds < 60) return "Just now";
 
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
 
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
 
-  return `${Math.floor(hours / 24)}d ago`
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 const NOTIFICATION_SCRIPT = `
@@ -1337,10 +1282,10 @@ const NOTIFICATION_SCRIPT = `
 
   init();
 })();
-`
+`;
 
 async function NotificationsSection() {
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000)
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   const [
     newOrders,
@@ -1371,7 +1316,7 @@ async function NotificationsSection() {
       .limit(3)
       .populate("userId", "name")
       .lean(),
-  ])
+  ]);
 
   const notices: Notice[] = [
     ...(latestOrders as any[]).map(
@@ -1420,15 +1365,15 @@ async function NotificationsSection() {
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
-    .slice(0, 5)
+    .slice(0, 5);
 
-  const total = newOrders + pendingRepairs + pendingBuybacks
+  const total = newOrders + pendingRepairs + pendingBuybacks;
 
   const tiles: {
-    label: string
-    value: number
-    href: string
-    kind: NoticeKind
+    label: string;
+    value: number;
+    href: string;
+    kind: NoticeKind;
   }[] = [
     {
       label: "New orders",
@@ -1448,7 +1393,7 @@ async function NotificationsSection() {
       href: "/admin/buy-back",
       kind: "buyback",
     },
-  ]
+  ];
 
   return (
     <section
@@ -1505,7 +1450,7 @@ async function NotificationsSection() {
         {/* counters */}
         <div className="grid gap-2 sm:grid-cols-3">
           {tiles.map((tile) => {
-            const style = noticeStyle[tile.kind]
+            const style = noticeStyle[tile.kind];
 
             return (
               <Link
@@ -1536,7 +1481,7 @@ async function NotificationsSection() {
 
                 <ChevronRight className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
               </Link>
-            )
+            );
           })}
         </div>
 
@@ -1545,14 +1490,12 @@ async function NotificationsSection() {
           <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/20 px-4 py-5 text-center">
             <CheckCircle2 className="size-4 text-emerald-500" />
 
-            <p className="text-xs font-medium">
-              You&apos;re all caught up
-            </p>
+            <p className="text-xs font-medium">You&apos;re all caught up</p>
           </div>
         ) : (
           <ul className="divide-y rounded-lg border">
             {notices.map((notice) => {
-              const style = noticeStyle[notice.kind]
+              const style = noticeStyle[notice.kind];
 
               return (
                 <li key={notice.id}>
@@ -1595,7 +1538,7 @@ async function NotificationsSection() {
                     </span>
                   </Link>
                 </li>
-              )
+              );
             })}
           </ul>
         )}
@@ -1607,7 +1550,7 @@ async function NotificationsSection() {
         dangerouslySetInnerHTML={{ __html: NOTIFICATION_SCRIPT }}
       />
     </section>
-  )
+  );
 }
 
 /* ========================================================================== */
@@ -1621,27 +1564,23 @@ function DashboardMetric({
   icon: Icon,
   iconClass,
 }: {
-  label: string
-  value: number
-  description: string
-  icon: typeof Package
-  iconClass: string
+  label: string;
+  value: number;
+  description: string;
+  icon: typeof Package;
+  iconClass: string;
 }) {
   return (
     <div className="rounded-2xl border bg-background p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-muted-foreground">
-            {label}
-          </p>
+          <p className="text-sm font-medium text-muted-foreground">{label}</p>
 
           <p className="mt-3 text-3xl font-bold tracking-tight">
             {value.toLocaleString()}
           </p>
 
-          <p className="mt-1 text-xs text-muted-foreground">
-            {description}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{description}</p>
         </div>
 
         <div
@@ -1651,7 +1590,7 @@ function DashboardMetric({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function DashboardSection({
@@ -1661,11 +1600,11 @@ function DashboardSection({
   action,
   children,
 }: {
-  title: string
-  description: string
-  icon: typeof BarChart3
-  action?: React.ReactNode
-  children: React.ReactNode
+  title: string;
+  description: string;
+  icon: typeof BarChart3;
+  action?: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <section className="rounded-2xl border bg-background shadow-sm">
@@ -1676,24 +1615,18 @@ function DashboardSection({
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold">
-              {title}
-            </h2>
+            <h2 className="text-sm font-semibold">{title}</h2>
 
-            <p className="mt-1 text-xs text-muted-foreground">
-              {description}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
           </div>
         </div>
 
         {action}
       </div>
 
-      <div className="p-5 sm:p-6">
-        {children}
-      </div>
+      <div className="p-5 sm:p-6">{children}</div>
     </section>
-  )
+  );
 }
 
 function SummaryStat({
@@ -1701,25 +1634,21 @@ function SummaryStat({
   value,
   icon: Icon,
 }: {
-  label: string
-  value: string
-  icon: typeof DollarSign
+  label: string;
+  value: string;
+  icon: typeof DollarSign;
 }) {
   return (
     <div className="rounded-xl border bg-muted/20 p-4">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs text-muted-foreground">
-          {label}
-        </span>
+        <span className="text-xs text-muted-foreground">{label}</span>
 
         <Icon className="size-3.5 text-muted-foreground" />
       </div>
 
-      <p className="mt-2 text-lg font-bold">
-        {value}
-      </p>
+      <p className="mt-2 text-lg font-bold">{value}</p>
     </div>
-  )
+  );
 }
 
 function HealthRow({
@@ -1729,27 +1658,23 @@ function HealthRow({
   total,
   className,
 }: {
-  label: string
-  value: string
-  current: number
-  total: number
-  className: string
+  label: string;
+  value: string;
+  current: number;
+  total: number;
+  className: string;
 }) {
   const width = Math.min(
     Math.max((current / Math.max(total, 1)) * 100, 3),
     100,
-  )
+  );
 
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-4">
-        <span className="text-sm text-muted-foreground">
-          {label}
-        </span>
+        <span className="text-sm text-muted-foreground">{label}</span>
 
-        <span className="text-sm font-semibold">
-          {value}
-        </span>
+        <span className="text-sm font-semibold">{value}</span>
       </div>
 
       <div className="h-2 overflow-hidden rounded-full bg-muted">
@@ -1759,22 +1684,22 @@ function HealthRow({
         />
       </div>
     </div>
-  )
+  );
 }
 
 function LegendItem({
   label,
   className,
 }: {
-  label: string
-  className: string
+  label: string;
+  className: string;
 }) {
   return (
     <div className="flex items-center gap-2 text-xs text-muted-foreground">
       <span className={`size-2.5 rounded-full ${className}`} />
       {label}
     </div>
-  )
+  );
 }
 
 function MiniStat({
@@ -1783,26 +1708,22 @@ function MiniStat({
   change,
   icon: Icon,
 }: {
-  label: string
-  value: number
-  change: number
-  icon: typeof ShoppingCart
+  label: string;
+  value: number;
+  change: number;
+  icon: typeof ShoppingCart;
 }) {
-  const positive = change >= 0
+  const positive = change >= 0;
 
   return (
     <div className="rounded-xl border bg-muted/20 p-3">
       <div className="flex items-center gap-2">
         <Icon className="size-3.5 text-muted-foreground" />
-        <span className="text-[11px] text-muted-foreground">
-          {label}
-        </span>
+        <span className="text-[11px] text-muted-foreground">{label}</span>
       </div>
 
       <div className="mt-2 flex items-end justify-between gap-2">
-        <span className="text-lg font-bold">
-          {value}
-        </span>
+        <span className="text-lg font-bold">{value}</span>
 
         <span
           className={
@@ -1816,7 +1737,7 @@ function MiniStat({
         </span>
       </div>
     </div>
-  )
+  );
 }
 
 function StatusTile({
@@ -1824,21 +1745,17 @@ function StatusTile({
   value,
   className,
 }: {
-  label: string
-  value: number
-  className: string
+  label: string;
+  value: number;
+  className: string;
 }) {
   return (
     <div className={`rounded-xl p-3 ${className}`}>
-      <p className="text-[10px] font-medium opacity-80">
-        {label}
-      </p>
+      <p className="text-[10px] font-medium opacity-80">{label}</p>
 
-      <p className="mt-1 text-xl font-bold">
-        {value}
-      </p>
+      <p className="mt-1 text-xl font-bold">{value}</p>
     </div>
-  )
+  );
 }
 
 function ActivityPanel({
@@ -1848,11 +1765,11 @@ function ActivityPanel({
   href,
   children,
 }: {
-  title: string
-  description: string
-  icon: typeof ShoppingCart
-  href: string
-  children: React.ReactNode
+  title: string;
+  description: string;
+  icon: typeof ShoppingCart;
+  href: string;
+  children: React.ReactNode;
 }) {
   return (
     <section className="rounded-2xl border bg-background shadow-sm">
@@ -1863,13 +1780,9 @@ function ActivityPanel({
           </div>
 
           <div>
-            <h2 className="text-sm font-semibold">
-              {title}
-            </h2>
+            <h2 className="text-sm font-semibold">{title}</h2>
 
-            <p className="mt-1 text-xs text-muted-foreground">
-              {description}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
           </div>
         </div>
 
@@ -1882,33 +1795,25 @@ function ActivityPanel({
         </Link>
       </div>
 
-      <div className="p-4">
-        {children}
-      </div>
+      <div className="p-4">{children}</div>
     </section>
-  )
+  );
 }
 
-function EmptyState({
-  message,
-}: {
-  message: string
-}) {
+function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex min-h-52 flex-col items-center justify-center rounded-xl border border-dashed bg-muted/20 px-5 text-center">
       <div className="flex size-10 items-center justify-center rounded-xl bg-muted">
         <Package className="size-4 text-muted-foreground" />
       </div>
 
-      <p className="mt-3 text-sm font-medium">
-        {message}
-      </p>
+      <p className="mt-3 text-sm font-medium">{message}</p>
 
       <p className="mt-1 text-xs text-muted-foreground">
         New activity will appear here.
       </p>
     </div>
-  )
+  );
 }
 
 function InsightCard({
@@ -1918,11 +1823,11 @@ function InsightCard({
   description,
   positive,
 }: {
-  icon: typeof DollarSign
-  title: string
-  value: string
-  description: string
-  positive: boolean
+  icon: typeof DollarSign;
+  title: string;
+  value: string;
+  description: string;
+  positive: boolean;
 }) {
   return (
     <div className="rounded-2xl border bg-background p-5 shadow-sm">
@@ -1937,14 +1842,10 @@ function InsightCard({
           <Icon className="size-4" />
         </div>
 
-        <p className="text-sm font-semibold">
-          {title}
-        </p>
+        <p className="text-sm font-semibold">{title}</p>
       </div>
 
-      <p className="mt-4 text-2xl font-bold">
-        {value}
-      </p>
+      <p className="mt-4 text-2xl font-bold">{value}</p>
 
       <p className="mt-1 text-xs leading-5 text-muted-foreground">
         {description}
@@ -1963,10 +1864,8 @@ function InsightCard({
           <ArrowDownRight className="size-3.5" />
         )}
 
-        <span>
-          {positive ? "Positive trend" : "Needs attention"}
-        </span>
+        <span>{positive ? "Positive trend" : "Needs attention"}</span>
       </div>
     </div>
-  )
+  );
 }
