@@ -82,7 +82,7 @@ export const repairSchema = z.object({
   brand: z.string().min(2),
   model: z.string().min(1),
   problem: z.string().min(10),
-  contact: z.string().min(7),
+  contact: z.enum(["WhatsApp", "Phone", "Email"]),
   image: z.url().optional().or(z.literal("")),
 });
 export const buyBackSchema = z.object({
