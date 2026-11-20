@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  AlertCircle,
   ArrowRight,
   CheckCircle2,
   Clock,
@@ -112,9 +113,94 @@ const MAP_LINK =
   "https://www.google.com/maps/place/Al+Dana+Computer/@24.4775376,54.3566188,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5e673742e7dd55:0xdc650baa9061d022!8m2!3d24.4775376!4d54.3566188!16s%2Fg%2F11vbm3hsgf?hl=en-GB";
 const DIRECTIONS_LINK = `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`;
 
-const inputCls =
-  "h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10";
+/* ---- FORM STYLES ---- */
+const baseInput =
+  "w-full rounded-lg border text-sm outline-none transition placeholder:text-slate-400 focus:ring-2";
+const okInput =
+  "border-slate-200 bg-slate-50 focus:border-violet-500 focus:bg-white focus:ring-violet-500/10";
+const badInput =
+  "border-red-400 bg-red-50/60 focus:border-red-500 focus:bg-white focus:ring-red-500/10";
+
+const inputCls = (hasError: boolean) =>
+  `${baseInput} h-12 px-4 ${hasError ? badInput : okInput}`;
+const textareaCls = (hasError: boolean) =>
+  `${baseInput} resize-none px-4 py-3.5 leading-6 ${
+    hasError ? badInput : okInput
+  }`;
 const labelCls = "mb-2 block text-xs font-bold text-slate-700";
+
+/* ---- FORM VALIDATION ---- */
+const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
+
+// form field name -> element id (used to focus the first invalid field)
+const FIELD_IDS: Record<string, string> = {
+  name: "name",
+  phone: "phone",
+  deviceType: "device",
+  brand: "brand",
+  model: "model",
+  problem: "issue",
+  attachment: "attachment",
+};
+const FIELD_ORDER = Object.keys(FIELD_IDS);
+
+function validate(fd: FormData): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  const name = String(fd.get("name") ?? "").trim();
+  if (!name) errors.name = "Please enter your full name.";
+  else if (name.length < 2) errors.name = "Your name looks too short.";
+
+  const phone = String(fd.get("phone") ?? "").trim();
+  const digits = phone.replace(/\D/g, "");
+  if (!phone) {
+    errors.phone = "Please enter your phone number.";
+  } else if (!/^[+\d\s\-()]+$/.test(phone)) {
+    errors.phone = "Use digits only. You can include +, spaces and dashes.";
+  } else if (digits.length < 8 || digits.length > 15) {
+    errors.phone =
+      "Enter a valid number with 8 to 15 digits, e.g. +971 50 123 4567.";
+  }
+
+  if (!String(fd.get("deviceType") ?? "").trim())
+    errors.deviceType = "Please select your device type.";
+
+  if (!String(fd.get("brand") ?? "").trim())
+    errors.brand = "Please enter the device brand.";
+
+  if (!String(fd.get("model") ?? "").trim())
+    errors.model = "Please enter the device model.";
+
+  const problem = String(fd.get("problem") ?? "").trim();
+  if (!problem) errors.problem = "Please describe the problem.";
+  else if (problem.length < 10)
+    errors.problem =
+      "Please add a little more detail (at least 10 characters) so we can diagnose faster.";
+
+  const files = fd.getAll("attachment").filter(
+    (f): f is File => f instanceof File && f.size > 0
+  );
+  if (files.some((f) => f.size > MAX_PHOTO_BYTES))
+    errors.attachment = "One or more photos are larger than 10MB.";
+  else if (files.some((f) => !f.type.startsWith("image/")))
+    errors.attachment = "Only image files (JPG, PNG) are allowed.";
+
+  return errors;
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p
+      id={`${id}-error`}
+      role="alert"
+      className="mt-1.5 flex items-start gap-1.5 text-xs font-medium text-red-600"
+    >
+      <AlertCircle className="mt-px size-3.5 shrink-0" />
+      {message}
+    </p>
+  );
+}
 
 type RepairState = {
   success?: boolean;
@@ -134,10 +220,23 @@ export default function RepairPage() {
   const [photoCount, setPhotoCount] = useState(0);
   const [submittedName, setSubmittedName] = useState("");
   const [dismissed, setDismissed] = useState<RepairState | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Thank-you only shows for a real, saved submission
   const showThanks = !!state?.success && state !== dismissed;
+
+  const errorCount = Object.keys(fieldErrors).length;
+  const extraServerErrors = Object.entries(state?.errors ?? {}).filter(
+    ([key]) => !(key in FIELD_IDS)
+  );
+
+  // Server-side validation errors flow into the same inline error state
+  useEffect(() => {
+    if (state?.errors && Object.keys(state.errors).length > 0) {
+      setFieldErrors(state.errors);
+    }
+  }, [state]);
 
   // bring the result (thank-you or error) into view
   useEffect(() => {
@@ -150,6 +249,47 @@ export default function RepairPage() {
     setDismissed(state);
     setPhotoCount(0);
     setContactMethod("WhatsApp");
+    setFieldErrors({});
+  }
+
+  function clearError(fieldName: string) {
+    if (!fieldName) return;
+    setFieldErrors((prev) => {
+      if (!(fieldName in prev)) return prev;
+      const next = { ...prev };
+      delete next[fieldName];
+      return next;
+    });
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const fd = new FormData(e.currentTarget);
+
+    setSubmittedName(
+      String(fd.get("name") ?? "")
+        .trim()
+        .split(" ")[0]
+    );
+
+    const errors = validate(fd);
+
+    if (Object.keys(errors).length > 0) {
+      // Stop the server action and show the problems instead
+      e.preventDefault();
+      setFieldErrors(errors);
+
+      const firstKey = FIELD_ORDER.find((k) => errors[k]);
+      if (firstKey) {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(FIELD_IDS[firstKey]);
+          el?.scrollIntoView({ behavior: "smooth", block: "center" });
+          el?.focus({ preventScroll: true });
+        });
+      }
+      return;
+    }
+
+    setFieldErrors({});
   }
 
   return (
@@ -571,33 +711,46 @@ export default function RepairPage() {
               ) : (
                 <form
                   action={formAction}
-                  onSubmit={(e) =>
-                    setSubmittedName(
-                      String(new FormData(e.currentTarget).get("name") ?? "")
-                        .trim()
-                        .split(" ")[0]
-                    )
+                  noValidate
+                  onSubmit={handleSubmit}
+                  onChange={(e) =>
+                    clearError((e.target as HTMLInputElement).name)
                   }
                   className="space-y-8 p-6 sm:p-10"
                 >
-                  {!state?.success && state?.message && (
+                  {/* Summary banner: client problems or server failure */}
+                  {(errorCount > 0 || (!state?.success && state?.message)) && (
                     <div
                       role="alert"
-                      className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                      className="flex gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                     >
-                      <p>{state.message}</p>
-                      {state.errors && Object.keys(state.errors).length > 0 && (
-                        <ul className="mt-1.5 list-disc pl-5 text-xs font-normal">
-                          {Object.entries(state.errors).map(([field, msg]) => (
-                            <li key={field}>
-                              <span className="font-semibold capitalize">
-                                {field}
-                              </span>
-                              : {msg}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                      <div>
+                        <p className="font-bold">
+                          {errorCount > 0
+                            ? `Please fix ${errorCount} ${
+                                errorCount === 1 ? "field" : "fields"
+                              } before submitting.`
+                            : state?.message}
+                        </p>
+                        {errorCount > 0 && state?.message && (
+                          <p className="mt-0.5 text-xs font-medium">
+                            {state.message}
+                          </p>
+                        )}
+                        {extraServerErrors.length > 0 && (
+                          <ul className="mt-1.5 list-disc pl-5 text-xs font-normal">
+                            {extraServerErrors.map(([field, msg]) => (
+                              <li key={field}>
+                                <span className="font-semibold capitalize">
+                                  {field}
+                                </span>
+                                : {msg}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -631,8 +784,13 @@ export default function RepairPage() {
                           autoComplete="name"
                           placeholder="Your full name"
                           defaultValue={state?.values?.name}
-                          className={inputCls}
+                          aria-invalid={!!fieldErrors.name}
+                          aria-describedby={
+                            fieldErrors.name ? "name-error" : undefined
+                          }
+                          className={inputCls(!!fieldErrors.name)}
                         />
+                        <FieldError id="name" message={fieldErrors.name} />
                       </div>
 
                       <div>
@@ -648,8 +806,13 @@ export default function RepairPage() {
                           inputMode="tel"
                           placeholder="+971 50 123 4567"
                           defaultValue={state?.values?.phone}
-                          className={inputCls}
+                          aria-invalid={!!fieldErrors.phone}
+                          aria-describedby={
+                            fieldErrors.phone ? "phone-error" : undefined
+                          }
+                          className={inputCls(!!fieldErrors.phone)}
                         />
+                        <FieldError id="phone" message={fieldErrors.phone} />
                       </div>
                     </div>
                   </div>
@@ -708,7 +871,11 @@ export default function RepairPage() {
                           name="deviceType"
                           required
                           defaultValue={state?.values?.deviceType ?? ""}
-                          className={`${inputCls} text-slate-700`}
+                          aria-invalid={!!fieldErrors.deviceType}
+                          aria-describedby={
+                            fieldErrors.deviceType ? "device-error" : undefined
+                          }
+                          className={`${inputCls(!!fieldErrors.deviceType)} text-slate-700`}
                         >
                           <option value="">Select device</option>
                           <option value="Gaming PC">Gaming PC</option>
@@ -716,6 +883,10 @@ export default function RepairPage() {
                           <option value="iPad">iPad</option>
                           <option value="Other">Other</option>
                         </select>
+                        <FieldError
+                          id="device"
+                          message={fieldErrors.deviceType}
+                        />
                       </div>
 
                       <div>
@@ -729,8 +900,13 @@ export default function RepairPage() {
                           required
                           placeholder="e.g. ASUS"
                           defaultValue={state?.values?.brand}
-                          className={inputCls}
+                          aria-invalid={!!fieldErrors.brand}
+                          aria-describedby={
+                            fieldErrors.brand ? "brand-error" : undefined
+                          }
+                          className={inputCls(!!fieldErrors.brand)}
                         />
+                        <FieldError id="brand" message={fieldErrors.brand} />
                       </div>
 
                       <div className="sm:col-span-2">
@@ -744,8 +920,13 @@ export default function RepairPage() {
                           required
                           placeholder="e.g. ROG Strix G15"
                           defaultValue={state?.values?.model}
-                          className={inputCls}
+                          aria-invalid={!!fieldErrors.model}
+                          aria-describedby={
+                            fieldErrors.model ? "model-error" : undefined
+                          }
+                          className={inputCls(!!fieldErrors.model)}
                         />
+                        <FieldError id="model" message={fieldErrors.model} />
                       </div>
                     </div>
                   </div>
@@ -763,20 +944,32 @@ export default function RepairPage() {
                       rows={6}
                       defaultValue={state?.values?.problem}
                       placeholder="What happened? When did the problem start? Any unusual sounds, overheating, crashes, physical damage, or other symptoms?"
-                      className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm leading-6 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-500/10"
+                      aria-invalid={!!fieldErrors.problem}
+                      aria-describedby={
+                        fieldErrors.problem ? "issue-error" : undefined
+                      }
+                      className={textareaCls(!!fieldErrors.problem)}
                     />
 
-                    <p className="mt-2 text-xs text-slate-500">
-                      More details help our technicians diagnose your device
-                      faster.
-                    </p>
+                    <FieldError id="issue" message={fieldErrors.problem} />
+
+                    {!fieldErrors.problem && (
+                      <p className="mt-2 text-xs text-slate-500">
+                        More details help our technicians diagnose your device
+                        faster.
+                      </p>
+                    )}
                   </div>
 
                   {/* UPLOAD (optional) */}
                   <div>
                     <label
                       htmlFor="attachment"
-                      className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-5 py-4 transition hover:border-violet-300 hover:bg-violet-50/50"
+                      className={`flex cursor-pointer items-center gap-4 rounded-lg border border-dashed px-5 py-4 transition ${
+                        fieldErrors.attachment
+                          ? "border-red-400 bg-red-50/60"
+                          : "border-slate-300 bg-slate-50 hover:border-violet-300 hover:bg-violet-50/50"
+                      }`}
                     >
                       <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600 shadow-sm">
                         <Upload className="size-5" />
@@ -803,6 +996,12 @@ export default function RepairPage() {
                         type="file"
                         accept="image/*"
                         multiple
+                        aria-invalid={!!fieldErrors.attachment}
+                        aria-describedby={
+                          fieldErrors.attachment
+                            ? "attachment-error"
+                            : undefined
+                        }
                         onChange={(e) =>
                           setPhotoCount(
                             Array.from(e.target.files ?? []).filter(
@@ -813,6 +1012,10 @@ export default function RepairPage() {
                         className="sr-only"
                       />
                     </label>
+                    <FieldError
+                      id="attachment"
+                      message={fieldErrors.attachment}
+                    />
                   </div>
 
                   {/* SUBMIT */}
