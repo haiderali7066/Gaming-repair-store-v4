@@ -4,18 +4,34 @@ import React from "react"
 import Link from "next/link"
 import { 
   FaFacebookF, 
-  FaTwitter, 
   FaInstagram, 
-  FaLinkedinIn,
+  FaTiktok,
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaEnvelope,
   FaArrowRight
 } from "react-icons/fa"
 
-// Changed to a NAMED export to match your layout.tsx import { Footer }
 export function Footer() {
   const currentYear = new Date().getFullYear()
+
+  const socialLinks = [
+    { 
+      name: "Facebook",
+      icon: FaFacebookF, 
+      href: "https://www.facebook.com/people/Dana-Auh/61554969869641/?mibextid=wwXIfr&rdid=thubrkfi6xWwwTHX&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1HRsjtMEHB%2F%3Fmibextid%3DwwXIfr" 
+    },
+    { 
+      name: "Instagram",
+      icon: FaInstagram, 
+      href: "https://www.instagram.com/aldanacomputer?mdxt=MXU4dW51NjBjdjNnZw%3D%3D&utm_source=qr" 
+    },
+    { 
+      name: "TikTok",
+      icon: FaTiktok, 
+      href: "https://www.tiktok.com/@al.dana.computer?_r=1&_t=ZN-9BBHhbSPAam" 
+    }
+  ]
 
   return (
     <footer 
@@ -44,15 +60,13 @@ export function Footer() {
             
             {/* Social Icons */}
             <div className="flex items-center gap-4 pt-2">
-              {[
-                { icon: FaFacebookF, href: "#" },
-                { icon: FaTwitter, href: "#" },
-                { icon: FaInstagram, href: "#" },
-                { icon: FaLinkedinIn, href: "#" }
-              ].map((social, idx) => (
+              {socialLinks.map((social, idx) => (
                 <a 
                   key={idx} 
-                  href={social.href} 
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
                   className="size-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-violet-600 hover:text-white hover:border-violet-600 hover:-translate-y-1 transition-all duration-300"
                 >
                   <social.icon className="size-4" />
@@ -90,9 +104,9 @@ export function Footer() {
             <ul className="space-y-4 font-medium">
               {[
                 { name: "Gaming PC Repair", path: "/gaming-pc-repair" },
-  { name: "Gaming Laptop Repair", path: "/gaming-laptop-repair" },
-  { name: "iPad & Tablet Repair", path: "/ipad-repair" },
-  { name: "Deep Cleaning & Thermal", path: "/deep-cleaning" }
+                { name: "Gaming Laptop Repair", path: "/gaming-laptop-repair" },
+                { name: "iPad & Tablet Repair", path: "/ipad-repair" },
+                { name: "Deep Cleaning & Thermal", path: "/deep-cleaning" }
               ].map((link, idx) => (
                 <li key={idx}>
                   <Link 
@@ -135,35 +149,35 @@ export function Footer() {
             &copy; {currentYear} Al Dana Tech Repair. All rights reserved.
           </div>
           
-          <div className="flex items-center gap-6 text-slate-500">
-  <Link
-    href="/legal?doc=privacy-policy"
-    className="hover:text-white transition-colors"
-  >
-    Privacy Policy
-  </Link>
+          <div className="flex flex-wrap justify-center items-center gap-6 text-slate-500">
+            <Link
+              href="/legal?doc=privacy-policy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
 
-  <Link
-    href="/legal?doc=terms-and-conditions"
-    className="hover:text-white transition-colors"
-  >
-    Terms & Conditions
-  </Link>
+            <Link
+              href="/legal?doc=terms-and-conditions"
+              className="hover:text-white transition-colors"
+            >
+              Terms & Conditions
+            </Link>
 
-  <Link
-    href="/legal?doc=refund-and-return-policy"
-    className="hover:text-white transition-colors"
-  >
-    Refund & Return Policy
-  </Link>
+            <Link
+              href="/legal?doc=refund-and-return-policy"
+              className="hover:text-white transition-colors"
+            >
+              Refund & Return Policy
+            </Link>
 
-  <Link
-    href="/legal?doc=trade-in-policy"
-    className="hover:text-white transition-colors"
-  >
-    Trade-In Policy
-  </Link>
-</div>
+            <Link
+              href="/legal?doc=trade-in-policy"
+              className="hover:text-white transition-colors"
+            >
+              Trade-In Policy
+            </Link>
+          </div>
 
           {/* Developer Credit */}
           <div className="text-slate-500 flex items-center gap-1.5 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800">

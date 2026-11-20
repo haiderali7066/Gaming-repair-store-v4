@@ -27,7 +27,7 @@ const anchor = "scroll-mt-28"
 
 /* Darker placeholder + text for better contrast */
 const fieldCls =
-  "w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition focus:border-violet-600 focus:bg-white focus:ring-4 focus:ring-violet-600/15"
+  "w-full rounded-lg border border-slate-400 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-600 outline-none transition focus:border-violet-600 focus:ring-4 focus:ring-violet-600/20"
 
 /* ---- CONTACT DETAILS ---- */
 const MOBILE_DISPLAY = "052-167 7044"
@@ -71,10 +71,10 @@ const quickContacts: {
   },
 ]
 
+/* Open 6 days (Saturday - Thursday), Friday off */
 const hours = [
-  { day: "Monday - Friday", time: "9:00 AM - 8:00 PM", closed: false },
-  { day: "Saturday", time: "10:00 AM - 6:00 PM", closed: false },
-  { day: "Sunday", time: "Closed", closed: true },
+  { day: "Saturday - Thursday", time: "10:00 AM - 8:00 PM", closed: false },
+  { day: "Friday", time: "Closed", closed: true },
 ]
 
 const steps: {
@@ -123,7 +123,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-slate-50 font-sans text-slate-800">
+    <div className="min-h-screen overflow-hidden bg-slate-50 font-sans text-slate-800 [color-scheme:light]">
       {/* ================= HERO (compact) ================= */}
       <section className="relative isolate overflow-hidden bg-[#050816] text-white">
         {/* ambient glows + grid */}
@@ -143,7 +143,7 @@ export default function ContactPage() {
 
         <div className={`${wrap} py-8 sm:py-10 lg:py-12`}>
           <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/30 bg-violet-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-violet-100">
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-300/30 bg-violet-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-white">
               <Headset className="size-3.5" /> Support &amp; Inquiries
             </span>
 
@@ -154,7 +154,7 @@ export default function ContactPage() {
               </span>
             </h1>
 
-            <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-200 sm:text-base lg:text-lg">
+            <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-white/95 sm:text-base lg:text-lg">
               Whether you need an urgent repair, want to check a trade-in
               valuation, or just have a technical question, our engineers are
               standing by to help.
@@ -185,7 +185,7 @@ export default function ContactPage() {
                     <c.icon className="size-5" />
                   </span>
                   <span className="min-w-0 text-left">
-                    <span className="block text-[11px] font-semibold uppercase tracking-wider text-slate-300">
+                    <span className="block text-[11px] font-semibold uppercase tracking-wider text-slate-100">
                       {c.label}
                     </span>
                     <span className="block truncate text-sm font-bold text-white">
@@ -196,7 +196,7 @@ export default function ContactPage() {
               )
 
               const cls =
-                "group flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur transition-colors hover:bg-white/10"
+                "group flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-white backdrop-blur transition-colors hover:bg-white/10"
 
               return (
                 <li key={c.label}>
@@ -231,7 +231,7 @@ export default function ContactPage() {
                 <h2 className="mb-1.5 text-2xl font-black text-slate-900 sm:text-3xl lg:text-4xl">
                   Send us a message
                 </h2>
-                <p className="mb-5 text-sm font-medium text-slate-600 sm:text-base">
+                <p className="mb-5 text-sm font-medium text-slate-700 sm:text-base">
                   Fill out the form below and we&apos;ll get back to you within
                   1 business day.
                 </p>
@@ -247,7 +247,7 @@ export default function ContactPage() {
                     <h3 className="text-xl font-black text-slate-900 sm:text-2xl">
                       Message Received!
                     </h3>
-                    <p className="max-w-md text-sm font-medium text-slate-600 sm:text-base">
+                    <p className="max-w-md text-sm font-medium text-slate-700 sm:text-base">
                       Thank you for reaching out. One of our lead technicians
                       will review your request and contact you shortly.
                     </p>
@@ -362,7 +362,7 @@ export default function ContactPage() {
                       <Send className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1" />
                     </button>
 
-                    <p className="flex items-start justify-center gap-2 text-center text-xs text-slate-600 sm:items-center">
+                    <p className="flex items-start justify-center gap-2 text-center text-xs text-slate-700 sm:items-center">
                       <ShieldCheck className="mt-0.5 size-4 shrink-0 text-violet-700 sm:mt-0" />
                       Your details are only used to respond to your request.
                     </p>
@@ -377,34 +377,40 @@ export default function ContactPage() {
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-5 text-white shadow-lg shadow-violet-500/20 sm:p-6">
                 <div className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-fuchsia-400/20 blur-[80px]" />
 
-                <h3 className="relative mb-4 text-xl font-black sm:text-2xl">
+                <h3 className="relative mb-4 text-xl font-black text-white sm:text-2xl">
                   Direct Contact
                 </h3>
 
                 <div className="relative space-y-4">
-                  <a href={MOBILE_TEL} className="group flex items-center gap-3">
+                  <a
+                    href={MOBILE_TEL}
+                    className="group flex items-center gap-3 text-white"
+                  >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <Smartphone className="size-4" />
                     </span>
                     <span>
-                      <span className="block text-xs font-medium text-violet-100">
+                      <span className="block text-xs font-semibold text-white">
                         Mobile
                       </span>
-                      <span className="block text-base font-bold">
+                      <span className="block text-base font-bold text-white">
                         {MOBILE_DISPLAY}
                       </span>
                     </span>
                   </a>
 
-                  <a href={OFFICE_TEL} className="group flex items-center gap-3">
+                  <a
+                    href={OFFICE_TEL}
+                    className="group flex items-center gap-3 text-white"
+                  >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <Phone className="size-4" />
                     </span>
                     <span>
-                      <span className="block text-xs font-medium text-violet-100">
+                      <span className="block text-xs font-semibold text-white">
                         Office
                       </span>
-                      <span className="block text-base font-bold">
+                      <span className="block text-base font-bold text-white">
                         {OFFICE_DISPLAY}
                       </span>
                     </span>
@@ -412,16 +418,16 @@ export default function ContactPage() {
 
                   <a
                     href={`mailto:${EMAIL}`}
-                    className="group flex items-center gap-3"
+                    className="group flex items-center gap-3 text-white"
                   >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <Mail className="size-4" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-xs font-medium text-violet-100">
+                      <span className="block text-xs font-semibold text-white">
                         Email Us
                       </span>
-                      <span className="block break-words text-base font-bold">
+                      <span className="block break-words text-base font-bold text-white">
                         {EMAIL}
                       </span>
                     </span>
@@ -431,16 +437,16 @@ export default function ContactPage() {
                     href={MAP_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-3"
+                    className="group flex items-start gap-3 text-white"
                   >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
                       <MapPin className="size-4" />
                     </span>
                     <span>
-                      <span className="block text-xs font-medium text-violet-100">
+                      <span className="block text-xs font-semibold text-white">
                         Service Center
                       </span>
-                      <span className="block text-base font-bold leading-snug">
+                      <span className="block text-base font-bold leading-snug text-white">
                         {PLACE_NAME}
                         <br />
                         Abu Dhabi, UAE
@@ -457,12 +463,12 @@ export default function ContactPage() {
               >
                 <div className="mb-4 flex items-center gap-2.5">
                   <Clock className="size-5 text-fuchsia-300" />
-                  <h3 className="text-xl font-black sm:text-2xl">
+                  <h3 className="text-xl font-black text-white sm:text-2xl">
                     Business Hours
                   </h3>
                 </div>
 
-                <ul className="space-y-2.5 text-sm font-medium text-slate-200 sm:text-base">
+                <ul className="space-y-2.5 text-sm font-medium text-slate-100 sm:text-base">
                   {hours.map((h, i) => (
                     <li
                       key={h.day}
@@ -475,7 +481,7 @@ export default function ContactPage() {
                       <span>{h.day}</span>
                       <span
                         className={`font-bold ${
-                          h.closed ? "text-fuchsia-300" : "text-white"
+                          h.closed ? "text-fuchsia-200" : "text-white"
                         }`}
                       >
                         {h.time}
@@ -500,15 +506,15 @@ export default function ContactPage() {
                   <MapPin className="size-3.5" /> Find us
                 </span>
 
-                <h2 className="text-2xl font-black sm:text-3xl">
+                <h2 className="text-2xl font-black text-white sm:text-3xl">
                   Visit our service center
                 </h2>
-                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-200">
+                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-100">
                   Drop by for a free visual inspection from our counter
                   technicians. No appointment needed during business hours.
                 </p>
 
-                <ul className="mt-5 space-y-3 text-sm font-medium text-slate-200">
+                <ul className="mt-5 space-y-3 text-sm font-medium text-slate-100">
                   <li className="flex items-start gap-3">
                     <MapPin className="mt-0.5 size-4 shrink-0 text-fuchsia-300" />
                     <span>
@@ -520,14 +526,26 @@ export default function ContactPage() {
                   </li>
                   <li className="flex items-center gap-3">
                     <Smartphone className="size-4 shrink-0 text-fuchsia-300" />
-                    <a href={MOBILE_TEL} className="hover:text-white">
-                      Mobile: <span className="font-bold text-white">{MOBILE_DISPLAY}</span>
+                    <a
+                      href={MOBILE_TEL}
+                      className="text-slate-100 hover:text-white"
+                    >
+                      Mobile:{" "}
+                      <span className="font-bold text-white">
+                        {MOBILE_DISPLAY}
+                      </span>
                     </a>
                   </li>
                   <li className="flex items-center gap-3">
                     <Phone className="size-4 shrink-0 text-fuchsia-300" />
-                    <a href={OFFICE_TEL} className="hover:text-white">
-                      Office: <span className="font-bold text-white">{OFFICE_DISPLAY}</span>
+                    <a
+                      href={OFFICE_TEL}
+                      className="text-slate-100 hover:text-white"
+                    >
+                      Office:{" "}
+                      <span className="font-bold text-white">
+                        {OFFICE_DISPLAY}
+                      </span>
                     </a>
                   </li>
                 </ul>
@@ -575,7 +593,7 @@ export default function ContactPage() {
             <h2 className="mb-2 text-2xl font-black text-slate-900 sm:text-3xl lg:text-4xl">
               What happens next?
             </h2>
-            <p className="text-sm font-medium text-slate-600 sm:text-base">
+            <p className="text-sm font-medium text-slate-700 sm:text-base">
               Our process is transparent, fast, and designed to get your
               hardware back in your hands as quickly as possible.
             </p>
@@ -587,7 +605,7 @@ export default function ContactPage() {
                 key={s.n}
                 className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-lg sm:p-6"
               >
-                <span className="pointer-events-none absolute -right-1 -top-4 text-[6.5rem] font-black leading-none text-slate-100 transition-transform duration-500 group-hover:scale-110">
+                <span className="pointer-events-none absolute -right-1 -top-4 select-none text-[6.5rem] font-black leading-none text-slate-100/70 transition-transform duration-500 group-hover:scale-110">
                   {s.n}
                 </span>
 
@@ -600,7 +618,7 @@ export default function ContactPage() {
                   <h3 className="mb-2 text-lg font-black text-slate-900 sm:text-xl">
                     {s.title}
                   </h3>
-                  <p className="text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
+                  <p className="text-sm font-medium leading-relaxed text-slate-700 sm:text-base">
                     {s.text}
                   </p>
                 </div>
