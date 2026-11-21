@@ -17,6 +17,8 @@ import {
   ShieldCheck,
   Navigation,
   ExternalLink,
+  AlertCircle,
+  Loader2,
   type LucideIcon,
 } from "lucide-react"
 
@@ -25,9 +27,18 @@ const wrap = "mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-10"
 const sectionY = "py-3 sm:py-4 lg:py-5"
 const anchor = "scroll-mt-28"
 
-/* Darker placeholder + text for better contrast */
-const fieldCls =
-  "w-full rounded-lg border border-slate-400 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-600 outline-none transition focus:border-violet-600 focus:ring-4 focus:ring-violet-600/20"
+/* Field styles: normal + error state */
+const fieldBase =
+  "w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-600 outline-none transition focus:ring-4"
+const fieldOk =
+  "border-slate-400 focus:border-violet-600 focus:ring-violet-600/20"
+const fieldBad =
+  "border-red-500 bg-red-50/60 focus:border-red-600 focus:ring-red-600/20"
+const fieldCls = (hasError: boolean) =>
+  `${fieldBase} ${hasError ? fieldBad : fieldOk}`
+
+/* ---- FORM ENDPOINT (Basin) ---- */
+const BASIN_URL = "https://usebasin.com/f/2238c662d13b"
 
 /* ---- CONTACT DETAILS ---- */
 const MOBILE_DISPLAY = "052-167 7044"
@@ -113,13 +124,114 @@ const stepIcon = {
   dark: "bg-slate-900 text-violet-300",
 }
 
+/* ---- VALIDATION: only name + email are required ---- */
+type FieldErrors = Partial<Record<"name" | "email" | "phone", string>>
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+function validate(fd: FormData): FieldErrors {
+  const errors: FieldErrors = {}
+
+  const name = String(fd.get("name") ?? "").trim()
+  if (!name) errors.name = "Please enter your name."
+  else if (name.length < 2) errors.name = "Your name looks too short."
+
+  const email = String(fd.get("email") ?? "").trim()
+  if (!email) errors.email = "Please enter your email address."
+  else if (!EMAIL_RE.test(email))
+    errors.email = "Enter a valid email, e.g. john@example.com."
+
+  // Phone is optional, but if filled in it should look like a phone number
+  const phone = String(fd.get("phone") ?? "").trim()
+  if (phone) {
+    const digits = phone.replace(/\D/g, "")
+    if (!/^[+\d\s\-()]+$/.test(phone) || digits.length < 7 || digits.length > 15)
+      errors.phone = "Enter a valid number or leave this blank."
+  }
+
+  return errors
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null
+  return (
+    <p
+      id={`${id}-error`}
+      role="alert"
+      className="flex items-start gap-1.5 text-xs font-semibold text-red-700"
+    >
+      <AlertCircle className="mt-px size-3.5 shrink-0" />
+      {message}
+    </p>
+  )
+}
+
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [submitError, setSubmitError] = useState("")
+  const [errors, setErrors] = useState<FieldErrors>({})
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const clearError = (field: string) => {
+    setSubmitError("")
+    setErrors((prev) => {
+      if (!(field in prev)) return prev
+      const next = { ...prev }
+      delete next[field as keyof FieldErrors]
+      return next
+    })
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Simulate form submission (replace with your real submit / server action)
-    setIsSubmitted(true)
+    if (isSending) return
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
+    const found = validate(formData)
+    setErrors(found)
+    setSubmitError("")
+
+    const firstInvalid = (["name", "email", "phone"] as const).find(
+      (k) => found[k]
+    )
+    if (firstInvalid) {
+      const el = document.getElementById(firstInvalid)
+      el?.scrollIntoView({ behavior: "smooth", block: "center" })
+      el?.focus({ preventScroll: true })
+      return
+    }
+
+    setIsSending(true)
+
+    try {
+      const res = await fetch(BASIN_URL, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: formData,
+      })
+
+      if (!res.ok) {
+        let detail = ""
+        try {
+          const data = await res.json()
+          detail = data?.error || data?.message || ""
+        } catch {
+          /* response was not JSON */
+        }
+        throw new Error(detail || `Request failed (${res.status})`)
+      }
+
+      setIsSubmitted(true)
+    } catch (err) {
+      console.error("CONTACT FORM ERROR:", err)
+      setSubmitError(
+        `We couldn't send your message. Please try again, or call us on ${MOBILE_DISPLAY}.`
+      )
+    } finally {
+      setIsSending(false)
+    }
   }
 
   return (
@@ -233,7 +345,7 @@ export default function ContactPage() {
                 </h2>
                 <p className="mb-5 text-sm font-medium text-slate-700 sm:text-base">
                   Fill out the form below and we&apos;ll get back to you within
-                  1 business day.
+                  1 business day. Only name and email are required.
                 </p>
 
                 {isSubmitted ? (
@@ -253,14 +365,35 @@ export default function ContactPage() {
                     </p>
                     <button
                       type="button"
-                      onClick={() => setIsSubmitted(false)}
+                      onClick={() => {
+                        setIsSubmitted(false)
+                        setErrors({})
+                        setSubmitError("")
+                      }}
                       className="mt-1 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:border-violet-400 hover:text-violet-700"
                     >
                       Send another message
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form
+                    onSubmit={handleSubmit}
+                    noValidate
+                    onChange={(e) =>
+                      clearError((e.target as HTMLInputElement).name)
+                    }
+                    className="space-y-4"
+                  >
+                    {submitError && (
+                      <div
+                        role="alert"
+                        className="flex gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"
+                      >
+                        <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                        <p>{submitError}</p>
+                      </div>
+                    )}
+
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-1.5">
                         <label
@@ -276,8 +409,13 @@ export default function ContactPage() {
                           required
                           autoComplete="name"
                           placeholder="John Doe"
-                          className={fieldCls}
+                          aria-invalid={!!errors.name}
+                          aria-describedby={
+                            errors.name ? "name-error" : undefined
+                          }
+                          className={fieldCls(!!errors.name)}
                         />
+                        <FieldError id="name" message={errors.name} />
                       </div>
 
                       <div className="space-y-1.5">
@@ -294,8 +432,13 @@ export default function ContactPage() {
                           required
                           autoComplete="email"
                           placeholder="john@example.com"
-                          className={fieldCls}
+                          aria-invalid={!!errors.email}
+                          aria-describedby={
+                            errors.email ? "email-error" : undefined
+                          }
+                          className={fieldCls(!!errors.email)}
                         />
+                        <FieldError id="email" message={errors.email} />
                       </div>
 
                       <div className="space-y-1.5">
@@ -303,18 +446,25 @@ export default function ContactPage() {
                           htmlFor="phone"
                           className="text-sm font-bold text-slate-800"
                         >
-                          Phone Number <span className="text-red-600">*</span>
+                          Phone Number{" "}
+                          <span className="font-medium text-slate-600">
+                            (optional)
+                          </span>
                         </label>
                         <input
                           type="tel"
                           id="phone"
                           name="phone"
-                          required
                           inputMode="tel"
                           autoComplete="tel"
                           placeholder="+971 50 000 0000"
-                          className={fieldCls}
+                          aria-invalid={!!errors.phone}
+                          aria-describedby={
+                            errors.phone ? "phone-error" : undefined
+                          }
+                          className={fieldCls(!!errors.phone)}
                         />
+                        <FieldError id="phone" message={errors.phone} />
                       </div>
 
                       <div className="space-y-1.5">
@@ -323,15 +473,16 @@ export default function ContactPage() {
                           className="text-sm font-bold text-slate-800"
                         >
                           Device &amp; Issue / Subject{" "}
-                          <span className="text-red-600">*</span>
+                          <span className="font-medium text-slate-600">
+                            (optional)
+                          </span>
                         </label>
                         <input
                           type="text"
                           id="device"
                           name="device"
-                          required
                           placeholder="e.g., Alienware m15 R6 - Overheating"
-                          className={fieldCls}
+                          className={fieldCls(false)}
                         />
                       </div>
                     </div>
@@ -342,24 +493,35 @@ export default function ContactPage() {
                         className="text-sm font-bold text-slate-800"
                       >
                         Detailed Description{" "}
-                        <span className="text-red-600">*</span>
+                        <span className="font-medium text-slate-600">
+                          (optional)
+                        </span>
                       </label>
                       <textarea
                         id="message"
                         name="message"
-                        required
                         rows={5}
                         placeholder="Please describe the issue, any physical damage, or prior repairs..."
-                        className={`${fieldCls} resize-y`}
+                        className={`${fieldCls(false)} resize-y`}
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-violet-600/25 transition hover:-translate-y-0.5 hover:shadow-violet-600/40 sm:text-base"
+                      disabled={isSending}
+                      className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-violet-600/25 transition hover:-translate-y-0.5 hover:shadow-violet-600/40 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 sm:text-base"
                     >
-                      Send Request{" "}
-                      <Send className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1" />
+                      {isSending ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Request{" "}
+                          <Send className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1" />
+                        </>
+                      )}
                     </button>
 
                     <p className="flex items-start justify-center gap-2 text-center text-xs text-slate-700 sm:items-center">
