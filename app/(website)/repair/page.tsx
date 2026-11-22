@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getSession } from "next-auth/react";
 import {
   AlertCircle,
   ArrowRight,
@@ -9,6 +11,7 @@ import {
   Cpu,
   ExternalLink,
   Laptop,
+  LogIn,
   Mail,
   MapPin,
   MonitorCog,
@@ -202,6 +205,150 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
+/* ================================================================== */
+/* DRAFT SAVING                                                       */
+/* Keeps what the visitor typed (and their photos) so nothing is lost  */
+/* when they have to sign in or the server rejects the form.           */
+/* Text lives in sessionStorage (cleared when the tab closes); photos   */
+/* live in IndexedDB because they are files. Both are wiped on success. */
+/* ================================================================== */
+
+const DRAFT_KEY = "aldana:repair-draft:v1";
+const DRAFT_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+const DEFAULT_CONTACT = "WhatsApp";
+
+const TEXT_FIELDS = [
+  "name",
+  "phone",
+  "deviceType",
+  "brand",
+  "model",
+  "problem",
+] as const;
+
+type Draft = {
+  fields: Record<string, string>;
+  contactMethod: string;
+  savedAt: number;
+};
+
+function readDraft(): Draft | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+
+    const draft = JSON.parse(raw) as Draft;
+
+    if (Date.now() - draft.savedAt > DRAFT_TTL_MS) {
+      sessionStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+
+    return draft;
+  } catch {
+    return null;
+  }
+}
+
+function writeDraft(draft: Draft) {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    /* storage full or blocked: ignore */
+  }
+}
+
+function collectFields(form: HTMLFormElement) {
+  const data = new FormData(form);
+  const out: Record<string, string> = {};
+
+  for (const key of TEXT_FIELDS) {
+    const value = data.get(key);
+    if (typeof value === "string" && value !== "") out[key] = value;
+  }
+
+  return out;
+}
+
+function applyFields(form: HTMLFormElement, fields: Record<string, string>) {
+  for (const key of TEXT_FIELDS) {
+    const value = fields[key];
+    if (value === undefined) continue;
+
+    const el = form.elements.namedItem(key);
+    if (
+      el instanceof HTMLInputElement ||
+      el instanceof HTMLTextAreaElement ||
+      el instanceof HTMLSelectElement
+    ) {
+      el.value = value;
+    }
+  }
+}
+
+/* ---- photos in IndexedDB ---- */
+const DB_NAME = "aldana-repair";
+const STORE = "drafts";
+const IMAGES_KEY = "images";
+
+function openDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === "undefined") {
+      reject(new Error("IndexedDB unavailable"));
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, 1);
+
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(STORE);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveImagesToDb(files: File[]) {
+  try {
+    const db = await openDb();
+    const store = db.transaction(STORE, "readwrite").objectStore(STORE);
+
+    if (files.length) store.put(files, IMAGES_KEY);
+    else store.delete(IMAGES_KEY);
+  } catch {
+    /* photos just won't be remembered */
+  }
+}
+
+async function loadImagesFromDb(): Promise<File[]> {
+  try {
+    const db = await openDb();
+
+    return await new Promise<File[]>((resolve) => {
+      const request = db
+        .transaction(STORE, "readonly")
+        .objectStore(STORE)
+        .get(IMAGES_KEY);
+
+      request.onsuccess = () =>
+        resolve(Array.isArray(request.result) ? request.result : []);
+      request.onerror = () => resolve([]);
+    });
+  } catch {
+    return [];
+  }
+}
+
+function clearDraft() {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {
+    /* ignore */
+  }
+
+  void saveImagesToDb([]);
+}
+
 type RepairState = {
   success?: boolean;
   message?: string;
@@ -216,12 +363,26 @@ export default function RepairPage() {
     submitRepair,
     initialState
   );
-  const [contactMethod, setContactMethod] = useState("WhatsApp");
+  const pathname = usePathname();
+
+  const [contactMethod, setContactMethod] = useState(DEFAULT_CONTACT);
   const [photoCount, setPhotoCount] = useState(0);
   const [submittedName, setSubmittedName] = useState("");
   const [dismissed, setDismissed] = useState<RepairState | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const cardRef = useRef<HTMLDivElement>(null);
+
+  /* ---------- draft + sign-in state ---------- */
+  const formRef = useRef<HTMLFormElement>(null);
+  const attachmentRef = useRef<HTMLInputElement>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const contactRef = useRef(DEFAULT_CONTACT); // always-current copy for saving
+  const passAuthCheck = useRef(false);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(false);
+  const [restored, setRestored] = useState(false);
 
   // Thank-you only shows for a real, saved submission
   const showThanks = !!state?.success && state !== dismissed;
@@ -231,6 +392,60 @@ export default function RepairPage() {
     ([key]) => !(key in FIELD_IDS)
   );
 
+  /* ---------- draft: save, restore, clear ---------- */
+  function persistDraft(method: string = contactRef.current) {
+    const form = formRef.current;
+    if (!form) return;
+
+    writeDraft({
+      fields: collectFields(form),
+      contactMethod: method,
+      savedAt: Date.now(),
+    });
+  }
+
+  function handleFormChange() {
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => persistDraft(), 300);
+  }
+
+  function chooseContact(method: string) {
+    contactRef.current = method;
+    setContactMethod(method);
+    persistDraft(method);
+  }
+
+  // Restore on first load (e.g. coming back after signing in)
+  useEffect(() => {
+    const form = formRef.current;
+    const draft = readDraft();
+
+    if (form && draft) {
+      applyFields(form, draft.fields);
+
+      if (draft.contactMethod) {
+        contactRef.current = draft.contactMethod;
+        setContactMethod(draft.contactMethod);
+      }
+
+      if (Object.keys(draft.fields).length > 0) setRestored(true);
+    }
+
+    loadImagesFromDb().then((saved) => {
+      const input = attachmentRef.current;
+
+      if (saved.length > 0 && input) {
+        const dt = new DataTransfer();
+        saved.forEach((f) => dt.items.add(f));
+        input.files = dt.files;
+        setPhotoCount(saved.length);
+        setRestored(true);
+      }
+    });
+
+    return () => clearTimeout(saveTimer.current);
+  }, []);
+
   // Server-side validation errors flow into the same inline error state
   useEffect(() => {
     if (state?.errors && Object.keys(state.errors).length > 0) {
@@ -238,18 +453,69 @@ export default function RepairPage() {
     }
   }, [state]);
 
-  // bring the result (thank-you or error) into view
+  // After the server answers: wipe the draft on success, or put the fields
+  // back if React cleared the form after a failed submission
   useEffect(() => {
-    if (state?.success || state?.message) {
-      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (!state) return;
+
+    if (state.success) {
+      clearDraft();
+      setRestored(false);
+      setNeedsSignIn(false);
+      return;
+    }
+
+    if (state.message || state.errors) {
+      const id = requestAnimationFrame(() => {
+        const draft = readDraft();
+        if (draft && formRef.current) applyFields(formRef.current, draft.fields);
+      });
+
+      return () => cancelAnimationFrame(id);
     }
   }, [state]);
+
+  // bring the result (thank-you, error or sign-in notice) into view
+  useEffect(() => {
+    if (state?.success || state?.message || needsSignIn) {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [state, needsSignIn]);
 
   function resetForm() {
     setDismissed(state);
     setPhotoCount(0);
-    setContactMethod("WhatsApp");
+    contactRef.current = DEFAULT_CONTACT;
+    setContactMethod(DEFAULT_CONTACT);
     setFieldErrors({});
+  }
+
+  function startFresh() {
+    const form = formRef.current;
+
+    if (form) {
+      form.reset();
+
+      for (const key of TEXT_FIELDS) {
+        const el = form.elements.namedItem(key);
+        if (
+          el instanceof HTMLInputElement ||
+          el instanceof HTMLTextAreaElement ||
+          el instanceof HTMLSelectElement
+        ) {
+          el.value = "";
+        }
+      }
+    }
+
+    if (attachmentRef.current) attachmentRef.current.value = "";
+
+    clearDraft();
+    setPhotoCount(0);
+    contactRef.current = DEFAULT_CONTACT;
+    setContactMethod(DEFAULT_CONTACT);
+    setFieldErrors({});
+    setRestored(false);
   }
 
   function clearError(fieldName: string) {
@@ -262,8 +528,15 @@ export default function RepairPage() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    const fd = new FormData(e.currentTarget);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    // Second pass: validation and the sign-in check already passed
+    if (passAuthCheck.current) {
+      passAuthCheck.current = false;
+      return;
+    }
+
+    const form = e.currentTarget;
+    const fd = new FormData(form);
 
     setSubmittedName(
       String(fd.get("name") ?? "")
@@ -290,7 +563,36 @@ export default function RepairPage() {
     }
 
     setFieldErrors({});
+
+    // The form is valid: make sure they're signed in BEFORE sending,
+    // so a redirect to the login page can never wipe their answers
+    e.preventDefault();
+    persistDraft();
+    setCheckingAuth(true);
+
+    let signedIn = true;
+
+    try {
+      const session = await getSession();
+      signedIn = !!session?.user;
+    } catch {
+      // If the check itself fails, let the server decide
+      signedIn = true;
+    }
+
+    setCheckingAuth(false);
+
+    if (!signedIn) {
+      setNeedsSignIn(true);
+      return;
+    }
+
+    setNeedsSignIn(false);
+    passAuthCheck.current = true;
+    form.requestSubmit();
   }
+
+  const busy = isPending || checkingAuth;
 
   return (
     <main className="min-h-screen overflow-hidden bg-white text-slate-900">
@@ -710,14 +1012,72 @@ export default function RepairPage() {
                 </div>
               ) : (
                 <form
+                  ref={formRef}
                   action={formAction}
                   noValidate
                   onSubmit={handleSubmit}
-                  onChange={(e) =>
-                    clearError((e.target as HTMLInputElement).name)
-                  }
+                  onChange={(e) => {
+                    clearError((e.target as HTMLInputElement).name);
+                    handleFormChange();
+                  }}
                   className="space-y-8 p-6 sm:p-10"
                 >
+                  {/* Sign-in needed: nothing is lost */}
+                  {needsSignIn && (
+                    <div
+                      role="alert"
+                      className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="flex items-start gap-3">
+                        <LogIn className="mt-0.5 size-5 shrink-0" />
+                        <div>
+                          <p className="font-bold">
+                            Sign in to send your request
+                          </p>
+                          <p className="mt-0.5 text-sm leading-6">
+                            Your details and photos are saved. Sign in, then
+                            come back to this page and everything will still be
+                            here.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 gap-2">
+                        <Link
+                          href={`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`}
+                          className="inline-flex h-10 items-center rounded-lg bg-violet-600 px-4 text-sm font-bold text-white transition hover:bg-violet-700"
+                        >
+                          Sign in
+                        </Link>
+                        <Link
+                          href="/auth/register"
+                          className="inline-flex h-10 items-center rounded-lg border border-amber-300 bg-white px-4 text-sm font-bold text-amber-900 transition hover:bg-amber-100"
+                        >
+                          Create account
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Draft restored */}
+                  {restored && (
+                    <div
+                      role="status"
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm text-violet-900"
+                    >
+                      <span className="font-medium">
+                        We restored the details you entered earlier.
+                      </span>
+                      <button
+                        type="button"
+                        onClick={startFresh}
+                        className="font-bold text-violet-700 underline-offset-2 hover:underline"
+                      >
+                        Start fresh
+                      </button>
+                    </div>
+                  )}
+
                   {/* Summary banner: client problems or server failure */}
                   {(errorCount > 0 || (!state?.success && state?.message)) && (
                     <div
@@ -840,7 +1200,7 @@ export default function RepairPage() {
                             name="contact"
                             value={name}
                             checked={contactMethod === name}
-                            onChange={() => setContactMethod(name)}
+                            onChange={() => chooseContact(name)}
                             className="sr-only"
                           />
                           <Icon className="size-4" />
@@ -991,6 +1351,7 @@ export default function RepairPage() {
 
                       {/* NOT required: the form submits fine with no photos */}
                       <input
+                        ref={attachmentRef}
                         id="attachment"
                         name="attachment"
                         type="file"
@@ -1002,13 +1363,14 @@ export default function RepairPage() {
                             ? "attachment-error"
                             : undefined
                         }
-                        onChange={(e) =>
-                          setPhotoCount(
-                            Array.from(e.target.files ?? []).filter(
-                              (f) => f.size > 0
-                            ).length
-                          )
-                        }
+                        onChange={(e) => {
+                          const picked = Array.from(
+                            e.target.files ?? []
+                          ).filter((f) => f.size > 0);
+
+                          setPhotoCount(picked.length);
+                          void saveImagesToDb(picked);
+                        }}
                         className="sr-only"
                       />
                     </label>
@@ -1022,13 +1384,13 @@ export default function RepairPage() {
                   <div className="border-t border-slate-100 pt-6">
                     <button
                       type="submit"
-                      disabled={isPending}
+                      disabled={busy}
                       className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-violet-600 px-6 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70 sm:h-14"
                     >
-                      {isPending ? (
+                      {busy ? (
                         <>
                           <span className="mr-2 size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Submitting...
+                          {checkingAuth ? "Checking..." : "Submitting..."}
                         </>
                       ) : (
                         <>

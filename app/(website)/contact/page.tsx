@@ -420,41 +420,18 @@ export default function ContactPage() {
 
                       <div className="space-y-1.5">
                         <label
-                          htmlFor="email"
-                          className="text-sm font-bold text-slate-800"
-                        >
-                          Email Address <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          required
-                          autoComplete="email"
-                          placeholder="john@example.com"
-                          aria-invalid={!!errors.email}
-                          aria-describedby={
-                            errors.email ? "email-error" : undefined
-                          }
-                          className={fieldCls(!!errors.email)}
-                        />
-                        <FieldError id="email" message={errors.email} />
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label
                           htmlFor="phone"
                           className="text-sm font-bold text-slate-800"
                         >
-                          Phone Number{" "}
-                          <span className="font-medium text-slate-600">
-                            (optional)
-                          </span>
+                          Phone Number{" "} <span className="text-red-600">*</span>
+                          
                         </label>
                         <input
                           type="tel"
                           id="phone"
                           name="phone"
+                          required
+
                           inputMode="tel"
                           autoComplete="tel"
                           placeholder="+971 50 000 0000"
@@ -466,6 +443,32 @@ export default function ContactPage() {
                         />
                         <FieldError id="phone" message={errors.phone} />
                       </div>
+
+                      <div className="space-y-1.5">
+                        <label
+                          htmlFor="email"
+                          className="text-sm font-bold text-slate-800"
+                        >
+                          Email Address <span className="font-medium text-slate-600">
+                            (optional)
+                          </span>
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          autoComplete="email"
+                          placeholder="john@example.com"
+                          aria-invalid={!!errors.email}
+                          aria-describedby={
+                            errors.email ? "email-error" : undefined
+                          }
+                          className={fieldCls(!!errors.email)}
+                        />
+                        <FieldError id="email" message={errors.email} />
+                      </div>
+
+                      
 
                       <div className="space-y-1.5">
                         <label
