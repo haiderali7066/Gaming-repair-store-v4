@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getSession } from "next-auth/react";
 import { submitBuyBack } from "@/actions/requests";
 import { useActionState, useEffect, useRef, useState } from "react";
 import {
@@ -14,6 +17,7 @@ import {
   HelpCircle,
   ImagePlus,
   Laptop,
+  LogIn,
   MapPin,
   MessageCircle,
   Package,
@@ -41,6 +45,8 @@ const initialState: BuyBackState = {};
 const FORM_ID = "trade-in-form";
 const MAX_IMAGES = 5;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const DEFAULT_DEVICE = "Gaming PC";
+const DEFAULT_SERVICE = "Drop Off at Our Store";
 
 /* Hero background — swap for your own generated image if you like */
 const HERO_IMG =
@@ -227,6 +233,158 @@ const inputCls = `${field} h-11`;
 const textareaCls = `${field} py-2.5 leading-relaxed resize-none`;
 
 /* ================================================================== */
+/* DRAFT SAVING                                                       */
+/* Keeps what the visitor typed (and their photos) so nothing is lost  */
+/* when they have to sign in or the server rejects the form.           */
+/* Text lives in sessionStorage (cleared when the tab closes); photos   */
+/* live in IndexedDB because they are files. Both are wiped on success. */
+/* ================================================================== */
+
+const DRAFT_KEY = "aldana:trade-in-draft:v1";
+const DRAFT_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+const TEXT_FIELDS = [
+  "name",
+  "idNumber",
+  "phone",
+  "expectedPrice",
+  "brand",
+  "model",
+  "specifications",
+  "description",
+  "condition",
+] as const;
+
+type Draft = {
+  fields: Record<string, string>;
+  deviceType: string;
+  servicePreference: string;
+  savedAt: number;
+};
+
+function readDraft(): Draft | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+
+    const draft = JSON.parse(raw) as Draft;
+
+    if (Date.now() - draft.savedAt > DRAFT_TTL_MS) {
+      sessionStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+
+    return draft;
+  } catch {
+    return null;
+  }
+}
+
+function writeDraft(draft: Draft) {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    /* storage full or blocked: ignore */
+  }
+}
+
+function collectFields(form: HTMLFormElement) {
+  const data = new FormData(form);
+  const out: Record<string, string> = {};
+
+  for (const key of TEXT_FIELDS) {
+    const value = data.get(key);
+    if (typeof value === "string" && value !== "") out[key] = value;
+  }
+
+  return out;
+}
+
+function applyFields(form: HTMLFormElement, fields: Record<string, string>) {
+  for (const key of TEXT_FIELDS) {
+    const value = fields[key];
+    if (value === undefined) continue;
+
+    if (key === "condition") {
+      form
+        .querySelectorAll<HTMLInputElement>('input[name="condition"]')
+        .forEach((radio) => {
+          radio.checked = radio.value === value;
+        });
+      continue;
+    }
+
+    const el = form.elements.namedItem(key);
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+      el.value = value;
+    }
+  }
+}
+
+/* ---- photos in IndexedDB ---- */
+const DB_NAME = "aldana-trade-in";
+const STORE = "drafts";
+const IMAGES_KEY = "images";
+
+function openDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === "undefined") {
+      reject(new Error("IndexedDB unavailable"));
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, 1);
+
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(STORE);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveImagesToDb(files: File[]) {
+  try {
+    const db = await openDb();
+    const store = db.transaction(STORE, "readwrite").objectStore(STORE);
+
+    if (files.length) store.put(files, IMAGES_KEY);
+    else store.delete(IMAGES_KEY);
+  } catch {
+    /* photos just won't be remembered */
+  }
+}
+
+async function loadImagesFromDb(): Promise<File[]> {
+  try {
+    const db = await openDb();
+
+    return await new Promise<File[]>((resolve) => {
+      const request = db
+        .transaction(STORE, "readonly")
+        .objectStore(STORE)
+        .get(IMAGES_KEY);
+
+      request.onsuccess = () =>
+        resolve(Array.isArray(request.result) ? request.result : []);
+      request.onerror = () => resolve([]);
+    });
+  } catch {
+    return [];
+  }
+}
+
+function clearDraft() {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {
+    /* ignore */
+  }
+
+  void saveImagesToDb([]);
+}
+
+/* ================================================================== */
 /* PAGE                                                               */
 /* ================================================================== */
 
@@ -236,10 +394,20 @@ export default function BuyBackPage() {
     initialState
   );
 
-  const [deviceType, setDeviceType] = useState("Gaming PC");
-  const [servicePreference, setServicePreference] = useState(
-    "Drop Off at Our Store"
+  const pathname = usePathname();
+
+  const [deviceType, setDeviceType] = useState(DEFAULT_DEVICE);
+  const [servicePreference, setServicePreference] = useState(DEFAULT_SERVICE);
+
+  /* ---------- draft + sign-in state ---------- */
+  const formRef = useRef<HTMLFormElement>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
   );
+  const passAuthCheck = useRef(false);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(false);
+  const [restored, setRestored] = useState(false);
 
   /* ---------- rotating headline ---------- */
   const [headlineIdx, setHeadlineIdx] = useState(0);
@@ -267,6 +435,7 @@ export default function BuyBackPage() {
       next.forEach((f) => dt.items.add(f));
       fileInputRef.current.files = dt.files;
     }
+    void saveImagesToDb(next);
   }
 
   function addFiles(list: FileList | File[] | null) {
@@ -306,13 +475,128 @@ export default function BuyBackPage() {
     return () => urls.forEach((u) => URL.revokeObjectURL(u));
   }, [files]);
 
+  /* ---------- draft: save, restore, clear ---------- */
+  function persistDraft(
+    nextDevice: string = deviceType,
+    nextService: string = servicePreference
+  ) {
+    const form = formRef.current;
+    if (!form) return;
+
+    writeDraft({
+      fields: collectFields(form),
+      deviceType: nextDevice,
+      servicePreference: nextService,
+      savedAt: Date.now(),
+    });
+  }
+
+  function handleFormChange() {
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => persistDraft(), 300);
+  }
+
+  // Restore on first load (e.g. coming back after signing in)
+  useEffect(() => {
+    const form = formRef.current;
+    const draft = readDraft();
+
+    if (form && draft) {
+      applyFields(form, draft.fields);
+      if (draft.deviceType) setDeviceType(draft.deviceType);
+      if (draft.servicePreference) setServicePreference(draft.servicePreference);
+      if (Object.keys(draft.fields).length > 0) setRestored(true);
+    }
+
+    loadImagesFromDb().then((saved) => {
+      if (saved.length > 0) {
+        commitFiles(saved.slice(0, MAX_IMAGES));
+        setRestored(true);
+      }
+    });
+
+    return () => clearTimeout(saveTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // After the server answers: wipe the draft on success, or put the fields
+  // back if React cleared the form after a failed submission
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      clearDraft();
+      commitFiles([]);
+      setRestored(false);
+      setNeedsSignIn(false);
+      return;
+    }
+
+    if (state.message || state.errors) {
+      const id = requestAnimationFrame(() => {
+        const draft = readDraft();
+        if (draft && formRef.current) applyFields(formRef.current, draft.fields);
+      });
+
+      return () => cancelAnimationFrame(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  function startFresh() {
+    formRef.current?.reset();
+    clearDraft();
+    commitFiles([]);
+    setDeviceType(DEFAULT_DEVICE);
+    setServicePreference(DEFAULT_SERVICE);
+    setRestored(false);
+  }
+
+  /* ---------- check sign-in BEFORE submitting ---------- */
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    // Second pass: the check below already passed, let the action run
+    if (passAuthCheck.current) {
+      passAuthCheck.current = false;
+      return;
+    }
+
+    e.preventDefault();
+    const form = e.currentTarget;
+
+    persistDraft();
+    setCheckingAuth(true);
+
+    let signedIn = true;
+
+    try {
+      const session = await getSession();
+      signedIn = !!session?.user;
+    } catch {
+      // If the check itself fails, let the server decide
+      signedIn = true;
+    }
+
+    setCheckingAuth(false);
+
+    if (!signedIn) {
+      setNeedsSignIn(true);
+      return;
+    }
+
+    setNeedsSignIn(false);
+    passAuthCheck.current = true;
+    form.requestSubmit();
+  }
+
   /* ---------- bring the result message into view after submit ---------- */
   const resultRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (state?.success || state?.message) {
+    if (state?.success || state?.message || needsSignIn) {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [state]);
+  }, [state, needsSignIn]);
+
+  const busy = isPending || checkingAuth;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-800">
@@ -481,9 +765,68 @@ export default function BuyBackPage() {
             </p>
           </div>
 
-          <form action={formAction} className="w-full space-y-4">
+          <form
+            ref={formRef}
+            action={formAction}
+            onSubmit={handleSubmit}
+            onChange={handleFormChange}
+            className="w-full space-y-4"
+          >
             {/* ---------- result messages ---------- */}
-            <div ref={resultRef} className="scroll-mt-28 empty:hidden">
+            <div ref={resultRef} className="scroll-mt-28 space-y-3 empty:hidden">
+              {/* Sign-in needed: nothing is lost */}
+              {needsSignIn && (
+                <div
+                  role="alert"
+                  className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-start gap-3">
+                    <LogIn className="mt-0.5 size-5 shrink-0" />
+                    <div>
+                      <p className="font-bold">Sign in to send your request</p>
+                      <p className="mt-0.5 text-sm leading-6">
+                        Your details and photos are saved. Sign in, then come
+                        back to this page and everything will still be here.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex shrink-0 gap-2">
+                    <Link
+                      href={`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`}
+                      className="inline-flex h-10 items-center rounded-lg bg-violet-600 px-4 text-sm font-bold text-white transition hover:bg-violet-700"
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/auth/register"
+                      className="inline-flex h-10 items-center rounded-lg border border-amber-300 bg-white px-4 text-sm font-bold text-amber-900 transition hover:bg-amber-100"
+                    >
+                      Create account
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Draft restored */}
+              {restored && !state?.success && (
+                <div
+                  role="status"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm text-violet-900"
+                >
+                  <span className="font-medium">
+                    We restored the details you entered earlier.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={startFresh}
+                    className="font-bold text-violet-700 underline-offset-2 hover:underline"
+                  >
+                    Start fresh
+                  </button>
+                </div>
+              )}
+
               {state?.success && (
                 <div
                   role="alert"
@@ -535,7 +878,10 @@ export default function BuyBackPage() {
                           role="radio"
                           aria-checked={active}
                           title={device.description}
-                          onClick={() => setDeviceType(device.value)}
+                          onClick={() => {
+                            setDeviceType(device.value);
+                            persistDraft(device.value, servicePreference);
+                          }}
                           className={`relative flex items-center gap-2 rounded-lg border px-3 py-2.5 text-left transition-all duration-200 ${
                             active
                               ? "border-violet-600 bg-violet-50 ring-4 ring-violet-600/10"
@@ -679,7 +1025,10 @@ export default function BuyBackPage() {
                           type="button"
                           role="radio"
                           aria-checked={active}
-                          onClick={() => setServicePreference(item.title)}
+                          onClick={() => {
+                            setServicePreference(item.title);
+                            persistDraft(deviceType, item.title);
+                          }}
                           className={`relative flex items-start gap-2.5 rounded-lg border p-3 text-left transition-all sm:flex-col sm:gap-2 lg:flex-row xl:flex-col ${
                             active
                               ? "border-violet-600 bg-violet-50 ring-4 ring-violet-600/10"
@@ -918,13 +1267,13 @@ export default function BuyBackPage() {
                 <Card>
                   <button
                     type="submit"
-                    disabled={isPending}
+                    disabled={busy}
                     className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-violet-600/25 transition hover:-translate-y-0.5 hover:shadow-violet-600/40 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
                   >
-                    {isPending ? (
+                    {busy ? (
                       <>
                         <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Submitting Request...
+                        {checkingAuth ? "Checking..." : "Submitting Request..."}
                       </>
                     ) : (
                       <>
