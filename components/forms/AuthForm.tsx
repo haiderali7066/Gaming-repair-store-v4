@@ -198,12 +198,23 @@ export function AuthForm({
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-zinc-700"
-            >
-              Password
-            </label>
+            <div className="mb-2 flex items-center justify-between">
+  <label
+    htmlFor="password"
+    className="block text-sm font-medium text-zinc-700"
+  >
+    Password
+  </label>
+
+  {!register && (
+    <Link
+      href="/auth/forgot-password"
+      className="text-sm font-semibold text-purple-600 hover:text-purple-700"
+    >
+      Forgot password?
+    </Link>
+  )}
+</div>
 
             <div className="relative">
               <input

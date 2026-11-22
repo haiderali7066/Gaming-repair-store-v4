@@ -10,10 +10,10 @@ export const loginSchema = z.object({
   email: z.email().transform((v) => v.toLowerCase()),
   password: z.string().min(8),
 });
+// Self-registration: name, email, phone and password only (no ID number).
 export const registerSchema = loginSchema.extend({
   name: z.string().min(2).max(80),
   phone: z.string().min(7).max(20),
-  idNumber: z.string().min(3).max(30),
 });
 // Staff creating a walk-in customer record from the admin panel. Same as
 // self-registration, except the ID number is optional (validated only when
@@ -83,6 +83,7 @@ export const repairSchema = z.object({
   model: z.string().min(1),
   problem: z.string().min(10),
   contact: z.enum(["WhatsApp", "Phone", "Email"]),
+  phone: z.string().trim().min(7).max(20).optional().or(z.literal("")),
   image: z.url().optional().or(z.literal("")),
 });
 export const buyBackSchema = z.object({
